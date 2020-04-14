@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dataplot_64", "Dataplot_64.vcxproj", "{DF781F4F-1743-43DB-BD78-C6AC44057475}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Debug|x64.ActiveCfg = Debug|x64
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Debug|x64.Build.0 = Debug|x64
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Debug|x86.ActiveCfg = Debug|Win32
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Debug|x86.Build.0 = Debug|Win32
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Release|x64.ActiveCfg = Release|x64
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Release|x64.Build.0 = Release|x64
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Release|x86.ActiveCfg = Release|Win32
+		{DF781F4F-1743-43DB-BD78-C6AC44057475}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {42D953A4-6121-4013-B77A-80AF094A08AE}
+	EndGlobalSection
+EndGlobal
