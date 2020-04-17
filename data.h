@@ -3,7 +3,7 @@
 
 class TData
 {
-private:
+public:
     double* Xval; // X axes
     double* Yval; // Y axes
     int Chunk = 100000;

@@ -23,6 +23,9 @@
     <ClCompile Include="Dataplot.cpp" />
     <ClCompile Include="fft.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="data.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{DF781F4F-1743-43DB-BD78-C6AC44057475}</ProjectGuid>
