@@ -1,0 +1,6 @@
+
+.vs*
+Debug/*
+fonts/*
+x64/*
+*.filters
