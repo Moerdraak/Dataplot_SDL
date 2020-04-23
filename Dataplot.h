@@ -7,30 +7,24 @@
 #include "SDL_ttf.h"
 #include <string>
 #include <sstream>
-#include "JBW_EditBox.h"
-#include "JBW_ComboBox.h"
-#include "JBW_ListBox.h"
-#include "JBW_MsgBox.h"
-#include "DpGraph.h"
+//#include "Jbw_EditBox.h"
+
+
+#include "Jbw_Frame.h"
+//#include "DpGraph.h"
+
 
 
 /**************************************************************************************
-	CLASS: DataPlot    (JBW_GUI = JaBberWock Graphical User Interface)
+	CLASS: DataPlot    (Jbw_GUI = JaBberWock Graphical User Interface)
 	=============
 	This is where all the stuff goes for the Specific GUI that you.
 	This is where you BUILD your GUI.
 **************************************************************************************/
-class Dataplot {
+class Dataplot : public Jbw_Frame{
 private:
 
 public:
-
-	JBW_EditBox* txtProject;
-	JBW_EditBox* txtDataDir, * edDataDir;
-
-	JBW_EditBox* txtDataSet, * edDataSet;
-	JBW_EditBox* txtYaxLabel, * edYaxLabel;
-	JBW_EditBox* txtXaxLabel, * edXaxLabel;
 
 	SDL_Rect ScreenArea;
 	SDL_Rect LogoArea;

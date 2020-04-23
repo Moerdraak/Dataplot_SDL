@@ -1,7 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_image.h"
-#include "JBW_EditBox.h"
+#include "Jbw_EditBox.h"
 #include "data.h"
 #include "fft.h"
 
@@ -37,12 +37,12 @@ public:
 
 
 	// TEXT OBJECTS
-	JBW_EditBox* txtGraphTitle;
-	JBW_EditBox* txtTestTitle;
-	JBW_EditBox* txtLegend;
-	JBW_EditBox* txtXlabel;
-	JBW_EditBox* txtYlabel;
-	JBW_EditBox* txtRandom;
+	Jbw_EditBox* txtGraphTitle;
+	Jbw_EditBox* txtTestTitle;
+	Jbw_EditBox* txtLegend;
+	Jbw_EditBox* txtXlabel;
+	Jbw_EditBox* txtYlabel;
+	Jbw_EditBox* txtRandom;
 
 	// EDITBOX OBJECTS
 

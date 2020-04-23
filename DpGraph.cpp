@@ -44,23 +44,23 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	// Set up Screen Area
 
 	/* TEXT: Test Title */
-	txtTestTitle = new JBW_EditBox(GRender, J_TEXT, 75, 8, GRAPH_W, 15);
+	txtTestTitle = new Jbw_EditBox(GRender, J_TEXT, 75, 8, GRAPH_W, 15);
 	txtTestTitle->Set("Test Title", "FontSize", 12, "Align", J_CENTRE);
 
 	/* TEXT: Graph Title */
-	txtGraphTitle = new JBW_EditBox(GRender, J_TEXT, 75, 24, GRAPH_W, 15);
+	txtGraphTitle = new Jbw_EditBox(GRender, J_TEXT, 75, 24, GRAPH_W, 15);
 	txtGraphTitle->Set("Graph Title", "FontSize", 12, "Align", J_CENTRE);
 
 	/* TEXT: Legend */
-	txtLegend = new JBW_EditBox(GRender, J_TEXT, G_SCREEN_W - 115, 40, 100);
+	txtLegend = new Jbw_EditBox(GRender, J_TEXT, G_SCREEN_W - 115, 40, 100);
 	txtLegend->Set("LEGEND", "FontSize", 12, "Align", J_CENTRE);
 
 	/* TEXT: X Label */
-	txtXlabel = new JBW_EditBox(GRender, J_TEXT, 75, 570, GRAPH_W, 16); // Create Edit box
+	txtXlabel = new Jbw_EditBox(GRender, J_TEXT, 75, 570, GRAPH_W, 16); // Create Edit box
 	txtXlabel->Set("X-Axes Label", "FontSize", 12, "Align", J_CENTRE);
 
 	/* TEXT: Y Label */
-	txtYlabel = new JBW_EditBox(GRender, J_TEXT, 10, 40, GRAPH_H, 15); // Create Edit box
+	txtYlabel = new Jbw_EditBox(GRender, J_TEXT, 10, 40, GRAPH_H, 15); // Create Edit box
 	txtYlabel->Set("Y-Axes Label", "FontSize", 12, "Align", J_CENTRE, "Angle", -90);
 
 	/*      Graphics Area      */
@@ -81,7 +81,7 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	GraphArea.w = GRAPH_W;
 	GraphArea.h = GRAPH_H;
 
-	txtRandom = new JBW_EditBox(GRender, J_TEXT, 0, 0, 10);
+	txtRandom = new Jbw_EditBox(GRender, J_TEXT, 0, 0, 10);
 
 	//Legend Area
 	//	SDL_Rect LegendArea;
@@ -120,8 +120,8 @@ void DpGraph::GraphRender(int Config)
 		double FactorX = GRAPH_W / BaseData->Xval[999];
 		double FactorY = (double)GRAPH_H * 0.01;
 		for (int I = 0; I < 1000; I++) {
-			TmpPoints[I].x = round(BaseData->Xval[I] * FactorX);
-			TmpPoints[I].y = 300 + round(BaseData->Yval[I] * FactorY); //+ SCREEN_HEIGHT;
+			TmpPoints[I].x = (int)round(BaseData->Xval[I] * FactorX);
+			TmpPoints[I].y = 300 + (int)round(BaseData->Yval[I] * FactorY); //+ SCREEN_HEIGHT;
 			int x = 0;
 		}
 	}
@@ -131,8 +131,8 @@ void DpGraph::GraphRender(int Config)
 		double FactorX = GRAPH_W / BaseData->Xval[499];
 		double FactorY = (double)GRAPH_H * 0.02;
 		for (int I = 0; I < 500; I++) {
-			TmpPoints[I].x = round(BaseData->Xval[I] * FactorX);
-			TmpPoints[I].y = 300 + round(BaseData->Yval[I] * FactorY); //+ SCREEN_HEIGHT;
+			TmpPoints[I].x = (int)round(BaseData->Xval[I] * FactorX);
+			TmpPoints[I].y = 300 + (int)round(BaseData->Yval[I] * FactorY); //+ SCREEN_HEIGHT;
 			int x = 0;
 		}
 	}
@@ -142,8 +142,8 @@ void DpGraph::GraphRender(int Config)
 		double FactorX = GRAPH_W / FreqData->Xval[999];
 		double FactorY = (double)GRAPH_H * 2;
 		for (int I = 0; I < 1000; I++) {
-			TmpPoints[I].x = round(FreqData->Xval[I] * FactorX);
-			TmpPoints[I].y = 300 + round(FreqData->Yval[I] * FactorY); //+ SCREEN_HEIGHT;
+			TmpPoints[I].x = (int)round(FreqData->Xval[I] * FactorX);
+			TmpPoints[I].y = 300 + (int)round(FreqData->Yval[I] * FactorY); //+ SCREEN_HEIGHT;
 			int x = 0;
 		}
 	}
@@ -165,8 +165,8 @@ void DpGraph::GraphRender(int Config)
 
 	txtLegend->Render();
 	txtGraphTitle->Set("Cannon Vibration");	txtGraphTitle->Render();
-	txtTestTitle->Set(Dp->edDataSet->Text); txtTestTitle->Render();
-	txtXlabel->Set(Dp->edXaxLabel->Text); txtXlabel->Render();
+//	txtTestTitle->Set(Dp->edDataSet->Text); txtTestTitle->Render();
+//	txtXlabel->Set(Dp->edXaxLabel->Text); txtXlabel->Render();
 	txtYlabel->Set("Vibration (g)"); txtYlabel->Render();
 
 	double xxx = 453656.34;
@@ -183,7 +183,7 @@ void DpGraph::GraphRender(int Config)
 		}
 	}
 	else {
-		N = MaxNum.length() - 4;
+		N = (int)MaxNum.length() - 4;
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
 			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 545, "FontSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
@@ -208,7 +208,7 @@ void DpGraph::GraphRender(int Config)
 		}
 	}
 	else {
-		N = MaxNum.length() - 4;
+		N = (int)MaxNum.length() - 4;
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
 			txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "FontSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
@@ -233,14 +233,14 @@ void DpGraph::GraphRender(int Config)
 
 	SDL_RenderDrawLine(GRender, 0, 0, 0, GRAPH_H);
 	for (int I = 0; I < 10; I++) {
-		SDL_RenderDrawLine(GRender, 0, I * round(GRAPH_H / 10), 5, I * round(GRAPH_H / 10));
+		SDL_RenderDrawLine(GRender, 0, I * (int)round(GRAPH_H / 10), 5, I * (int)round(GRAPH_H / 10));
 	}
 
 	SDL_RenderDrawLine(GRender, 0, GRAPH_H - 1, GRAPH_W, GRAPH_H - 1);
 	for (int I = 0; I < 10; I++) {
-		SDL_RenderDrawLine(GRender, I * round(GRAPH_W / 10), GRAPH_H - 1, I * round(GRAPH_W / 10), GRAPH_H - 6);
+		SDL_RenderDrawLine(GRender, I * (int)round(GRAPH_W / 10), GRAPH_H - 1, I * (int)round(GRAPH_W / 10), GRAPH_H - 6);
 	}
-	SDL_RenderDrawLine(GRender, 10 * round(GRAPH_W / 10) - 1, GRAPH_H - 1, 10 * round(GRAPH_W / 10) - 1, GRAPH_H - 6);
+	SDL_RenderDrawLine(GRender, 10 * (int)round(GRAPH_W / 10) - 1, GRAPH_H - 1, 10 * (int)round(GRAPH_W / 10) - 1, GRAPH_H - 6);
 
 	// Plot Graphs
 	SDL_SetRenderDrawColor(GRender, 255, 0, 0, 255);

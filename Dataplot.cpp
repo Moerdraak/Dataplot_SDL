@@ -9,38 +9,28 @@ SDL_Point* TmpPoints;
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[])
 {
+	tE tEdit;
+	tL tList;
 
 	Dataplot Dp; 
 
+
 	Dp.SetupScreen();
 	
-	DpGraph* TmpGraph;
-	DpGraph* Figure = new DpGraph(&Dp);
-	Figure->Prev = NULL;
-	
-	Figure->Next = new DpGraph(&Dp); // Create a new instance adressed by this Figure's Next pointer
-	Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
-	Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
-	Figure = Figure->Next; // Move the Figure pointer to the new Figure.
+	//DpGraph* TmpGraph;
+	//DpGraph* Figure = new DpGraph(&Dp);
+	//Figure->Prev = NULL;
+	//
+	//Figure->Next = new DpGraph(&Dp); // Create a new instance adressed by this Figure's Next pointer
+	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
+	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
+	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
 
 
-	Figure->Next = new DpGraph(&Dp); // Create a new instance adressed by this Figure's Next pointer
-	Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
-	Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
-	Figure = Figure->Next; // Move the Figure pointer to the new Figure.
-
-	//JBW_MsgBox Jakkals("EVENT INFO", "Die jakkals \nwat bruin is "
-	//	"\nspring oor die heining."
-	//	"\nMaar helaas, inderdaad, gedwee en terdee, dis nie al nie\n"
-	//	"Die klein kak\neet ook die hoenders wat eiers le"
-	//	"Die jakkals \nwat bruin is "
-	//	"\nspring oor die heining."
-	//	"\nMaar helaas, inderdaad, gedwee en terdee, dis nie al nie\n"
-	//	"Die klein kak\neet ook die hoenders wat eiers le",
-	//	J_YESNO, 100, 50);
-
-	//JBW_MsgBox Stuff("EVENT INFO EVENT INFO", "Die jakkals ",
-	//	J_OK, 500, 150);
+	//Figure->Next = new DpGraph(&Dp); // Create a new instance adressed by this Figure's Next pointer
+	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
+	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
+	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
 
 	//Main loop flag
 	bool quit = false;
@@ -56,8 +46,7 @@ int main(int argc, char* argv[])
 	int Cnt = 0;
 
 
-	while (SDL_WaitEvent(&e) != 0)
-	{
+	while (SDL_WaitEvent(&e) != 0){
 
 		Cnt += 10;
 		// User requests quit
@@ -68,7 +57,7 @@ int main(int argc, char* argv[])
 		}
 		else if (e.type == SDL_TEXTINPUT)
 		{
-			Dp.edDataDir->Add(e.text.text);
+	//		Dp.edDataDir->Add(e.text.text);
 			flag = true;
 
 		}
@@ -78,17 +67,17 @@ int main(int argc, char* argv[])
 			//Select surfaces based on key press
 
 			if (e.key.keysym.sym == SDLK_BACKSPACE) {
-				Dp.edDataDir->BackSpace();
+			//	Dp.edDataDir->BackSpace();
 				flag = true;
 			}else if (e.key.keysym.sym == SDLK_DELETE) {
-				Dp.edDataDir->Del();
+		//		Dp.edDataDir->Del();
 				flag = true;
 			}
 			else if(e.key.keysym.sym){
 			}			
 		}
 
-		Dp.edDataDir->Event(&e);
+	//	Dp.edDataDir->Event(&e);
 
 
 		if (flag == false) {
@@ -98,14 +87,16 @@ int main(int argc, char* argv[])
 		flag = false;
 		Dp.UserRender();
 
-		Figure->GraphRender(1);
-		Figure->Prev->GraphRender(2);
-		Figure->Prev->Prev->GraphRender(3);
+		//Figure->GraphRender(1);
+		//Figure->Prev->GraphRender(2);
+		//Figure->Prev->Prev->GraphRender(3);
 		SDL_Delay(1000);
 	}
 	
 	//Free resources and close SDL
 	//close();
+	Dp.Free(tEdit, "edName");
+
 	return 0;
 }
 
@@ -238,6 +229,8 @@ void Dataplot::Close()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool Dataplot::SetupScreen(void)
 {
+	tE tEdit;
+	tL tList;
 	/****************  USER SCREEN  ****************/
 	//	ScreenArea;
 	ScreenArea.x = 0;
@@ -257,36 +250,41 @@ bool Dataplot::SetupScreen(void)
 	}
 
 	/* TEXT: File Name */
-	txtDataDir = new JBW_EditBox(URender, J_TEXT, 5, 120, 300, 15); // Create Edit box
-	txtDataDir->Set("Data Directory:", "FontSize", 12, "Align", J_CENTRE);
+	Create(URender, tEdit, "txtDataDir", J_TEXT, 500, 50, 300, 16);
+	Set("txtDataDir", "Text", "Data Directory:", "FontSize", "12",
+		"Align", "J_CENTRE", "Box", "300 100 100 16", "TextColor", "0 0 255");
 
-	/* EDIT: File Name */
-	edDataDir = new JBW_EditBox(URender, J_EDIT, 5, 135, 300); // Create Edit box
-	edDataDir->Align = J_LEFT;
 
-	/* TEXT: Project Name */
-	txtProject = new JBW_EditBox(URender, J_TEXT, 110, 50, 300, 15); // Create Edit box
-	txtProject->Set("Setup: Rooivalk", "FontSize", 12, "Align", J_LEFT);
+	//txtDataDir = new Jbw_EditBox(URender, J_TEXT, 5, 120, 300, 15); // Create Edit box
+	//txtDataDir->Set("Data Directory:", "FontSize", 12, "Align", J_CENTRE);
 
-	/* TEXT: DataSet Description */
-	txtDataSet = new JBW_EditBox(URender, J_TEXT, 5, 220, 300, 15); // Create Edit box
-	txtDataSet->Set("Dataset Description:", "FontSize", 12, "Align", J_CENTRE);
+	///* EDIT: File Name */
+	//edDataDir = new Jbw_EditBox(URender, J_EDIT, 5, 135, 300); // Create Edit box
+	//edDataDir->Align = J_LEFT;
 
-	/* EDIT: Figure Name/Description */
-	edDataSet = new JBW_EditBox(URender, J_EDIT, 5, 235, 300); // Create Edit box
-	edDataSet->Set("Rooivalk Rocket Flight test at OTB (2019-02-03)", "Align", J_LEFT);
+	///* TEXT: Project Name */
+	//txtProject = new Jbw_EditBox(URender, J_TEXT, 110, 50, 300, 15); // Create Edit box
+	//txtProject->Set("Setup: Rooivalk", "FontSize", 12, "Align", J_LEFT);
 
-	txtYaxLabel = new JBW_EditBox(URender, J_TEXT, 5, 400, 300, 15);
-	txtYaxLabel->Set("X-Axes Label", "FontSize", 12, "Align", J_CENTRE);
+	///* TEXT: DataSet Description */
+	//txtDataSet = new Jbw_EditBox(URender, J_TEXT, 5, 220, 300, 15); // Create Edit box
+	//txtDataSet->Set("Dataset Description:", "FontSize", 12, "Align", J_CENTRE);
 
-	edYaxLabel = new JBW_EditBox(URender, J_EDIT, 5, 415, 300);
-	edYaxLabel->Align = J_LEFT;
+	///* EDIT: Figure Name/Description */
+	//edDataSet = new Jbw_EditBox(URender, J_EDIT, 5, 235, 300); // Create Edit box
+	//edDataSet->Set("Rooivalk Rocket Flight test at OTB (2019-02-03)", "Align", J_LEFT);
 
-	txtXaxLabel = new JBW_EditBox(URender, J_TEXT, 5, 500, 300, 15);
-	txtXaxLabel->Set("Y-Axes Label", "FontSize", 12, "Align", J_CENTRE);
+	//txtYaxLabel = new Jbw_EditBox(URender, J_TEXT, 5, 400, 300, 15);
+	//txtYaxLabel->Set("X-Axes Label", "FontSize", 12, "Align", J_CENTRE);
 
-	edXaxLabel = new JBW_EditBox(URender, J_EDIT, 5, 515, 300);
-	edXaxLabel->Set("Time (s)", "Align", J_LEFT);
+	//edYaxLabel = new Jbw_EditBox(URender, J_EDIT, 5, 415, 300);
+	//edYaxLabel->Align = J_LEFT;
+
+	//txtXaxLabel = new Jbw_EditBox(URender, J_TEXT, 5, 500, 300, 15);
+	//txtXaxLabel->Set("Y-Axes Label", "FontSize", 12, "Align", J_CENTRE);
+
+	//edXaxLabel = new Jbw_EditBox(URender, J_EDIT, 5, 515, 300);
+	//edXaxLabel->Set("Time (s)", "Align", J_LEFT);
 
 	// Logo Area
 	LogoArea.x = 3;
@@ -298,43 +296,44 @@ bool Dataplot::SetupScreen(void)
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //   PERFORM ALL RENEDERING TASKS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Dataplot::UserRender(void)
 {
-	char TmpTxt[50];
+//	char TmpTxt[50];
 	//Clear screen
-	SDL_SetRenderDrawColor(URender, 0xE8, 0xE8, 0xE8, 0xFF); // This sets the color you clear the screen to ( see below )
+	SDL_SetRenderDrawColor(URender, 230, 230, 230, 255); // This sets the color you clear the screen to ( see below )
 	SDL_RenderClear(URender); // This clears the rendering target with the draw color set above
 
 	// Set viewport to Main Screen
 	SDL_RenderSetViewport(URender, &ScreenArea);
 
 	// Render Objects
-	txtProject->Render();
-	txtDataDir->Render();
-	edDataDir->Render();
+	for (int I = 0; I < Size_E; I++) {
+		Ebox[I]->Render();
+	}
 
-	txtDataSet->Render();
-	edDataSet->Render();
-	txtYaxLabel->Render();
-	edYaxLabel->Render();
-	txtXaxLabel->Render();
-	edXaxLabel->Render();
+	SDL_RenderPresent(URender);
+	//txtProject->Render();
+	//txtDataDir->Render();
+	//edDataDir->Render();
+
+	//txtDataSet->Render();
+	//edDataSet->Render();
+	//txtYaxLabel->Render();
+	//edYaxLabel->Render();
+	//txtXaxLabel->Render();
+	//edXaxLabel->Render();
 
 	/****    SET VIEWPORT TO LOGO AREA     ****/
 	SDL_RenderSetViewport(URender, &LogoArea);
-	SDL_SetRenderDrawColor(URender, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(URender, 255, 255, 255, 255);
 	SDL_RenderCopy(URender, LogoImage, NULL, NULL); // Clear Logo 
 
 	/*      RENDER  USER SCREEN     */
 	SDL_RenderPresent(URender);
 }
-
-
-
 
 
 

@@ -8,17 +8,17 @@ RETURN:
 int Time2Freq(TData* Data, TData* FreqData) {
 
     // First determine the biggest 2^N value that fits inside this dataset
-    int FSize = pow(2, floor(log2(Data->Len())));
-    int NyqSize = FSize / 2; // since FSize will always be even this will always be an integer
+    int FSize = (int)pow(2, floor(log2(Data->Len())));
+    int NyqSize = int(FSize / 2); // since FSize will always be even this will always be an integer
     int RemainingSize = Data->Len();
-    int N = log2(FSize); // Get the value of N for 2^N of the Intermediate Dataset
+    int N = (int)log2(FSize); // Get the value of N for 2^N of the Intermediate Dataset
 
     // Add one for the last value e.g for 100Hz it would display 99.9Hz if you don't add this.
     FreqData->ReSize(NyqSize + 1);
 
     complex<double>* CompData = new complex<double>[FSize];
     // Factor = [Sample Frequency]/[fft data size]
-    float Factor = ((Data->Len() - 1) / (Data->X(Data->Len() - 1) - Data->X(0))) / FSize;
+    float Factor = float(((Data->Len() - 1) / (Data->X(Data->Len() - 1) - Data->X(0))) / FSize);
     //  float Freq = (Data->Len() - 1) / (Data->X(Data->Len() - 1) - Data->X(0));
 
     // Populate FreqData's Freq collumn
@@ -37,7 +37,7 @@ int Time2Freq(TData* Data, TData* FreqData) {
         fft(Cdata);
         delete[] SizedData; // cleaning up
 
-        int ScaleN = pow(2, N - (int)log2(CSize));
+        int ScaleN = (int)pow(2, N - (int)log2(CSize));
 
         for (int I = 0; I <= NyqSize; I++) {
 
@@ -46,7 +46,7 @@ int Time2Freq(TData* Data, TData* FreqData) {
 
         Start = 1 + End; // Move the Start position to the next value in Data
         RemainingSize = RemainingSize - CSize;
-        CSize = pow(2, floor(log2(RemainingSize)));
+        CSize = (int)pow(2, floor(log2(RemainingSize)));
         End = Start + CSize - 1; // Get the correct End position in Data according to FSize
     }
     delete[] CompData; // cleaning up
@@ -62,7 +62,7 @@ RETURN:
 ----------------------------------------------------------------------------------------------------*/
 complex<double>* FillComp(const double* Data, complex<double>* CData, int Len, int N)
 {
-    int Repeat = pow(2, N - (int)log2(Len));
+    int Repeat = (int)pow(2, N - (int)log2(Len));
 
     int Pos = 0;
     for (int I = 0; I < Repeat; I++)
@@ -89,7 +89,7 @@ void fft(CArray& x)
     x = x.apply(std::conj);
 
     // DFT
-    unsigned int N = x.size(), k = N, n;
+    unsigned int N = (int)x.size(), k = N, n;
     double thetaT = 3.14159265358979323846264338328L / N;
     Complex phiT = Complex(cos(thetaT), -sin(thetaT)), T;
     while (k > 1)
@@ -133,6 +133,6 @@ void fft(CArray& x)
     x = x.apply(std::conj);
 
     // scale the numbers
-    x /= x.size();
+    x /= (const std::complex<double>::_Ty)x.size();
 }
 

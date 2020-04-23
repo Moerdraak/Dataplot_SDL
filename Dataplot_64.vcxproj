@@ -25,6 +25,7 @@
     <ClCompile Include="fft.cpp" />
     <ClCompile Include="JBW_ComboBox.cpp" />
     <ClCompile Include="JBW_EditBox.cpp" />
+    <ClCompile Include="Jbw_Frame.cpp" />
     <ClCompile Include="JBW_ListBox.cpp" />
     <ClCompile Include="JBW_MsgBox.cpp" />
   </ItemGroup>
@@ -34,6 +35,7 @@
     <ClInclude Include="DpGraph.h" />
     <ClInclude Include="JBW_ComboBox.h" />
     <ClInclude Include="JBW_EditBox.h" />
+    <ClInclude Include="Jbw_Frame.h" />
     <ClInclude Include="JBW_ListBox.h" />
     <ClInclude Include="JBW_MsgBox.h" />
   </ItemGroup>

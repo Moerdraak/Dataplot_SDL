@@ -1,6 +1,6 @@
-#include "JBW_MsgBox.h"
+#include "Jbw_MsgBox.h"
 
-JBW_MsgBox::JBW_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int x, int y, int w, int h)
+Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int x, int y, int w, int h)
 {
 	Window_w = w;
 	Window_h = h;
@@ -23,7 +23,7 @@ JBW_MsgBox::JBW_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int 
 	Border.w = Window_w; Border.h = Window_h;
 
 	// Create Header
-	edHeader = new JBW_EditBox(Render, J_EDIT, 0, 0, Window_w, 18);
+	edHeader = new Jbw_EditBox(Render, J_EDIT, 0, 0, Window_w, 18);
 	edHeader->Set(Title.c_str(), "Align", J_CENTRE, "FontSize", 12);
 
 	SDL_SetRenderDrawColor(Render, 230, 230, 230, 255);
@@ -32,7 +32,7 @@ JBW_MsgBox::JBW_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int 
 	RenderBox();
 	Parser(Msg, true);
 }
-JBW_MsgBox::~JBW_MsgBox()
+Jbw_MsgBox::~Jbw_MsgBox()
 {
 	SDL_DestroyWindow(MsgWindow);
 	SDL_DestroyRenderer(Render);
@@ -52,7 +52,7 @@ JBW_MsgBox::~JBW_MsgBox()
 }
 
 
-void JBW_MsgBox::Parser(std::string Txt, bool DoRender) {
+void Jbw_MsgBox::Parser(std::string Txt, bool DoRender) {
 	int Cnt = 0;
 	size_t Start = 0, Pos = 0;
 	while (Pos < Txt.length()) { // Not good Need to find exact method
@@ -65,7 +65,7 @@ void JBW_MsgBox::Parser(std::string Txt, bool DoRender) {
 	}
 }
 
-void JBW_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
+void Jbw_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
 	
 	txtSurf = TTF_RenderText_Blended(Font, Msg.c_str(), { 0, 0, 0, 255 });
 
@@ -88,7 +88,7 @@ void JBW_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
 	SDL_FreeSurface(txtSurf);
 }
 
-void JBW_MsgBox::RenderBox(void) {
+void Jbw_MsgBox::RenderBox(void) {
 	// Outside part of creating Border
 	SDL_SetRenderDrawColor(Render, 180, 180, 180, 255);
 	SDL_RenderFillRect(Render, &Border);
@@ -113,21 +113,21 @@ void JBW_MsgBox::RenderBox(void) {
 	if (Type == J_YESNO) {
 		int BtnYes_x = Window_w - 120; // (Window_w - 2 * Btn_w ) / 2 - BtnSpace/2;
 		int BtnNo_x = Window_w - 60; //BtnYes_x + BtnSpace + Btn_w;
-		btnAck = new JBW_EditBox(Render, J_EDIT, BtnYes_x, Btn_y, Btn_w, Btn_h);
-		btnAck->BackColor = 200;
-		btnAck->FrameColor = 180;
+		btnAck = new Jbw_EditBox(Render, J_EDIT, BtnYes_x, Btn_y, Btn_w, Btn_h);
+		btnAck->BackColor = { 200, 200, 200, 255 };
+		btnAck->FrameColor = { 180, 180, 180, 255 }; 
 		btnAck->Set("Yes", "Align", J_CENTRE, "FontSize", 12);
 
-		btnNo = new JBW_EditBox(Render, J_EDIT, BtnNo_x, Btn_y, Btn_w, Btn_h);
-		btnNo->BackColor = 200;
-		btnNo->FrameColor = 180;
+		btnNo = new Jbw_EditBox(Render, J_EDIT, BtnNo_x, Btn_y, Btn_w, Btn_h);
+		btnNo->BackColor = { 200, 200, 200, 255 };
+		btnNo->FrameColor = { 180, 180, 180, 255 };
 		btnNo->Set("No", "Align", J_CENTRE, "FontSize", 12);
 		btnNo->Render();
 	}
 	else {
-		btnAck = new JBW_EditBox(Render, J_EDIT, BtnYes_x, Btn_y, Btn_w, Btn_h);
-		btnAck->BackColor = 200;
-		btnAck->FrameColor = 180;
+		btnAck = new Jbw_EditBox(Render, J_EDIT, BtnYes_x, Btn_y, Btn_w, Btn_h);
+		btnAck->BackColor = { 200, 200, 200, 255 };
+		btnAck->FrameColor = { 180, 180, 180, 255 };
 		if (Type == J_OK) {
 			btnAck->Set("Okay", "Align", J_CENTRE, "FontSize", 12);
 		}
