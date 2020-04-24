@@ -8,9 +8,9 @@
 #include <string>
 #include <sstream>
 //#include "Jbw_EditBox.h"
+#include "Jbw_Polygon.h"
 
-
-#include "Jbw_Frame.h"
+#include "Jbw_FrameWork.h"
 //#include "DpGraph.h"
 
 
@@ -21,7 +21,7 @@
 	This is where all the stuff goes for the Specific GUI that you.
 	This is where you BUILD your GUI.
 **************************************************************************************/
-class Dataplot : public Jbw_Frame{
+class Dataplot : public Jbw_FrameWork {
 private:
 
 public:

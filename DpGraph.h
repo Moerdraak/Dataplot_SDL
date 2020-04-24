@@ -20,8 +20,6 @@ public:
 	TData* BaseData = NULL;
 	TData *FreqData = NULL;
 
-
-
 	const Dataplot* Dp;
 
 	// BASE OBJECTS

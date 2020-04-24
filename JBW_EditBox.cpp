@@ -1,42 +1,41 @@
 #include "Jbw_EditBox.h"
 
 
-Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Render, J_Type Type, int x, int y, int w, int h)
+Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Rdr, J_Type Type, int x, int y, int w, int h)
 {
 	Box.x = x + 1; Box.y = y + 1; Box.w = w - 2; Box.h = h - 2; // Creates a border of thickness 1
 	Frame.x = x; Frame.y = y; Frame.w = w; Frame.h = h;
-	TxtType = Type;
-	Renderer = Render;
+	//TxtType = Type;
+	Trdr = Rdr;
+	Text = ""; // Give default text otherwise it crashes
 }
 
 Jbw_EditBox::~Jbw_EditBox() {
 	SDL_DestroyTexture(txtImage);
 }
 
-void Jbw_EditBox::CreateTexture(void) {
-	Font = TTF_OpenFont("fonts/arial.ttf", FontSize); // Load the default font	
-	TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
-	SDL_Surface* txtSurf = TTF_RenderText_Blended(Font, Text.c_str(), TextColor); 
-	TTF_CloseFont(Font);
-
-	// Free the previous txtImage
-	SDL_DestroyTexture(txtImage); 
-	txtImage = SDL_CreateTextureFromSurface(Renderer, txtSurf); // Move it from RAM to VRAM -> Graphics card which makes it much faster
-
+/*--------------------------------------------------------------------
+	FUNCTION: Render
+--------------------------------------------------------------------*/
+void Jbw_EditBox::FitText(void)
+{
 	/* Cutting Text To Size*/
-	int Clip_W = 0, Clip_H = 0, Xo = 0, Yo = 0;	Xo = Box.x + 1;	Yo = Box.y + (Box.h - txtSurf->h) / 2;
-	ActTxtW = txtSurf->w;
-	if (txtSurf->w > Box.w) {
+	int Clip_W = 0, Clip_H = 0;
+	Xo = Box.x + 1;	
+	Yo = Box.y + (Box.h - txtBox.h) / 2;
+
+	ActTxtW = txtBox.w;
+	if (txtBox.w > Box.w) {
 		Clip_W = Box.w - 2; // If text is wider than box
 	}
 	else {
-		Clip_W = txtSurf->w; // If text is equal or narrower than box
+		Clip_W = txtBox.w; // If text is equal or narrower than box
 	}
-	if (txtSurf->h > Box.h) {
+	if (txtBox.h > Box.h) {
 		Clip_H = Box.h;      // If text is larger than box
 	}
 	else {
-		Clip_H = txtSurf->h;  // If text is smaller than box
+		Clip_H = txtBox.h;  // If text is smaller than box
 	}
 	txtClip = { 0, 0, Clip_W, Clip_H };
 	txtBox = { Xo, Yo , Clip_W, Clip_H };
@@ -51,22 +50,22 @@ void Jbw_EditBox::CreateTexture(void) {
 		}
 	}
 	else if (Align == J_CENTRE) { // CENTRE ALIGN TEXT
-		if (txtSurf->w < Box.w) { // If text is longer than box don't centre but keep LEFT aligned.
+		if (txtBox.w < Box.w) { // If text is longer than box don't centre but keep LEFT aligned.
 			if (Angle == 90) {
 				txtBox.x += txtBox.h;
-				txtBox.y += (Box.w - txtSurf->w) / 2;
+				txtBox.y += (Box.w - txtBox.w) / 2;
 			}
 			else if (Angle == -90) {
 				txtBox.x -= 2;   //Box.x - txtBox.w + txtBox.h;
-				txtBox.y += txtSurf->w + (Box.w - txtSurf->w) / 2;
+				txtBox.y += txtBox.w + (Box.w - txtBox.w) / 2;
 			}
 			else {
-				txtBox = { Xo + (Box.w - txtSurf->w) / 2, Yo, Clip_W, Clip_H };
+				txtBox = { Xo + (Box.w - txtBox.w) / 2, Yo, Clip_W, Clip_H };
 			}
 		}
 	}
 	else if (Align == J_RIGHT) { // RIGHT ALIGN TEXT
-		if (txtSurf->w < Box.w) { // If text is longer than box don't right align but keep LEFT aligned.
+		if (txtBox.w < Box.w) { // If text is longer than box don't right align but keep LEFT aligned.
 			if (Angle == 90) {
 				txtBox.x += txtBox.h;   //Box.x - txtBox.w + txtBox.h;
 				txtBox.y += (Box.w - Clip_W);  //Box.y + Box.w;
@@ -80,67 +79,37 @@ void Jbw_EditBox::CreateTexture(void) {
 			}
 		}
 	}
-	SDL_FreeSurface(txtSurf); // Free the memory of SDL_Surface
 }
 
+/*--------------------------------------------------------------------
+	FUNCTION: Render
+--------------------------------------------------------------------*/
 void Jbw_EditBox::Render(void)
 {
-	// Create Grey Border around Edit box 
-	if (TxtType == J_EDIT) {
+	// If Editbox is vertical
+	if (Angle == 90 || Angle == -90) {
+		SDL_Rect Tmp = Frame;
+		Frame.w = Tmp.h;
+		Frame.h = Tmp.w;
 
-		if (Angle == 90 || Angle == -90) {
-			SDL_Rect Tmp = Frame;
-			Frame.w = Tmp.h;
-			Frame.h = Tmp.w;
-
-			Tmp = Box;
-			Box.w = Tmp.h;
-			Box.h = Tmp.w;
-		}
-		SDL_SetRenderDrawColor(Renderer, FrameColor.b, FrameColor.g, FrameColor.r, FrameColor.a);
-		SDL_RenderFillRect(Renderer, &Frame);
-
-		// Create White inside of Edit box
-		SDL_SetRenderDrawColor(Renderer, BackColor.b, BackColor.g, BackColor.r, BackColor.a);
-		SDL_RenderFillRect(Renderer, &Box);
+		Tmp = Box;
+		Box.w = Tmp.h;
+		Box.h = Tmp.w;
 	}
+	SDL_SetRenderDrawColor(Trdr, FrameColor.b, FrameColor.g, FrameColor.r, FrameColor.a);
+	SDL_RenderFillRect(Trdr, &Frame);
 
-	SDL_RenderCopyEx(Renderer, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
-}
+	// Create White inside of Edit box
+	SDL_SetRenderDrawColor(Trdr, BackColor.b, BackColor.g, BackColor.r, BackColor.a);
+	SDL_RenderFillRect(Trdr, &Box);
 
-void Jbw_EditBox::Add(std::string XtraText)
-{
-	Text.append(XtraText);
-	CreateTexture();
-	//	Render();
+	SDL_RenderCopyEx(Trdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
 }
-void Jbw_EditBox::New(std::string NewText) {
-	Text.assign(NewText);
-	CreateTexture();
-}
-
-void Jbw_EditBox::Del(void)
-{
-
-}
-void Jbw_EditBox::BackSpace(void)
-{
-	if (Text.length() > 1) {
-		Text.pop_back();
-		CreateTexture();
-	}
-	else if (Text.length() > 0) {
-		Text.assign(" ");
-		CreateTexture();
-		Text.clear();
-	}
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //   SetX
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Jbw_EditBox::SetX(std::string  Var, const char * Val)
+void Jbw_EditBox::Set(std::string  Var, const char * Val)
 {
 	char* Next;
 	// Text
@@ -158,15 +127,31 @@ void Jbw_EditBox::SetX(std::string  Var, const char * Val)
 	else if (Var.compare("FontSize") == 0) { //
 		FontSize = (int)strtod(Val, NULL);
 	}
-	// TxtType
-	else if (Var.compare("TxtType") == 0) {
-		if (strcmp(Val, "J_TEXT")) {
-			TxtType = J_TEXT;
-		}
-		else if (strcmp(Val, "J_EDIT")) {
-			TxtType = J_EDIT;
-		}
+	// FontStyle Bold
+	else if (Var.compare("F_Bold") == 0) { //
+		F_Bold = (bool)strtod(Val, NULL);
 	}
+	// FontStyle Italic
+	else if (Var.compare("F_Italic") == 0) { //
+		F_Italic = (bool)strtod(Val, NULL);
+	}
+	// FontStyle Underline
+	else if (Var.compare("F_UnderL") == 0) { //
+		F_UnderL = (bool)strtod(Val, NULL);
+	}
+	// FontStyle Strike through
+	else if (Var.compare("F_Strike") == 0) { //
+		F_Strike = (bool)strtod(Val, NULL);
+	}
+	// TxtType
+	//else if (Var.compare("TxtType") == 0) {
+	//	if (strcmp(Val, "J_TEXT")) {
+	//		TxtType = J_TEXT;
+	//	}
+	//	else if (strcmp(Val, "J_EDIT")) {
+	//		TxtType = J_EDIT;
+	//	}
+	//}
 	// Align
 	else if (Var.compare("Align") == 0) {
 		if (strcmp(Val, "J_LEFT") == 0) {
@@ -194,9 +179,9 @@ void Jbw_EditBox::SetX(std::string  Var, const char * Val)
 		}
 	}
 	else if (Var.compare("TextColor") == 0) {
-		TextColor.b = (int)strtod(Val, &Next);
-		TextColor.g = (int)strtod(Next, &Next);
-		TextColor.r = (int)strtod(Next, &Next);
+		FontColor.b = (int)strtod(Val, &Next);
+		FontColor.g = (int)strtod(Next, &Next);
+		FontColor.r = (int)strtod(Next, &Next);
 	}
 	else if (Var.compare("BackColor") == 0) {
 		BackColor.b = (int)strtod(Val, &Next);
@@ -210,58 +195,58 @@ void Jbw_EditBox::SetX(std::string  Var, const char * Val)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//   TextSet For setting text properties on one line
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Jbw_EditBox::Set(std::string NewText, const char* Var1, int Val1, const char* Var2, int Val2,
-	const char* Var3, int Val3, const char* Var4, int Val4,
-	const char* Var5, int Val5, const char* Var6, int Val6)
-{
-	SetSub(Var1, Val1);
-	SetSub(Var2, Val2);
-	SetSub(Var3, Val3);
-	SetSub(Var4, Val4);
-	SetSub(Var5, Val5);
-	SetSub(Var6, Val6);
-	if (NewText.length() == 0) {
-		NewText.assign(" ");
-	}
-	New(NewText);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////   TextSet For setting text properties on one line
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//void Jbw_EditBox::Set(std::string NewText, const char* Var1, int Val1, const char* Var2, int Val2,
+//	const char* Var3, int Val3, const char* Var4, int Val4,
+//	const char* Var5, int Val5, const char* Var6, int Val6)
+//{
+//	SetSub(Var1, Val1);
+//	SetSub(Var2, Val2);
+//	SetSub(Var3, Val3);
+//	SetSub(Var4, Val4);
+//	SetSub(Var5, Val5);
+//	SetSub(Var6, Val6);
+//	if (NewText.length() == 0) {
+//		NewText.assign(" ");
+//	}
+//	New(NewText);
+//
+//}
 
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//   Private function used by TextSet (For setting text properties on one line)
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Jbw_EditBox::SetSub(const char* Var, int Val) {
-	if (strcmp(Var, "x") == 0) {
-		Box.x = Val;
-	}
-	if (strcmp(Var, "y") == 0) {
-		Box.y = Val;
-	}
-	if (strcmp(Var, "w") == 0) {
-		Box.w = Val;
-	}
-	if (strcmp(Var, "h") == 0) {
-		Box.h = Val;
-	}
-	if (strcmp(Var, "Align") == 0) {
-		Align = (J_TxtAlign)Val;
-	}
-	if (strcmp(Var, "FontSize") == 0) {
-		FontSize = Val;
-	}
-	if (strcmp(Var, "Angle") == 0) {
-		Angle = Val;
-	}
-	//	if (strcmp(Var, "TextColor") == 0) {
-	//		TxtObj->TextColor = Val;
-	//	}
-	if (strcmp(Var, "Text") == 0) {
-		Text = Val;
-	}
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////   Private function used by TextSet (For setting text properties on one line)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//void Jbw_EditBox::SetSub(const char* Var, int Val) {
+//	if (strcmp(Var, "x") == 0) {
+//		Box.x = Val;
+//	}
+//	if (strcmp(Var, "y") == 0) {
+//		Box.y = Val;
+//	}
+//	if (strcmp(Var, "w") == 0) {
+//		Box.w = Val;
+//	}
+//	if (strcmp(Var, "h") == 0) {
+//		Box.h = Val;
+//	}
+//	if (strcmp(Var, "Align") == 0) {
+//		Align = (J_TxtAlign)Val;
+//	}
+//	if (strcmp(Var, "FontSize") == 0) {
+//		FontSize = Val;
+//	}
+//	if (strcmp(Var, "Angle") == 0) {
+//		Angle = Val;
+//	}
+//	//	if (strcmp(Var, "TextColor") == 0) {
+//	//		TxtObj->TextColor = Val;
+//	//	}
+//	if (strcmp(Var, "Text") == 0) {
+//		Text = Val;
+//	}
+//}
 void Jbw_EditBox::Event(SDL_Event* e)
 {
 	//If mouse event happened

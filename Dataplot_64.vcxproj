@@ -26,8 +26,12 @@
     <ClCompile Include="JBW_ComboBox.cpp" />
     <ClCompile Include="JBW_EditBox.cpp" />
     <ClCompile Include="Jbw_Frame.cpp" />
+    <ClCompile Include="Jbw_FrameWork.cpp" />
+    <ClCompile Include="Jbw_Grid.cpp" />
     <ClCompile Include="JBW_ListBox.cpp" />
     <ClCompile Include="JBW_MsgBox.cpp" />
+    <ClCompile Include="Jbw_Polygon.cpp" />
+    <ClCompile Include="Jbw_Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data.h" />
@@ -36,8 +40,12 @@
     <ClInclude Include="JBW_ComboBox.h" />
     <ClInclude Include="JBW_EditBox.h" />
     <ClInclude Include="Jbw_Frame.h" />
+    <ClInclude Include="Jbw_FrameWork.h" />
+    <ClInclude Include="Jbw_Grid.h" />
     <ClInclude Include="JBW_ListBox.h" />
     <ClInclude Include="JBW_MsgBox.h" />
+    <ClInclude Include="Jbw_Polygon.h" />
+    <ClInclude Include="Jbw_Text.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
