@@ -19,7 +19,7 @@ public:
 
 	int Window_w;
 	int Window_h;
-	int FontSize = 10;
+	int TxtSize = 10;
 
 	SDL_Rect Border = { 0,0,0,0 };
 	SDL_Rect txtBox = { 0,0,0,0 };

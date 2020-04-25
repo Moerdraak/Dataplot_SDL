@@ -23,8 +23,8 @@ Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int 
 	Border.w = Window_w; Border.h = Window_h;
 
 	// Create Header
-	edHeader = new Jbw_EditBox(Render, J_EDIT, 0, 0, Window_w, 18);
-//	edHeader->Set(Title.c_str(), "Align", J_CENTRE, "FontSize", 12);
+	edHeader = new Jbw_EditBox(Render, 0, 0, Window_w, 18);
+//	edHeader->Set(Title.c_str(), "Align", J_CENTRE, "TxtSize", 12);
 
 	SDL_SetRenderDrawColor(Render, 230, 230, 230, 255);
 	SDL_RenderClear(Render);
@@ -113,26 +113,26 @@ void Jbw_MsgBox::RenderBox(void) {
 	if (Type == J_YESNO) {
 		int BtnYes_x = Window_w - 120; // (Window_w - 2 * Btn_w ) / 2 - BtnSpace/2;
 		int BtnNo_x = Window_w - 60; //BtnYes_x + BtnSpace + Btn_w;
-		btnAck = new Jbw_EditBox(Render, J_EDIT, BtnYes_x, Btn_y, Btn_w, Btn_h);
+		btnAck = new Jbw_EditBox(Render,  BtnYes_x, Btn_y, Btn_w, Btn_h);
 		btnAck->BackColor = { 200, 200, 200, 255 };
-		btnAck->FrameColor = { 180, 180, 180, 255 }; 
-//		btnAck->Set("Yes", "Align", J_CENTRE, "FontSize", 12);
+		btnAck->LineColor = { 180, 180, 180, 255 };
+//		btnAck->Set("Yes", "Align", J_CENTRE, "TxtSize", 12);
 
-		btnNo = new Jbw_EditBox(Render, J_EDIT, BtnNo_x, Btn_y, Btn_w, Btn_h);
+		btnNo = new Jbw_EditBox(Render, BtnNo_x, Btn_y, Btn_w, Btn_h);
 		btnNo->BackColor = { 200, 200, 200, 255 };
-		btnNo->FrameColor = { 180, 180, 180, 255 };
-	//	btnNo->Set("No", "Align", J_CENTRE, "FontSize", 12);
+		btnNo->LineColor = { 180, 180, 180, 255 };
+	//	btnNo->Set("No", "Align", J_CENTRE, "TxtSize", 12);
 		btnNo->Render();
 	}
 	else {
-		btnAck = new Jbw_EditBox(Render, J_EDIT, BtnYes_x, Btn_y, Btn_w, Btn_h);
+		btnAck = new Jbw_EditBox(Render, BtnYes_x, Btn_y, Btn_w, Btn_h);
 		btnAck->BackColor = { 200, 200, 200, 255 };
-		btnAck->FrameColor = { 180, 180, 180, 255 };
+		btnAck->LineColor = { 180, 180, 180, 255 };
 		if (Type == J_OK) {
-//			btnAck->Set("Okay", "Align", J_CENTRE, "FontSize", 12);
+//			btnAck->Set("Okay", "Align", J_CENTRE, "TxtSize", 12);
 		}
 		else{
-//			btnAck->Set("Yes", "Align", J_CENTRE, "FontSize", 12);
+//			btnAck->Set("Yes", "Align", J_CENTRE, "TxtSize", 12);
 		}
 	}
 	btnAck->Render();

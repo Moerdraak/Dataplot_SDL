@@ -26,16 +26,10 @@ Jbw_Text* Jbw_FrameWork::Create(SDL_Renderer* Rdr, tT tType, std::string NewName
 		delete Jtext;
 		Jtext = Tmp;
 	}
-	Child->Trdr = Rdr;
-	Child->Text.assign(TxtString);
-	Child->Xo = x + 1; 
-	Child->Yo = y + 1; 
-	Child->FontSize = Fsize;
+	Child->InitTxt(Rdr, TxtString, x+1, y+1, Fsize);
 	Jtext[Size_T++] = Child;
 	Child->CreateTexture();
 
-	// Should not return this pointer gives user power to break things, 
-	// But just for S&Gs I'll leave it in
 	return Child;
 }
 
@@ -43,7 +37,7 @@ Jbw_Text* Jbw_FrameWork::Create(SDL_Renderer* Rdr, tT tType, std::string NewName
 	FUNCTION: Create  Overload 1 "Edit box" 
 ---------------------------------------------------------------*/
 Jbw_EditBox* Jbw_FrameWork::Create(SDL_Renderer* Rdr, tE tType, std::string NewName, J_Type EboxType,
-	int x, int y, int w, int h)
+	int x, int y, int w, int h, int Fsize)
 {
 	for (int I = 0; I < Size_E; I++) {
 		if (NewName.compare(Ebox[I]->Tag) == 0) {
@@ -65,15 +59,10 @@ Jbw_EditBox* Jbw_FrameWork::Create(SDL_Renderer* Rdr, tE tType, std::string NewN
 		delete Ebox;
 		Ebox = Tmp;	
 	}
-//	Child->TxtType = EboxType;
-	Child->Trdr = Rdr;
-	Child->Box.x = x+1; Child->Box.y = y+1; Child->Box.w = w-2; Child->Box.h = h-2;
-	Child->Frame.x = x; Child->Frame.y = y; Child->Frame.w = w; Child->Frame.h = h;
-
+	Child->InitEditBox(Rdr, x, y, w, h, Fsize);
+	Child->LineColor = { 150, 150, 150, 255 };
 	Ebox[Size_E++] = Child;
 
-	// Should not return this pointer gives user power to break things, 
-	// But just for S&Gs I'll leave it in
 	return Child;
 }
 
@@ -153,12 +142,12 @@ Jbw_Grid* Jbw_FrameWork::Create(SDL_Renderer* Rdr, tG tType, std::string GridNam
 	Jbw_Grid* New = new Jbw_Grid(Rdr, GridName, x, y, ColNum, RowNum);
 
 	New->Id = Size_G;
-	//New->Tag.assign(GridName);
+	New->Tag.assign(GridName);
 	if (Size_G == 0) {
 		Grid = new Jbw_Grid*; // Create first Instance of pointer to "Mammal pointer"
 	}
 	else {
-		Jbw_Grid** Tmp = new Jbw_Grid * [Size_G + 1]; // Assign new memmory one bigger than before
+		Jbw_Grid** Tmp = new Jbw_Grid * [(double)Size_G + 1]; // Assign new memmory one bigger than before
 		for (int I = 0; I < Size_G; I++) {
 			Tmp[I] = Grid[I];
 		}

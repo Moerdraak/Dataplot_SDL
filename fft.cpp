@@ -8,17 +8,17 @@ RETURN:
 int Time2Freq(TData* Data, TData* FreqData) {
 
     // First determine the biggest 2^N value that fits inside this dataset
-    int FSize = (int)pow(2, floor(log2(Data->Len())));
-    int NyqSize = int(FSize / 2); // since FSize will always be even this will always be an integer
+    int Fsize = (int)pow(2, floor(log2(Data->Len())));
+    int NyqSize = int(Fsize / 2); // since Fsize will always be even this will always be an integer
     int RemainingSize = Data->Len();
-    int N = (int)log2(FSize); // Get the value of N for 2^N of the Intermediate Dataset
+    int N = (int)log2(Fsize); // Get the value of N for 2^N of the Intermediate Dataset
 
     // Add one for the last value e.g for 100Hz it would display 99.9Hz if you don't add this.
     FreqData->ReSize(NyqSize + 1);
 
-    complex<double>* CompData = new complex<double>[FSize];
+    complex<double>* CompData = new complex<double>[Fsize];
     // Factor = [Sample Frequency]/[fft data size]
-    float Factor = float(((Data->Len() - 1) / (Data->X(Data->Len() - 1) - Data->X(0))) / FSize);
+    float Factor = float(((Data->Len() - 1) / (Data->X(Data->Len() - 1) - Data->X(0))) / Fsize);
     //  float Freq = (Data->Len() - 1) / (Data->X(Data->Len() - 1) - Data->X(0));
 
     // Populate FreqData's Freq collumn
@@ -27,13 +27,13 @@ int Time2Freq(TData* Data, TData* FreqData) {
     }
 
     int Start = 0;
-    int End = FSize - 1; // 
+    int End = Fsize - 1; // 
     int CSize = End - Start + 1; // Chunk Size
 
     while (CSize > 8)
     {
         double* SizedData = new double[CSize];
-        CArray Cdata(FillComp(Data->Y(SizedData, Start, End), CompData, CSize, N), FSize); // Bad readibility - But just to show I can
+        CArray Cdata(FillComp(Data->Y(SizedData, Start, End), CompData, CSize, N), Fsize); // Bad readibility - But just to show I can
         fft(Cdata);
         delete[] SizedData; // cleaning up
 
@@ -47,7 +47,7 @@ int Time2Freq(TData* Data, TData* FreqData) {
         Start = 1 + End; // Move the Start position to the next value in Data
         RemainingSize = RemainingSize - CSize;
         CSize = (int)pow(2, floor(log2(RemainingSize)));
-        End = Start + CSize - 1; // Get the correct End position in Data according to FSize
+        End = Start + CSize - 1; // Get the correct End position in Data according to Fsize
     }
     delete[] CompData; // cleaning up
 

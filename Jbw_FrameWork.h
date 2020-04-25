@@ -71,7 +71,7 @@ public:
 		std::string TxtString, int x, int y, int Fsize);
 
 	Jbw_EditBox* Create(SDL_Renderer* Rdr, tE tType, std::string NewName, J_Type EboxType,
-		int x, int y, int w = 200, int h = 14);
+		int x, int y, int w = 200, int h = 14, int Fsize = 12);
 	
 	Jbw_ListBox* Create(SDL_Renderer* Rdr, tL tType, std::string NewName);
 	

@@ -12,13 +12,13 @@ public:
 	TTF_Font* Font = NULL;
 	SDL_Texture* txtImage = NULL;
 	
-	int FontSize = 0;
-	int Xo = 0;
-	int Yo = 0;
+	int TxtSize = 0;
+	int TxtX = 0;
+	int TxtY = 0;
 	int Angle = 0;
 	SDL_RendererFlip Flip = SDL_FLIP_NONE;
 	SDL_Point RotPoint = { 0, 0 };
-	SDL_Color FontColor = { 0, 0, 0, 255 };
+	SDL_Color TxtColor = { 0, 0, 0, 255 };
 	
 	bool F_Bold = 0;
 	bool F_Italic = 0;
@@ -26,7 +26,7 @@ public:
 	bool F_Strike = 0;
 	
 	std::string Text = "";
-	double Value = 0;
+	double Value = NULL;
 
 	SDL_Rect txtBox = { 0,0,0,0 };
 	SDL_Rect txtClip = { 0,0,0,0 };
@@ -35,11 +35,12 @@ public:
 	CONSTRUCTORS / DESTRUCTORS
 	--------------------------------------------------------------------*/
 	Jbw_Text() {};
-	Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int FSize = 12);
+	Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
 
 	/*--------------------------------------------------------------------
 	FUNCTIONS
 	--------------------------------------------------------------------*/
+	void InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
 	void SetTxt(std::string  Var, const char* Val);
 	void Add(std::string XtraText);
 	void New(std::string NewText);

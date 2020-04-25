@@ -43,23 +43,23 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 
 	/* TEXT: Test Title */
 	//txtTestTitle = new Jbw_EditBox(GRender, J_TEXT, 75, 8, GRAPH_W, 15);
-	//txtTestTitle->Set("Test Title", "FontSize", 12, "Align", J_CENTRE);
+	//txtTestTitle->Set("Test Title", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Graph Title */
 	//txtGraphTitle = new Jbw_EditBox(GRender, J_TEXT, 75, 24, GRAPH_W, 15);
-	//txtGraphTitle->Set("Graph Title", "FontSize", 12, "Align", J_CENTRE);
+	//txtGraphTitle->Set("Graph Title", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Legend */
 	//txtLegend = new Jbw_EditBox(GRender, J_TEXT, G_SCREEN_W - 115, 40, 100);
-	//txtLegend->Set("LEGEND", "FontSize", 12, "Align", J_CENTRE);
+	//txtLegend->Set("LEGEND", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: X Label */
 	//txtXlabel = new Jbw_EditBox(GRender, J_TEXT, 75, 570, GRAPH_W, 16); // Create Edit box
-	//txtXlabel->Set("X-Axes Label", "FontSize", 12, "Align", J_CENTRE);
+	//txtXlabel->Set("X-Axes Label", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Y Label */
 	//txtYlabel = new Jbw_EditBox(GRender, J_TEXT, 10, 40, GRAPH_H, 15); // Create Edit box
-	//txtYlabel->Set("Y-Axes Label", "FontSize", 12, "Align", J_CENTRE, "Angle", -90);
+	//txtYlabel->Set("Y-Axes Label", "TxtSize", 12, "Align", J_CENTRE, "Angle", -90);
 
 	/*      Graphics Area      */
 	//	SDL_Rect vp_Graph;
@@ -176,7 +176,7 @@ void DpGraph::GraphRender(int Config)
 	if (xxx < 10000) {
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
-//			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 544, "FontSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
+//			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 544, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
 			txtRandom->Render();
 		}
 	}
@@ -184,14 +184,14 @@ void DpGraph::GraphRender(int Config)
 		N = (int)MaxNum.length() - 4;
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
-//			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 545, "FontSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
+//			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 545, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
 			txtRandom->Render();
 		}
 
-//		txtRandom->Set("x 10", "x", 800, "y", 527, "FontSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
+//		txtRandom->Set("x 10", "x", 800, "y", 527, "TxtSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
 		txtRandom->Render();
 		sprintf_s(TmpTxt, "%d", N);
-//		txtRandom->Set(TmpTxt, "x", 831, "y", 520, "FontSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
+//		txtRandom->Set(TmpTxt, "x", 831, "y", 520, "TxtSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
 		txtRandom->Render();
 	}
 
@@ -201,7 +201,7 @@ void DpGraph::GraphRender(int Config)
 	if (xxx < 10000) {
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
-//			txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "FontSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
+//			txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
 			txtRandom->Render();
 		}
 	}
@@ -209,14 +209,14 @@ void DpGraph::GraphRender(int Config)
 		N = (int)MaxNum.length() - 4;
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
-	//		txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "FontSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
+	//		txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
 			txtRandom->Render();
 		}
 
-//		txtRandom->Set("x 10", "x", 32, "y", 15, "FontSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
+//		txtRandom->Set("x 10", "x", 32, "y", 15, "TxtSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
 		txtRandom->Render();
 		sprintf_s(TmpTxt, "%d", N);
-//		txtRandom->Set(TmpTxt, "x", 63, "y", 8, "FontSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
+//		txtRandom->Set(TmpTxt, "x", 63, "y", 8, "TxtSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
 		txtRandom->Render();
 	}
 	//	SDL_RenderPresent(GRender);

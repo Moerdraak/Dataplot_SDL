@@ -8,7 +8,7 @@ public:
 	//std::string Tag = "";
 
 	SDL_Renderer* Prdr = NULL;
-	SDL_Point* Points = NULL;
+	SDL_Point* PolyLine = NULL;
 	
 	int NumPoints = 0;
 	SDL_Color LineColor = { 0, 0, 0, 255 };
@@ -17,7 +17,7 @@ public:
 	Jbw_Polygon(SDL_Renderer* Rdr);
 	~Jbw_Polygon()
 	{
-		delete Points;
+		delete PolyLine;
 	};
 
 	void AddPoint(int x, int y);
