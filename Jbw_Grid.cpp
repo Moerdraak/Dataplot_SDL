@@ -2,48 +2,54 @@
 
 /*---------------------------------------------------------------
 CONSTRUCTOR: 
----------------------------------------------------------------*/
-Jbw_Grid::Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColNum, int RowNum)
+------------------------------------------------------------------------------------------*/
+Jbw_Grid::Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt)
 {
+	InitGrd(Rdr, GridName, x, y, ColCnt, RowCnt);
+}
+
+/*---------------------------------------------------------------
+DESTRUCTOR:
+------------------------------------------------------------------------------------------*/
+Jbw_Grid::~Jbw_Grid()
+{
+	for (int I = 0; I < Rows; I++) {
+			delete Element[I];
+	}
+	delete Element;
+}
+
+/*---------------------------------------------------------------
+	FUNCTION: InitGrd
+------------------------------------------------------------------------------------------*/
+bool Jbw_Grid::InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt) {
 	Tag = GridName;
 	GridX = x;
 	GridY = y;
-	if (ColNum > 99) {
-		ColNum = 99; // This is way past ridiculous
+	if (ColCnt > 99) {
+		ColCnt = 99; // This is way past ridiculous
 	}
-	Cols = ColNum;
-	Rows = RowNum+1;
+	Cols = ColCnt;
+	Rows = RowCnt + 1;
 	Prdr = Rdr;
 
-//	Header = new Jbw_EditBox[ColNum];
+	//	Header = new Jbw_EditBox[ColCnt];
 
 	int Xs = GridX;
 	int Ys = GridY;
 	int w = 50; // Startup values To Be Deleted
 	int h = 15; // Startup values To Be Deleted
-	
+
 	/*   Setting up the initial Frame  */
-	CreateFrame(Rdr, GridX, GridY, ColNum * (w - 2) + 1 , (RowNum + 1) * h - (RowNum + 1));
+	CreateFrame(Rdr, GridX, GridY, ColCnt * (w - 2) + 1, (RowCnt + 1) * h - (RowCnt + 1));
 
 	char TmpName[] = "Col 99 ";
-	//for (int I = 0; I < ColNum; I++) {
-	//	Header[I].InitEditBox(Rdr, Xs, Ys, w, h, 10);
-	//	Header[I].Align = J_CENTRE; 
-	//	Header[I].BackColor = { 220, 220, 220, 255 };
-	//	Header[I].LineColor = { 150, 150, 150, 255 };
-	//	sprintf_s(TmpName, "Col %02d", I);
-	//	Header[I].New(TmpName);
-	//	Xs += w - 2;
-	//}
 
-	//Ys += h - 1;
-	//Xs = GridX;
-
-	Element = new Jbw_EditBox* [Rows + 1]; // Xtra 1 for heading
+	Element = new Jbw_EditBox * [(double)Rows + 1]; // Xtra 1 for heading
 	// Do Heading - Row 0
 	Element[0] = new Jbw_EditBox[Cols];
-	for (int I = 0; I < ColNum; I++) {
-		Element[0][I].InitEditBox(Rdr, Xs, Ys, w, h, 10);
+	for (int I = 0; I < ColCnt; I++) {
+		Element[0][I].InitEbx(Rdr, Xs, Ys, w, h, 10);
 		Element[0][I].Align = J_CENTRE;
 		Element[0][I].BackColor = { 220, 220, 220, 255 };
 		Element[0][I].LineColor = { 100, 100, 100, 255 };
@@ -59,28 +65,17 @@ Jbw_Grid::Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int Co
 		Ys += h - 1;
 		Xs = GridX;
 		for (int J = 0; J < Cols; J++) {
-			Element[I][J].InitEditBox(Rdr, Xs, Ys, w, h, 10);
+			Element[I][J].InitEbx(Rdr, Xs, Ys, w, h, 10);
 			Element[I][J].LineColor = { 200, 200, 200, 255 };
-			Element[I][J].LineColor = { 0, 0, 225, 255 };
 			Xs += w - 2;
 		}
 	}
-}
-
-/*---------------------------------------------------------------
-DESTRUCTOR:
----------------------------------------------------------------*/
-Jbw_Grid::~Jbw_Grid()
-{
-	for (int I = 0; I < Rows; I++) {
-			delete Element[I];
-	}
-	delete Element;
+	return true;
 }
 
 /*---------------------------------------------------------------
 FUNCTION: 
----------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 void Jbw_Grid::AddCol(std::string ColName, int Type, int w, int h)
 {
 
@@ -90,7 +85,7 @@ void Jbw_Grid::AddCol(std::string ColName, int Type, int w, int h)
 
 /*---------------------------------------------------------------
 FUNCTION:
----------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 void Jbw_Grid::AddRow(int Num)
 {
 	Jbw_EditBox** Tmp = new Jbw_EditBox * [Rows + Num];
@@ -98,15 +93,9 @@ void Jbw_Grid::AddRow(int Num)
 	Element = new Jbw_EditBox * [Rows];
 	for (int I = 0; I < Rows; I++) {
 		Element[I] = new Jbw_EditBox[Cols];
-//		Ys += h - 1;
-//		Xs = Xo;
 		for (int J = 0; J < Cols; J++) {
 			Element[I][J].Trdr = Prdr;
-	//		Element[I][J].TxtType = J_EDIT; // Must be Edit box
 			Element[I][J].LineColor = { 200, 200, 200, 255 };
-//			Element[I][J].EditX = Xs + 1; Element[I][J].EditY = Ys + 1; // Startup values To Be Deleted
-//			Element[I][J].EditW = w - 2; Element[I][J].EditH = h - 2; // Startup values To Be Deleted		
-//			Xs += w - 1;
 		}
 	}
 }
@@ -114,29 +103,29 @@ void Jbw_Grid::AddRow(int Num)
 /*---------------------------------------------------------------
 FUNCTION:
 ---------------------------------------------------------------*/
-void Jbw_Grid::Set(std::string  Var, const char* Val)
+void Jbw_Grid::GrdSet(std::string  *Var, const char* Val)
 {
 	char* Next;
 	// Row Color
-	if (Var.compare("RowColor") == 0) {
+	if (Var->compare("RowColor") == 0) {
 		RowColor.b = (int)strtod(Val, &Next);
 		RowColor.g = (int)strtod(Next, &Next);
 		RowColor.r = (int)strtod(Next, &Next);
 	}
 	// Alternative Row Color
-	else if (Var.compare("ARowColor") == 0) {
+	else if (Var->compare("ARowColor") == 0) {
 		RowColor.b = (int)strtod(Val, &Next);
 		RowColor.g = (int)strtod(Next, &Next);
 		RowColor.r = (int)strtod(Next, &Next);
 	}
 	// Header Row Color
-	else if (Var.compare("ARowColor") == 0) {
+	else if (Var->compare("ARowColor") == 0) {
 		RowColor.b = (int)strtod(Val, &Next);
 		RowColor.g = (int)strtod(Next, &Next);
 		RowColor.r = (int)strtod(Next, &Next);
 	}
 	// Set TxtSize for All Cells
-	else if (Var.compare("CellTxtSize") == 0) { //
+	else if (Var->compare("CellTxtSize") == 0) { 
 		int TxtSize = (int)strtod(Val, NULL);
 		for (int I = 0; I < Rows; I++) {
 			for (int J = 0; J < Cols; J++) {
@@ -212,6 +201,26 @@ std::string Jbw_Grid::GetTxt(int Row, int Col)
 }
 
 /*---------------------------------------------------------------
+FUNCTION: RowTxtSize
+---------------------------------------------------------------*/
+void Jbw_Grid::RowTxtSize(int Row, int FontSize)
+{
+	for (int I = 0; I < Cols; I++) {
+		Element[Row][I].TxtSize = FontSize;
+	}
+}
+
+/*---------------------------------------------------------------
+FUNCTION: RowTxtSize
+---------------------------------------------------------------*/
+void Jbw_Grid::TxtSize(int Row, int Col, int FontSize)
+{
+	for (int I = 0; I < Cols; I++) {
+		Element[Row][I].TxtSize = FontSize;
+	}
+}
+
+/*---------------------------------------------------------------
 FUNCTION: SetColWidth
 ---------------------------------------------------------------*/
 void Jbw_Grid::SetColWidth(int Col, int w)
@@ -227,14 +236,8 @@ void Jbw_Grid::SetColWidth(int Col, int w)
 		for (int I = 0; I < Rows; I++) {
 			Element[I][Col].EditW = w - 2;
 			Element[I][Col].FrameW = w;
-
-		//	Header[Col].EditW = w - 2;
-		//	Header[Col].FrameW = w;
 		}
 		for (int I = Col + 1; I < Cols; I++) {
-		//	Header[I].EditX += Wdiff - 1;
-		//	Header[I].FrameX += Wdiff - 1;
-
 			for (int J = 0; J < Rows; J++) {
 					Element[J][I].EditX += Wdiff - 1;
 					Element[J][I].FrameX += Wdiff - 1;
@@ -262,7 +265,7 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 			}
 			Ys += h + 1 ;
 		}
-		FrameH = (Rows) * h + Rows ;
+		FrameH = (Rows) * h + Rows  ;
 	}
 	else { // Set Specific Column width
 		int Hdiff = h - Element[Row][0].EditH - 2;
@@ -279,6 +282,7 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 			}
 		}
 	}
+	SetFrame();
 }
 
 /*---------------------------------------------------------------
@@ -293,11 +297,76 @@ void Jbw_Grid::Render(void)
 			Element[I][J].Render();
 		}
 	}	
-	for (int I = 0; I < Cols; I++) {
-//		Header[I].CreateTexture();
-//		Header[I].FitText();
-//		Header[I].Render();
-	}
 
 FrameRdr();
+}
+
+/*---------------------------------------------------------------
+FUNCTION: Event
+---------------------------------------------------------------*/
+void Jbw_Grid::Event(SDL_Event* e)
+{
+	for (int I = Rows - 1; I >= 0; I--) { // So that Heading is Rendered last
+		for (int J = 0; J < Cols; J++) {
+			Element[I][J].Event(e);
+		}
+	}
+
+	//bool Flag = false;
+	////If mouse event happened
+	//if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
+	//	// Get mouse position
+	//	int x, y;
+	//	SDL_GetMouseState(&x, &y);
+
+	//	// Mouse pointer inside Edit box
+	//	if (x > EditX&& x < EditX + EditW && y > EditY&& y < EditY + EditH)
+	//	{
+	//		switch (e->type)
+	//		{
+	//		case SDL_MOUSEMOTION:
+	//			LineColor = { 0, 0, 0, 255 };
+	//			break;
+
+	//		case SDL_MOUSEBUTTONDOWN:
+	//			//	BackColor = { 0, 0, 0, 255 };
+	//			Focus = true;
+	//			//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
+	//			break;
+
+	//		case SDL_MOUSEBUTTONUP:
+	//			//	BackColor = { 255, 255, 255, 255 };
+	//			break;
+	//		}
+	//	}
+	//	else {
+	//		LineColor = { 150, 150, 150, 255 };
+	//		if (e->type == SDL_MOUSEBUTTONDOWN) {
+	//			Focus = false;
+	//		}
+	//	}
+	//}
+
+	//if (Focus == false) {
+	//	exit;
+	//}
+	//else if (e->type == SDL_TEXTINPUT) {
+	//	Add(e->text.text);
+	//	//		Render();
+	//}
+	//else if (e->type == SDL_KEYDOWN)
+	//{
+	//	if (e->key.keysym.sym == SDLK_BACKSPACE) {
+	//		BackSpace();
+	//		//	Render();
+	//	}
+	//	else if (e->key.keysym.sym == SDLK_DELETE) {
+	//	}
+	//	else if (e->key.keysym.sym) {
+	//	}
+	//}
+	//if (Flag == true) {
+
+	//}
+	//Render();
 }

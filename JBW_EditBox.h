@@ -3,6 +3,7 @@
 #include "SDL_ttf.h"
 #include "Jbw_Text.h"
 #include "Jbw_Frame.h"
+//#include "Jbw_FrameWork.h" 
 #include <string>
 
 enum J_TxtAlign { J_LEFT, J_CENTRE, J_RIGHT };
@@ -13,11 +14,15 @@ class Jbw_EditBox : public Jbw_Text, public Jbw_Frame { // This cause 2 x Id ?!?
 private: 
 	
 public: 
-	int ActTxtW = 0;
-	int EditX;
-	int	EditY;
-	int EditW;
-	int	EditH;
+//	Jbw_FrameWork *J;
+
+
+	bool Focus = false;
+	int EditX = 0;
+	int	EditY = 0;
+	int EditW = 0;
+	int	EditH = 0;
+
 	J_TxtAlign Align = J_LEFT;
 	SDL_Color BackColor = {255, 255, 255, 255}; // {Red, Green, Blue, Alpha}
 
@@ -31,10 +36,21 @@ public:
 	/*--------------------------------------------------------------------
 		Jbw_EditBox: PUBLIC FUNCTIONS 
 	--------------------------------------------------------------------*/
-	void InitEditBox(SDL_Renderer* Rdr, int x, int y, int w, int h = 15, int Fsize = 12);
+	void InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h = 15, int Fsize = 12);
 	void FitText(void);
-	void Set(std::string  Var, const char* Val);
+	bool SetEbx(std::string  *Var, const char* Val);
 	void Render(void);
 	void Event(SDL_Event* e);
+
+
+
+
+	Uint32 static Flashy(Uint32 interval, void* param);
+
+	static void my_function(void)
+	{
+		int a = 5;
+	}
+
 };
 

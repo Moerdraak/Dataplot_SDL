@@ -12,8 +12,7 @@
 
 #include "Jbw_FrameWork.h"
 //#include "DpGraph.h"
-
-
+#include "Jbw_Circle.h"
 
 /**************************************************************************************
 	CLASS: DataPlot    (Jbw_GUI = JaBberWock Graphical User Interface)
@@ -32,7 +31,7 @@ public:
 	SDL_Window* UserWindow = NULL; // The window we'll be rendering to
 
 	SDL_Surface* wSurf = NULL; // The surface contained by the window
-	SDL_Renderer* URender = NULL; // The User window renderer
+//	SDL_Renderer* J_Rdr = NULL; // The User window renderer
 	SDL_Texture* LogoImage = NULL; //Current displayed texture
 
 	const int U_SCREEN_W = 1100;

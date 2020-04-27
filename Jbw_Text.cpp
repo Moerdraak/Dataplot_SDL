@@ -61,7 +61,6 @@ void Jbw_Text::CreateTexture(void) {
 	SDL_FreeSurface(txtSurf); // Free the memory of SDL_Surface
 }
 
-
 /*---------------------------------------------------------------
 FUNCTION:
 ---------------------------------------------------------------*/
@@ -107,55 +106,69 @@ void Jbw_Text::BackSpace(void)
 /*---------------------------------------------------------------
 FUNCTION: SetTxt
 ---------------------------------------------------------------*/
-void Jbw_Text::SetTxt(std::string  Var, const char* Val)
+bool Jbw_Text::SetTxt(std::string  *Var, const char* Val)
 {
+	bool Flag = false;
 	char* Next;
 	// Text
-	if (Var.compare("Text") == 0) {
+	if (Var->compare("Text") == 0) {
 		Text.assign(Val);
+		Flag = true;
 	}
 	// TxtSize
-	else if (Var.compare("TxtSize") == 0) { //
+	else if (Var->compare("TxtSize") == 0) { //
 		TxtSize = (int)strtod(Val, NULL);
+		Flag = true;
 	}
 	// FontStyle Bold
-	else if (Var.compare("F_Bold") == 0) { //
+	else if (Var->compare("F_Bold") == 0) { //
 		F_Bold = (bool)strtod(Val, NULL);
+		Flag = true;
 	}
 	// FontStyle Italic
-	else if (Var.compare("F_Italic") == 0) { //
+	else if (Var->compare("F_Italic") == 0) { //
 		F_Italic = (bool)strtod(Val, NULL);
+		Flag = true;
 	}
 	// FontStyle Underline
-	else if (Var.compare("F_UnderL") == 0) { //
+	else if (Var->compare("F_UnderL") == 0) { //
 		F_UnderL = (bool)strtod(Val, NULL);
+		Flag = true;
 	}
 	// FontStyle Strike through
-	else if (Var.compare("F_Strike") == 0) { //
+	else if (Var->compare("F_Strike") == 0) { //
 		F_Strike = (bool)strtod(Val, NULL);
+		Flag = true;
 	}
 	// Angle
-	else if (Var.compare("Angle") == 0) {
+	else if (Var->compare("Angle") == 0) {
 		Angle = (int)strtod(Val, NULL);
+		Flag = true;
 	}
 	// Flip
-	else if (Var.find("Flip") == 0) {
+	else if (Var->find("Flip") == 0) {
 		if (strcmp(Val, "J_NONE") == 0) {
 			Flip = SDL_FLIP_NONE;
+			Flag = true;
 		}
 		else if (strcmp(Val, "J_HOR")) {
 			Flip = SDL_FLIP_HORIZONTAL;
+			Flag = true;
 		}
 		else if (strcmp(Val, "J_VER") == 0) {
 			Flip = SDL_FLIP_VERTICAL;
+			Flag = true;
 		}
 	}
 	// TextColor
-	else if (Var.compare("TextColor") == 0) {
+	else if (Var->compare("TextColor") == 0) {
 		TxtColor.b = (int)strtod(Val, &Next);
 		TxtColor.g = (int)strtod(Next, &Next);
 		TxtColor.r = (int)strtod(Next, &Next);
+		Flag = true;
 	}
+	CreateTexture();
+	return Flag;
 }
 
 /*---------------------------------------------------------------

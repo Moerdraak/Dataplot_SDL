@@ -17,7 +17,7 @@ public:
 	Jbw_Polygon(SDL_Renderer* Rdr);
 	~Jbw_Polygon()
 	{
-		delete PolyLine;
+//		delete PolyLine;
 	};
 
 	void AddPoint(int x, int y);

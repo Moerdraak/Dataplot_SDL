@@ -1,24 +1,24 @@
 #include "Jbw_EditBox.h"
 
-/*--------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
---------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
-	InitEditBox(Rdr, x, y, w, h);
+	InitEbx(Rdr, x, y, w, h);
 }
 
-/*--------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 	DESTRUCTOR
---------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 Jbw_EditBox::~Jbw_EditBox() {
 	SDL_DestroyTexture(txtImage);
 }
 
-/*--------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: Create
---------------------------------------------------------------------*/
-void Jbw_EditBox::InitEditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+------------------------------------------------------------------------------------------*/
+void Jbw_EditBox::InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
 	EditX = x + 1; EditY = y + 1; EditW = w - 2; EditH = h - 2;
 	CreateFrame(Rdr, x, y, w, h);
@@ -26,17 +26,20 @@ void Jbw_EditBox::InitEditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int
 	TxtSize = Fsize;
 }
 
-/*--------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: FitText
---------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::FitText(void)
 {
 	/* Cutting Text To Size*/
 	int Clip_W = 0, Clip_H = 0;
-	TxtX = EditX + 1;
-	TxtY = EditY + (EditH - txtBox.h) / 2;
 
-	ActTxtW = txtBox.w;
+//	TxtX = EditX + 1;
+	TxtX = 2;
+//	TxtY = EditY + (EditH - txtBox.h) / 2 + 1; // To +1 OR Not To +1
+	TxtY = (EditH - txtBox.h) / 2 + 2; // To +1 OR Not To +1
+
+	int ActTxtW = txtBox.w;
 	if (txtBox.w > EditW) {
 		Clip_W = EditW - 2; // If text is wider than box
 	}
@@ -93,212 +96,189 @@ void Jbw_EditBox::FitText(void)
 	}
 }
 
-/*---------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 FUNCTION: Set
----------------------------------------------------------------*/
-void Jbw_EditBox::Set(std::string  Var, const char * Val)
-{  // DUPLICATE STUFF FROM Text !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+------------------------------------------------------------------------------------------*/
+bool Jbw_EditBox::SetEbx(std::string  *Var, const char * Val)
+{  
+	bool Flag = false;
 	char* Next;
+
 	// Text
-	if (Var.compare("Text") == 0) { 
-		Text.assign(Val);
+	if (Var->compare("Text") == 0) { 
+	//	Text.assign(Val);
 	}
 	// Box
-	else if (Var.compare("Box") == 0) {
+	else if (Var->compare("Box") == 0) {
 		EditX = (int)strtod(Val, &Next);
 		EditY = (int)strtod(Next, &Next);
 		EditW = (int)strtod(Next, &Next);
 		EditH = (int)strtod(Next, &Next);
-	}
-	// TxtSize
-	else if (Var.compare("TxtSize") == 0) { //
-		TxtSize = (int)strtod(Val, NULL);
-	}
-	// FontStyle Bold
-	else if (Var.compare("F_Bold") == 0) { //
-		F_Bold = (bool)strtod(Val, NULL);
-	}
-	// FontStyle Italic
-	else if (Var.compare("F_Italic") == 0) { //
-		F_Italic = (bool)strtod(Val, NULL);
-	}
-	// FontStyle Underline
-	else if (Var.compare("F_UnderL") == 0) { //
-		F_UnderL = (bool)strtod(Val, NULL);
-	}
-	// FontStyle Strike through
-	else if (Var.compare("F_Strike") == 0) { //
-		F_Strike = (bool)strtod(Val, NULL);
+		Flag = true;
 	}
 	// Align
-	else if (Var.compare("Align") == 0) {
+	else if (Var->compare("Align") == 0) {
 		if (strcmp(Val, "J_LEFT") == 0) {
 			Align = J_LEFT;
+			Flag = true;
 		}
 		else if (strcmp(Val, "J_CENTRE") == 0) {
 			Align = J_CENTRE;
+			Flag = true;
 		}
 		else if (strcmp(Val, "J_RIGHT") == 0) {
 			Align = J_RIGHT;
+			Flag = true;
 		}
 	}
-	else if (Var.compare("Angle") == 0) {
-		Angle = (int)strtod(Val, NULL);
-	}
-	else if (Var.find("Flip") == 0) {
-		if (strcmp(Val, "J_NONE") == 0) {
-			Flip = SDL_FLIP_NONE;
-		}
-		else if (strcmp(Val, "J_HOR")) {
-			Flip = SDL_FLIP_HORIZONTAL;
-		}
-		else if (strcmp(Val, "J_VER") == 0) {
-			Flip = SDL_FLIP_VERTICAL;
-		}
-	}
-	else if (Var.compare("TextColor") == 0) {
-		TxtColor.b = (int)strtod(Val, &Next);
-		TxtColor.g = (int)strtod(Next, &Next);
-		TxtColor.r = (int)strtod(Next, &Next);
-	}
-	else if (Var.compare("BackColor") == 0) {
+	//	BackColor
+	else if (Var->compare("BackColor") == 0) {
 		BackColor.b = (int)strtod(Val, &Next);
 		BackColor.g = (int)strtod(Next, &Next);
 		BackColor.r = (int)strtod(Next, &Next);
+		Flag = true;
 	}
-	else if (Var.compare("LineColor") == 0) {
+	else if (Var->compare("LineColor") == 0) {
 		LineColor.b = (int)strtod(Val, &Next);
 		LineColor.g = (int)strtod(Next, &Next);
 		LineColor.r = (int)strtod(Next, &Next);
+		Flag = true;
 	}
+	return Flag;
 }
 
-/*--------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: Render
---------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::Render(void)
 {
 	// If Editbox is vertical
 	if (Angle == 90 || Angle == -90) {
-		//SDL_Rect Tmp = Frame;
-		//Frame.w = Tmp.h;
-		//Frame.h = Tmp.w;
-
 		int Tmp = FrameW;
 		FrameW = FrameH;
 		FrameH = Tmp;
 
-		//Tmp = EditW;
-		//Box.w = EditH;
-		//Box.h = Tmp;
 		Tmp = EditW;
 		EditW = EditH;
 		EditH = Tmp;
-		
-
 	}
-	//SDL_SetRenderDrawColor(Trdr, FrameColor.b, FrameColor.g, FrameColor.r, FrameColor.a);
-	//SDL_RenderFillRect(Trdr, &Frame);
-	SetFrame();
-	FrameRdr();
-	// Create White inside of Edit box
+
+	SDL_Rect Viewport = { FrameX, FrameY, FrameW, FrameH };
+
+	// Set Viewport area	
+	SDL_RenderSetViewport(Trdr, &Viewport); 
+	
+	// Size and Set Frame for Rendering
+	SetFrame(); // Build frame
+	FrameRdr(); // Render frame
+
+	// Size and Set white area inside of Edit box for Rendering
 	SDL_SetRenderDrawColor(Trdr, BackColor.b, BackColor.g, BackColor.r, BackColor.a);
-
-	SDL_Rect Box = { EditX, EditY, EditW, EditH };
+	SDL_Rect Box = { 1, 1, EditW, EditH };
 	SDL_RenderFillRect(Trdr, &Box);
-
+	
+	// Size and Set Text for Rendering
+	FitText();
 	SDL_RenderCopyEx(Trdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
+	
+	SDL_RenderPresent(Trdr); // Render to screen
 }
 
-/*--------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER
---------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::Event(SDL_Event* e)
 {
+	bool Flag = false;
 	//If mouse event happened
-	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP)
-	{
-		//Get mouse position
+	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP){
+		// Get mouse position
 		int x, y;
 		SDL_GetMouseState(&x, &y);
 
-		//Mouse is left of the button
+		// Mouse pointer inside Edit box
 		if (x > EditX && x < EditX + EditW && y > EditY && y < EditY + EditH)
 		{
 			switch (e->type)
 			{
 			case SDL_MOUSEMOTION:
 				LineColor = { 0, 0, 0, 255 };
-
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				BackColor = { 0, 0, 0, 255 };
-
+			//	BackColor = { 0, 0, 0, 255 };
+				Focus = true;
+		//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				BackColor = { 255, 255, 255, 255 };
-
+			//	BackColor = { 255, 255, 255, 255 };
 				break;
 			}
 		}
 		else {
 			LineColor = { 150, 150, 150, 255 };
+			if (e->type == SDL_MOUSEBUTTONDOWN) {
+				Focus = false;
+			}
+		}
+	}
+
+	if (Focus == false) {
+		return;
+	}
+	else if (e->type == SDL_TEXTINPUT) 	{
+		Add(e->text.text);
+//		Render();
+	}
+	else if (e->type == SDL_KEYDOWN)
+	{
+		if (e->key.keysym.sym == SDLK_BACKSPACE) {
+			BackSpace();
+		//	Render();
+		}
+		else if (e->key.keysym.sym == SDLK_DELETE) {
+		}
+		else if (e->key.keysym.sym) {
+		}
+	}
+	if (0) {
+		if (e->type == SDL_USEREVENT) {
+			e->user.data1;
+			my_function();
+			//	Uint32* AAA{ static_cast<Uint32*>(e->user.data1) };
+			//	void (*A) (void*) = e->type.user.data2;
+			//	*A();
+
 
 		}
 	}
+
+	//Uint32 delay = (330 / 10) * 10; // To round it down to the nearest 10 ms 
+//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
+//	Uint32 delay = (3300 / 10) * 10; // To round it down to the nearest 10 ms 
+
+//	SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, Trdr);
+	
+	Render();
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////   TextSet For setting text properties on one line
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//void Jbw_EditBox::Set(std::string NewText, const char* Var1, int Val1, const char* Var2, int Val2,
-//	const char* Var3, int Val3, const char* Var4, int Val4,
-//	const char* Var5, int Val5, const char* Var6, int Val6)
-//{
-//	SetSub(Var1, Val1);
-//	SetSub(Var2, Val2);
-//	SetSub(Var3, Val3);
-//	SetSub(Var4, Val4);
-//	SetSub(Var5, Val5);
-//	SetSub(Var6, Val6);
-//	if (NewText.length() == 0) {
-//		NewText.assign(" ");
-//	}
-//	New(NewText);
-//
-//}
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: FLASHY
+------------------------------------------------------------------------------------------*/
+Uint32 Jbw_EditBox::Flashy(Uint32 interval, void* param)
+{
+	SDL_Event event;
+	SDL_UserEvent userevent;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////   Private function used by TextSet (For setting text properties on one line)
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//void Jbw_EditBox::SetSub(const char* Var, int Val) {
-//	if (strcmp(Var, "x") == 0) {
-//		Box.x = Val;
-//	}
-//	if (strcmp(Var, "y") == 0) {
-//		Box.y = Val;
-//	}
-//	if (strcmp(Var, "w") == 0) {
-//		Box.w = Val;
-//	}
-//	if (strcmp(Var, "h") == 0) {
-//		Box.h = Val;
-//	}
-//	if (strcmp(Var, "Align") == 0) {
-//		Align = (J_TxtAlign)Val;
-//	}
-//	if (strcmp(Var, "TxtSize") == 0) {
-//		TxtSize = Val;
-//	}
-//	if (strcmp(Var, "Angle") == 0) {
-//		Angle = Val;
-//	}
-//	//	if (strcmp(Var, "TextColor") == 0) {
-//	//		TxtObj->TextColor = Val;
-//	//	}
-//	if (strcmp(Var, "Text") == 0) {
-//		Text = Val;
-//	}
-//}
+	userevent.type = SDL_USEREVENT;
+	userevent.code = 0;
+	userevent.data1 = &my_function;
+	userevent.data2 = param;
+
+	event.type = SDL_USEREVENT;
+	event.user = userevent;
+
+	SDL_PushEvent(&event);
+	return(interval);
+}

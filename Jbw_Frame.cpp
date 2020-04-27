@@ -15,20 +15,53 @@ void Jbw_Frame::SetFrame()
 {
 	PolyLine = new SDL_Point[5];
 
-	PolyLine[0].x = FrameX;
-	PolyLine[0].y = FrameY;
+	PolyLine[0].x = 0;
+	PolyLine[0].y = 0;
 
-	PolyLine[1].x = FrameX + FrameW - 1;
-	PolyLine[1].y = FrameY;
+	PolyLine[1].x = FrameW - 1;
+	PolyLine[1].y = 0;
 
-	PolyLine[2].x = FrameX + FrameW - 1;
-	PolyLine[2].y = FrameY + FrameH - 1;
+	PolyLine[2].x = FrameW - 1;
+	PolyLine[2].y = FrameH - 1;
 
-	PolyLine[3].x = FrameX;
-	PolyLine[3].y = FrameY + FrameH - 1;
+	PolyLine[3].x = 0;
+	PolyLine[3].y = FrameH - 1;
 
-	PolyLine[4].x = FrameX;
-	PolyLine[4].y = FrameY;
+	PolyLine[4].x = 0;
+	PolyLine[4].y = 0;
+
+
+	//PolyLine[0].x = 1;
+	//PolyLine[0].y = 1;
+
+	//PolyLine[1].x = FrameW - 1;
+	//PolyLine[1].y = 1;
+
+	//PolyLine[2].x = 1 + FrameW - 1;
+	//PolyLine[2].y = 1 + FrameH - 1;
+
+	//PolyLine[3].x = 1;
+	//PolyLine[3].y = 1 + FrameH - 1;
+
+	//PolyLine[4].x = 1;
+	//PolyLine[4].y = 1;
+
+	//PolyLine = new SDL_Point[5];
+
+	//PolyLine[0].x = FrameX;
+	//PolyLine[0].y = FrameY;
+
+	//PolyLine[1].x = FrameX + FrameW - 1;
+	//PolyLine[1].y = FrameY;
+
+	//PolyLine[2].x = FrameX + FrameW - 1;
+	//PolyLine[2].y = FrameY + FrameH - 1;
+
+	//PolyLine[3].x = FrameX;
+	//PolyLine[3].y = FrameY + FrameH - 1;
+
+	//PolyLine[4].x = FrameX;
+	//PolyLine[4].y = FrameY;
 }
 
 /*---------------------------------------------------------------

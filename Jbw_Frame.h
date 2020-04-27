@@ -17,7 +17,7 @@ public:
 	Jbw_Frame(SDL_Renderer* Rdr, int Xo, int Yo, int Width, int Height);
 	~Jbw_Frame()
 	{
-		delete PolyLine;
+	//	delete PolyLine;
 	}
 
 	/*--------------------------------------------------------------------

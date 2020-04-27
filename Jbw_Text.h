@@ -1,10 +1,14 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_ttf.h"
+//#include "Jbw_FrameWork.h"
 #include <string>
 
 class Jbw_Text{
 public:
+
+//	FrameId* J;
+
 	short int Id = 0;
 	std::string Tag = "";
 	SDL_Renderer* Trdr = NULL;
@@ -26,7 +30,7 @@ public:
 	bool F_Strike = 0;
 	
 	std::string Text = "";
-	double Value = NULL;
+	double Value = 0;
 
 	SDL_Rect txtBox = { 0,0,0,0 };
 	SDL_Rect txtClip = { 0,0,0,0 };
@@ -41,7 +45,7 @@ public:
 	FUNCTIONS
 	--------------------------------------------------------------------*/
 	void InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
-	void SetTxt(std::string  Var, const char* Val);
+	bool SetTxt(std::string  *Var, const char* Val);
 	void Add(std::string XtraText);
 	void New(std::string NewText);
 	void Del(void);

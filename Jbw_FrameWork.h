@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <string>
+#include "Jbw_Base.h"
 #include "Jbw_EditBox.h"
 #include "Jbw_ComboBox.h"
 #include "Jbw_ListBox.h"
@@ -9,117 +10,116 @@
 #include "Jbw_Grid.h"
 #include <typeinfo>
 
-//#define tString = 0;
-//#define tEdit = 1;
-//#define tList = 2;
-//#define tCombo = 3;
-//#define tGrid = 4;
-
-
-/*************************************************/
-/*           Getter & Setter CONSTANTS           */
-/*-----------------------------------------------*/
-
-//enum Jbw_types : short int { tId, tSize, tEbox, tLbox, tCbox, tGrid };
-
-struct tT {};
-struct tE {};
-struct tL {};
-struct tC {};
-struct tG {};
-struct tS {};
-
-const std::string tName = "Name";
-const std::string tDescr = "Descr";
-/*-----------------------------------------------*/
-/*           Getter & Setter CONSTANTS           */
-/*************************************************/
-
 
 /*************************************************/
 /*           CLASS: Jbw_Frame                    */
 /*-----------------------------------------------*/
-class Jbw_FrameWork {
+class Jbw_FrameWork : public Jbw_Base{
 public:
-	// This Pointers to keep track of all the Objects created 
+
+	// These Pointers to keep track of all the Objects 
 	// by the Base Object
-	Jbw_Text** Jtext = NULL;
-	Jbw_EditBox** Ebox = NULL; 
-	Jbw_ListBox** Lbox = NULL;
-	Jbw_ComboBox** Cbox = NULL;
-	Jbw_Grid** Grid = NULL;
+	Jbw_Text* TxtPtr = NULL;
+	Jbw_EditBox* EbxPtr = NULL;
+	Jbw_ListBox* LbxPtr = NULL;
+	Jbw_ComboBox* CbxPtr = NULL;
+	Jbw_Grid* GrdPtr = NULL;
 
-	short int Size_T = 0;
-	short int Size_E = 0;
-	short int Size_L = 0;
-	short int Size_C = 0;
-	short int Size_G = 0;
+	SDL_Event *e = new SDL_Event;
+	SDL_Point FlashingI[2] = { {500, 500},{ 500, 550} };
 
-public:
-	Jbw_EditBox EditBox;
-	
-	Jbw_FrameWork() {};		// constructor
+	short int TxtCnt = 0;
+	short int EbxCnt = 0;
+	short int LbxCnt = 0;
+	short int CbxCnt = 0;
+	short int GrdCnt = 0;
+
+	bool Flash = false;
+
+	SDL_Renderer* J_Rdr = NULL;
+
+	/*************************************************/
+	/*           CONSTRUCTOR / DESTRUCTOR            */
+	/*-----------------------------------------------*/
+	Jbw_FrameWork(void);
 	~Jbw_FrameWork() {
-		Free();
-	};	// Destructor
+	//	Free();
+	};	
 
 	/*************************************************/
 	/*               Create Functions                */
 	/*-----------------------------------------------*/
-	
-	Jbw_Text* Create(SDL_Renderer* Rdr, tT tType, std::string NewName,
-		std::string TxtString, int x, int y, int Fsize);
-
-	Jbw_EditBox* Create(SDL_Renderer* Rdr, tE tType, std::string NewName, J_Type EboxType,
-		int x, int y, int w = 200, int h = 14, int Fsize = 12);
-	
-	Jbw_ListBox* Create(SDL_Renderer* Rdr, tL tType, std::string NewName);
-	
-	Jbw_ComboBox* Create(SDL_Renderer* Rdr, tC tType, std::string NewName);
-
-	Jbw_Grid* Create(SDL_Renderer* Rdr, tG tType, std::string GridName, 
-		int x = 10, int y = 10, int ColNum = 5, int RowNum = 3);
-
-
-	void Add(std::string Obj, int RowCol, int Number = 1, std::string ColName = "");
+	bool Create(SDL_Renderer* Rdr, int ObjType, std::string Tag,
+		int Xpos, int Ypos, int WidthOrColCnt, int HeightOrRowCnt,
+		int FontSize = 12, std::string Caption = "");
+	bool CreateTxt(J_Properties* Prop);
+	bool CreateEbx(J_Properties* Prop);
+	bool CreateLbx(J_Properties* Prop);
+	bool CreateCbx(J_Properties* Prop);
+	bool CreateGrd(J_Properties* Prop);
 
 	/*************************************************/
 	/*               Get / Set Functions             */
 	/*-----------------------------------------------*/
 	int Get(std::string Obj, int Type);
 
-	bool Set(std::string Obj, std::string  Var1, const char* Val1,
-		std::string  Var2 = "NULL", const char* Val2 = "",
-		std::string  Var3 = "NULL", const char* Val3 = "",
-		std::string  Var4 = "NULL", const char* Val4 = "",
-		std::string  Var5 = "NULL", const char* Val5 = "");
+	bool Set(std::string Obj, std::string  Prop1, const char* Val1,
+		std::string  Prop2 = "NULL", const char* Val2 = "",
+		std::string  Prop3 = "NULL", const char* Val3 = "",
+		std::string  Prop4 = "NULL", const char* Val4 = "",
+		std::string  Prop5 = "NULL", const char* Val5 = "");
 
-	//void Set(std::string Obj,  std::string  Var1, const char* Val1,
-	//	std::string  Var2 = "NULL", const char* Val2 = "",
-	//	std::string  Var3 = "NULL", const char* Val3 = "",
-	//	std::string  Var4 = "NULL", const char* Val4 = "",
-	//	std::string  Var5 = "NULL", const char* Val5 = "");
+	bool GrdSet(std::string Obj, int Row, int Col,
+		std::string Prop1,			const char* Val1,
+		std::string Prop2 = "NULL", const char* Val2 = "",
+		std::string Prop3 = "NULL", const char* Val3 = "",
+		std::string Prop4 = "NULL", const char* Val4 = "",
+		std::string Prop5 = "NULL", const char* Val5 = "");
 
-
-	/*************************************************/
-	/*               Render Functions                */
-	/*-----------------------------------------------*/
-	void Render(std::string Obj); // Individual Render
+	bool GrdAdd(std::string Obj, int RowCol, int Number = 1, std::string ColName = "", int Objtype = J_TXT);
 
 
 	/*************************************************/
 	/*               Free Functions                */
 	/*-----------------------------------------------*/
 	void Free(void);  // Free all Instances
-	void Free(tE T, std::string Tag); // Free Edit box Instance 
-	void Free(tL T, std::string Tag); // Free Edit box Instance 
-//	void Free(tM T, std::string Tag); // Free Edit box Instance 
-	void Free(tC T, std::string Tag); // Free Edit box Instance 
 
 	template<class TmplObj>
 	TmplObj FreeSub(TmplObj Obj, TmplObj TmpObj, short int *Size, std::string Tag);
 
-	void Free(int Id); // Free one of the Child Instances by Id
+	bool isTag(int Type, int Id, std::string Tag) {
+		bool Flag = false;
 
+		switch (Type){
+			case J_TXT:
+				if (Tag.compare(TxtPtr[Id].Tag) == 0) {
+					Flag =  true;
+				}
+				break;
+			case J_EBX:
+				if (Tag.compare(EbxPtr[Id].Tag) == 0) {
+					Flag = true;
+				}
+				break;
+			case J_LBX:
+				if (Tag.compare(LbxPtr[Id].Tag) == 0) {
+					Flag = true;	
+				}
+				break;
+			case J_CBX:
+				if (Tag.compare(CbxPtr[Id].Tag) == 0) {
+					Flag = true;
+				}
+				break;
+			case J_GRD:
+				if (Tag.compare(GrdPtr[Id].Tag) == 0) {
+					Flag = true;	
+				}
+				break;
+			default:
+				return false;
+		}
+		return Flag;
+	}
 };
 
