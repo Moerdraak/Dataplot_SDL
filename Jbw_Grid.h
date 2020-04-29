@@ -11,8 +11,6 @@ private:
 
 public:
 
-	short int Id = 0;
-	std::string Tag = "";
 	int GridX = 0;
 	int GridY = 0;
 
@@ -38,7 +36,7 @@ public:
 	/*-----------------------------------------------*/
 	bool InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt);
 
-	void AddCol(std::string ColName, int Type = J_TEXT, int w = 50, int h = 15);
+	void AddCol(std::string ColName, int Type = J_TXT, int w = 50, int h = 15);
 	void AddRow(int Num = 1);
 	void SetVal(int Row, int Col, int Val);
 	void SetVal(int Row, int Col, std::string Val);
@@ -54,6 +52,6 @@ public:
 	double GetVal(int Row, int Col);
 	std::string GetTxt(int Row, int Col);
 	void Event(SDL_Event* e);
-	void Render(void);
+	void RdrGrd(void);
 };
 

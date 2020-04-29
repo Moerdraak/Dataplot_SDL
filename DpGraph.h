@@ -1,6 +1,8 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_image.h"
+#include "Jbw_Base.h"
+#include "Jbw_FrameWork.h"
 #include "Jbw_EditBox.h"
 #include "data.h"
 #include "fft.h"
@@ -12,7 +14,7 @@
 **************************************************************************************/
 class Dataplot; // Forward Declaration
 
-class DpGraph {
+class DpGraph : public Jbw_FrameWork {
 private:
 
 public:
@@ -38,8 +40,8 @@ public:
 	Jbw_EditBox* txtGraphTitle;
 	Jbw_EditBox* txtTestTitle;
 	Jbw_EditBox* txtLegend;
-	Jbw_EditBox* txtXlabel;
-	Jbw_EditBox* txtYlabel;
+	Jbw_EditBox* ObjXlabel;
+	Jbw_EditBox* ObjYlabel;
 	Jbw_EditBox* txtRandom;
 
 	// EDITBOX OBJECTS

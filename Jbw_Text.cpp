@@ -13,7 +13,7 @@ FUNCTION: Initialise Text
 ---------------------------------------------------------------*/
 void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
 {
-	Trdr = Rdr;
+	Jrdr = Rdr;
 	Text.assign(NewText);
 	TxtX = x;
 	TxtY = y;
@@ -53,10 +53,10 @@ void Jbw_Text::CreateTexture(void) {
 
 	// Free the previous txtImage
 	SDL_DestroyTexture(txtImage);
-	txtImage = SDL_CreateTextureFromSurface(Trdr, txtSurf); // Move it from RAM to VRAM -> Graphics card which makes it much faster
+	txtImage = SDL_CreateTextureFromSurface(Jrdr, txtSurf); // Move it from RAM to VRAM -> Graphics card which makes it much faster
 
 	txtClip = { 0, 0, txtSurf->w, txtSurf->h };
-	txtBox = { TxtX, TxtY , txtSurf->w, txtSurf->h };
+	txtBox = { 0/*TxtX*/, 0/*TxtY*/ , txtSurf->w, txtSurf->h };
 
 	SDL_FreeSurface(txtSurf); // Free the memory of SDL_Surface
 }
@@ -174,9 +174,12 @@ bool Jbw_Text::SetTxt(std::string  *Var, const char* Val)
 /*---------------------------------------------------------------
 FUNCTION:
 ---------------------------------------------------------------*/
-void Jbw_Text::Render(void)
+void Jbw_Text::RdrTxt(void)
 {
-	SDL_RenderCopyEx(Trdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
+	SDL_Rect RdrArea = { TxtX, TxtY, txtBox.w, txtBox.h };
+	SDL_RenderSetViewport(Jrdr, &RdrArea);
+
+	SDL_RenderCopyEx(Jrdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
 }
 
 /*---------------------------------------------------------------

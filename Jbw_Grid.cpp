@@ -23,6 +23,9 @@ Jbw_Grid::~Jbw_Grid()
 	FUNCTION: InitGrd
 ------------------------------------------------------------------------------------------*/
 bool Jbw_Grid::InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt) {
+	
+	J_Properties P;
+	
 	Tag = GridName;
 	GridX = x;
 	GridY = y;
@@ -31,43 +34,56 @@ bool Jbw_Grid::InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, in
 	}
 	Cols = ColCnt;
 	Rows = RowCnt + 1;
-	Prdr = Rdr;
+	Jrdr = Rdr;
 
 	//	Header = new Jbw_EditBox[ColCnt];
 
-	int Xs = GridX;
-	int Ys = GridY;
-	int w = 50; // Startup values To Be Deleted
-	int h = 15; // Startup values To Be Deleted
+	//int Xs = GridX;
+	//int Ys = GridY;
+	//int w = 50; // Startup values To Be Deleted
+	//int h = 15; // Startup values To Be Deleted
+	
+	P.Rdr = Rdr;
+	P.x = GridX; 
+	P.y = GridY; 
+	P.w = 50; 
+	P.h = 15;
+	P.Fsize = 10;
 
 	/*   Setting up the initial Frame  */
-	CreateFrame(Rdr, GridX, GridY, ColCnt * (w - 2) + 1, (RowCnt + 1) * h - (RowCnt + 1));
-
+	FrameX = GridX;
+	FrameY = GridY;
+	FrameW = ColCnt * (P.w - 2) + 1;
+	FrameH = (RowCnt + 1) * P.h - (RowCnt + 1);
+	//CreateFrame(Jrdr, GridX, GridY, ColCnt * (P.w - 2) + 1, (RowCnt + 1) * P.h - (RowCnt + 1));
+	
 	char TmpName[] = "Col 99 ";
 
-	Element = new Jbw_EditBox * [(double)Rows + 1]; // Xtra 1 for heading
+	Element = new Jbw_EditBox * [Rows + 1]; // Xtra 1 for heading
 	// Do Heading - Row 0
 	Element[0] = new Jbw_EditBox[Cols];
 	for (int I = 0; I < ColCnt; I++) {
-		Element[0][I].InitEbx(Rdr, Xs, Ys, w, h, 10);
+		//Element[0][I].InitEbx(Jrdr, x, y, w, h, 10);
+		Element[0][I].InitEbx(&P);
 		Element[0][I].Align = J_CENTRE;
-		Element[0][I].BackColor = { 220, 220, 220, 255 };
-		Element[0][I].LineColor = { 100, 100, 100, 255 };
+		Element[0][I].Border.FillColor = { 220, 220, 220, 255 };
+		Element[0][I].Border.LineColor = { 100, 100, 100, 255 };
 
 		sprintf_s(TmpName, "Col %02d", I);
 		Element[0][I].New(TmpName);
-		Xs += w - 2;
+		P.x += P.w - 2;
 	}
 
 	//  Element = new Jbw_EditBox *[Rows];
 	for (int I = 1; I < Rows; I++) {
 		Element[I] = new Jbw_EditBox[Cols];
-		Ys += h - 1;
-		Xs = GridX;
+		P.y += P.h - 1;
+		P.x = GridX;
 		for (int J = 0; J < Cols; J++) {
-			Element[I][J].InitEbx(Rdr, Xs, Ys, w, h, 10);
-			Element[I][J].LineColor = { 200, 200, 200, 255 };
-			Xs += w - 2;
+		//	Element[I][J].InitEbx(Jrdr, x, y, w, h, 10);
+			Element[I][J].InitEbx(&P);
+			Element[I][J].Border.LineColor = { 200, 200, 200, 255 };
+			P.x += P.w - 2;
 		}
 	}
 	return true;
@@ -94,8 +110,8 @@ void Jbw_Grid::AddRow(int Num)
 	for (int I = 0; I < Rows; I++) {
 		Element[I] = new Jbw_EditBox[Cols];
 		for (int J = 0; J < Cols; J++) {
-			Element[I][J].Trdr = Prdr;
-			Element[I][J].LineColor = { 200, 200, 200, 255 };
+			Element[I][J].Jrdr = Jrdr;
+			Element[I][J].Border.LineColor = { 200, 200, 200, 255 };
 		}
 	}
 }
@@ -164,7 +180,7 @@ FUNCTION:
 ---------------------------------------------------------------*/
 void Jbw_Grid::SetCellBackColor(int Row, int Col, SDL_Color Color)
 {
-	Element[Row][Col].BackColor = Color;
+	Element[Row][Col].Border.FillColor = Color;
 }
 
 /*---------------------------------------------------------------
@@ -235,16 +251,16 @@ void Jbw_Grid::SetColWidth(int Col, int w)
 
 		for (int I = 0; I < Rows; I++) {
 			Element[I][Col].EditW = w - 2;
-			Element[I][Col].FrameW = w;
+			Element[I][Col].Border.FrameW = w;
 		}
 		for (int I = Col + 1; I < Cols; I++) {
 			for (int J = 0; J < Rows; J++) {
 					Element[J][I].EditX += Wdiff - 1;
-					Element[J][I].FrameX += Wdiff - 1;
+					Element[J][I].Border.FrameX += Wdiff - 1;
 			}
 		}
 	}
-	SetFrame(); // Set Outside Grid frame
+	CreatePts(); // Set Outside Grid frame
 }
 
 /*---------------------------------------------------------------
@@ -260,8 +276,8 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 			for (int J = 0; J < Cols; J++) {
 				Element[I][J].EditH = h;
 				Element[I][J].EditY = Ys;
-				Element[I][J].FrameH = h + 1;
-				Element[I][J].FrameY = Ys;
+				Element[I][J].Border.FrameH = h + 1;
+				Element[I][J].Border.FrameY = Ys;
 			}
 			Ys += h + 1 ;
 		}
@@ -273,32 +289,31 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 
 		for (int I = 0; I < Cols; I++) {
 			Element[Row][I].EditH = h - 2;
-			Element[Row][I].FrameH = h;
+			Element[Row][I].Border.FrameH = h;
 		}
 		for (int I = Row + 1; I < Rows; I++) {
 			for (int J = 0; J < Cols; J++) {
 				Element[I][J].EditY += Hdiff;
-				Element[I][J].FrameY += Hdiff;
+				Element[I][J].Border.FrameY += Hdiff;
 			}
 		}
 	}
-	SetFrame();
+	CreatePts();
 }
 
 /*---------------------------------------------------------------
 FUNCTION: Render Grid
 ---------------------------------------------------------------*/
-void Jbw_Grid::Render(void)
+void Jbw_Grid::RdrGrd(void)
 {
 	for (int I = Rows - 1; I >= 0; I--) { // So that Heading is Rendered last
 		for (int J = 0; J < Cols; J++) {
 			Element[I][J].CreateTexture();
 				Element[I][J].FitText();
-			Element[I][J].Render();
+			Element[I][J].RdrEbx();
 		}
 	}	
-
-FrameRdr();
+	RdrFrame();
 }
 
 /*---------------------------------------------------------------
@@ -308,7 +323,7 @@ void Jbw_Grid::Event(SDL_Event* e)
 {
 	for (int I = Rows - 1; I >= 0; I--) { // So that Heading is Rendered last
 		for (int J = 0; J < Cols; J++) {
-			Element[I][J].Event(e);
+			Element[I][J].EbxEvent(e);
 		}
 	}
 

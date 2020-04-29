@@ -24,6 +24,7 @@
     <ClCompile Include="DpGraph.cpp" />
     <ClCompile Include="fft.cpp" />
     <ClCompile Include="Jbw_Base.cpp" />
+    <ClCompile Include="Jbw_Button.cpp" />
     <ClCompile Include="Jbw_Circle.cpp" />
     <ClCompile Include="JBW_ComboBox.cpp" />
     <ClCompile Include="JBW_EditBox.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="Dataplot.h" />
     <ClInclude Include="DpGraph.h" />
     <ClInclude Include="Jbw_Base.h" />
+    <ClInclude Include="Jbw_Button.h" />
     <ClInclude Include="Jbw_Circle.h" />
     <ClInclude Include="JBW_ComboBox.h" />
     <ClInclude Include="JBW_EditBox.h" />

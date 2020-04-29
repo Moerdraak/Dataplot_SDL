@@ -30,7 +30,6 @@ DpGraph::~DpGraph() {
 DpGraph::DpGraph(const Dataplot* PtrDp) {
 
 	Dp = PtrDp;
-
 	// Create Graph window
 	GraphWindow = SDL_CreateWindow("Data Plot", 500, 300, G_SCREEN_W, G_SCREEN_H, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
@@ -54,12 +53,12 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	//txtLegend->Set("LEGEND", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: X Label */
-	//txtXlabel = new Jbw_EditBox(GRender, J_TEXT, 75, 570, GRAPH_W, 16); // Create Edit box
-	//txtXlabel->Set("X-Axes Label", "TxtSize", 12, "Align", J_CENTRE);
+	//ObjXlabel = new Jbw_EditBox(GRender, J_TEXT, 75, 570, GRAPH_W, 16); // Create Edit box
+	//ObjXlabel->Set("X-Axes Label", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Y Label */
-	//txtYlabel = new Jbw_EditBox(GRender, J_TEXT, 10, 40, GRAPH_H, 15); // Create Edit box
-	//txtYlabel->Set("Y-Axes Label", "TxtSize", 12, "Align", J_CENTRE, "Angle", -90);
+	//ObjYlabel = new Jbw_EditBox(GRender, J_TEXT, 10, 40, GRAPH_H, 15); // Create Edit box
+	//ObjYlabel->Set("Y-Axes Label", "TxtSize", 12, "Align", J_CENTRE, "Angle", -90);
 
 	/*      Graphics Area      */
 	//	SDL_Rect vp_Graph;
@@ -79,7 +78,10 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	GraphArea.w = GRAPH_W;
 	GraphArea.h = GRAPH_H;
 
-	txtRandom = new Jbw_EditBox(GRender, J_TEXT, 0, 0, 10);
+	//txtRandom = new Jbw_EditBox(GRender, J_TXT, 0, 0, 10);
+
+	Create(GRender, J_TXT, "txtRandom", 0, 0, 0, 0);
+	//txtRandom = new Jbw_EditBox(Prop);
 
 	//Legend Area
 	//	SDL_Rect LegendArea;
@@ -88,22 +90,10 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	LegendArea.w = 100;
 	LegendArea.h = 100;
 
-
-
-
-
-
 	/**************       Do MYSTUFFS      *******************/
 	BaseData = new TData("Data.txt"); // Read in data from a txt file
 	FreqData = new TData;
-	Time2Freq(BaseData, FreqData);// Call the function that converts time based data to Frequency domain
-
-
-
 }
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //   PERFORM ALL RENEDERING TASKS
@@ -161,11 +151,11 @@ void DpGraph::GraphRender(int Config)
 	SDL_SetRenderDrawColor(GRender, 255, 255, 255, 255);
 	SDL_RenderFillRect(GRender, &LegendArea);
 
-	txtLegend->Render();
+	txtLegend->RdrTxt();
 //	txtGraphTitle->Set("Cannon Vibration");	txtGraphTitle->Render();
 //	txtTestTitle->Set(Dp->edDataSet->Text); txtTestTitle->Render();
-//	txtXlabel->Set(Dp->edXaxLabel->Text); txtXlabel->Render();
-//	txtYlabel->Set("Vibration (g)"); txtYlabel->Render();
+//	ObjXlabel->Set(Dp->edXaxLabel->Text); ObjXlabel->Render();
+//	ObjYlabel->Set("Vibration (g)"); ObjYlabel->Render();
 
 	double xxx = 453656.34;
 	// X Values
@@ -177,7 +167,7 @@ void DpGraph::GraphRender(int Config)
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
 //			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 544, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->Render();
+			txtRandom->RdrTxt();
 		}
 	}
 	else {
@@ -185,14 +175,14 @@ void DpGraph::GraphRender(int Config)
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
 //			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 545, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->Render();
+			txtRandom->RdrTxt();
 		}
 
 //		txtRandom->Set("x 10", "x", 800, "y", 527, "TxtSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
-		txtRandom->Render();
+		txtRandom->RdrTxt();
 		sprintf_s(TmpTxt, "%d", N);
 //		txtRandom->Set(TmpTxt, "x", 831, "y", 520, "TxtSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
-		txtRandom->Render();
+		txtRandom->RdrTxt();
 	}
 
 	// Y Values
@@ -202,7 +192,7 @@ void DpGraph::GraphRender(int Config)
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
 //			txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->Render();
+			txtRandom->RdrTxt();
 		}
 	}
 	else {
@@ -210,14 +200,14 @@ void DpGraph::GraphRender(int Config)
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
 	//		txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->Render();
+			txtRandom->RdrTxt();
 		}
 
 //		txtRandom->Set("x 10", "x", 32, "y", 15, "TxtSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
-		txtRandom->Render();
+		txtRandom->RdrTxt();
 		sprintf_s(TmpTxt, "%d", N);
 //		txtRandom->Set(TmpTxt, "x", 63, "y", 8, "TxtSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
-		txtRandom->Render();
+		txtRandom->RdrTxt();
 	}
 	//	SDL_RenderPresent(GRender);
 

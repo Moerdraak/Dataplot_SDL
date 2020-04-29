@@ -5,7 +5,22 @@
 ------------------------------------------------------------------------------------------*/
 Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
-	InitEbx(Rdr, x, y, w, h);
+	J_Properties P;
+	P.Rdr = Rdr; 
+	P.x = x; 
+	P.y = y; 
+	P.w = w;
+	P.h = h;
+	P.Fsize = Fsize;
+	InitEbx(&P);
+}
+
+/*-----------------------------------------------------------------------------------------
+	CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_EditBox::Jbw_EditBox(J_Properties *Prop)
+{
+	InitEbx(Prop);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -16,14 +31,30 @@ Jbw_EditBox::~Jbw_EditBox() {
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: Create
+	FUNCTION: InitEbx
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
-	EditX = x + 1; EditY = y + 1; EditW = w - 2; EditH = h - 2;
-	CreateFrame(Rdr, x, y, w, h);
-	Trdr = Rdr;
-	TxtSize = Fsize;
+	J_Properties P;
+	P.Rdr = Rdr;
+	P.x = x;
+	P.y = y;
+	P.w = w;
+	P.h = h;
+	P.Fsize = Fsize;
+	InitEbx(&P);
+}
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: InitEbx
+------------------------------------------------------------------------------------------*/
+void Jbw_EditBox::InitEbx(J_Properties *Prop)
+{
+	EditX = Prop->x + 1; EditY = Prop->y + 1; EditW = Prop->w - 2; EditH = Prop->h - 2;
+	Border.InitFrame(Prop);
+	Border.Fill = true;
+	Border.LineColor = J_C_Frame;
+	Jrdr = Prop->Rdr;
+	TxtSize = Prop->Fsize;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -34,10 +65,8 @@ void Jbw_EditBox::FitText(void)
 	/* Cutting Text To Size*/
 	int Clip_W = 0, Clip_H = 0;
 
-//	TxtX = EditX + 1;
 	TxtX = 2;
-//	TxtY = EditY + (EditH - txtBox.h) / 2 + 1; // To +1 OR Not To +1
-	TxtY = (EditH - txtBox.h) / 2 + 2; // To +1 OR Not To +1
+	TxtY = (EditH - txtBox.h) / 2 + 1; // To +1 OR Not To +1
 
 	int ActTxtW = txtBox.w;
 	if (txtBox.w > EditW) {
@@ -75,7 +104,7 @@ void Jbw_EditBox::FitText(void)
 				txtBox.y += txtBox.w + (EditW - txtBox.w) / 2;
 			}
 			else {
-				txtBox = { TxtX + (EditW - txtBox.w) / 2, TxtY, Clip_W, Clip_H };
+				txtBox = { TxtX - 1 + (EditW - txtBox.w) / 2, TxtY, Clip_W, Clip_H };
 			}
 		}
 	}
@@ -106,7 +135,7 @@ bool Jbw_EditBox::SetEbx(std::string  *Var, const char * Val)
 
 	// Text
 	if (Var->compare("Text") == 0) { 
-	//	Text.assign(Val);
+		Text.assign(Val);
 	}
 	// Box
 	else if (Var->compare("Box") == 0) {
@@ -133,61 +162,55 @@ bool Jbw_EditBox::SetEbx(std::string  *Var, const char * Val)
 	}
 	//	BackColor
 	else if (Var->compare("BackColor") == 0) {
-		BackColor.b = (int)strtod(Val, &Next);
-		BackColor.g = (int)strtod(Next, &Next);
-		BackColor.r = (int)strtod(Next, &Next);
+		Border.FillColor.b = (int)strtod(Val, &Next);
+		Border.FillColor.g = (int)strtod(Next, &Next);
+		Border.FillColor.r = (int)strtod(Next, &Next);
 		Flag = true;
 	}
 	else if (Var->compare("LineColor") == 0) {
-		LineColor.b = (int)strtod(Val, &Next);
-		LineColor.g = (int)strtod(Next, &Next);
-		LineColor.r = (int)strtod(Next, &Next);
+		Border.LineColor.b = (int)strtod(Val, &Next);
+		Border.LineColor.g = (int)strtod(Next, &Next);
+		Border.LineColor.r = (int)strtod(Next, &Next);
 		Flag = true;
 	}
 	return Flag;
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: Render
+	FUNCTION: RdrEbx
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::Render(void)
+void Jbw_EditBox::RdrEbx(void)
 {
 	// If Editbox is vertical
 	if (Angle == 90 || Angle == -90) {
-		int Tmp = FrameW;
-		FrameW = FrameH;
-		FrameH = Tmp;
+		int Tmp = Border.FrameW;
+		Border.FrameW = Border.FrameH;
+		Border.FrameH = Tmp;
 
 		Tmp = EditW;
 		EditW = EditH;
 		EditH = Tmp;
 	}
 
-	SDL_Rect Viewport = { FrameX, FrameY, FrameW, FrameH };
-
-	// Set Viewport area	
-	SDL_RenderSetViewport(Trdr, &Viewport); 
-	
 	// Size and Set Frame for Rendering
-	SetFrame(); // Build frame
-	FrameRdr(); // Render frame
+	Border.RdrFrame(); // Render frame
 
-	// Size and Set white area inside of Edit box for Rendering
-	SDL_SetRenderDrawColor(Trdr, BackColor.b, BackColor.g, BackColor.r, BackColor.a);
-	SDL_Rect Box = { 1, 1, EditW, EditH };
-	SDL_RenderFillRect(Trdr, &Box);
+	// Set Viewport area
+	SDL_Rect Viewport = { Border.FrameX, Border.FrameY, Border.FrameW, Border.FrameH };
+	SDL_RenderSetViewport(Jrdr, &Viewport); 
 	
 	// Size and Set Text for Rendering
 	FitText();
-	SDL_RenderCopyEx(Trdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
+	SDL_RenderCopyEx(Jrdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
 	
-	SDL_RenderPresent(Trdr); // Render to screen
+	// Render to screen
+	SDL_RenderPresent(Jrdr); 
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::Event(SDL_Event* e)
+void Jbw_EditBox::EbxEvent(SDL_Event* e)
 {
 	bool Flag = false;
 	//If mouse event happened
@@ -202,7 +225,7 @@ void Jbw_EditBox::Event(SDL_Event* e)
 			switch (e->type)
 			{
 			case SDL_MOUSEMOTION:
-				LineColor = { 0, 0, 0, 255 };
+				Border.LineColor = { 0, 0, 0, 255 };
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -217,7 +240,7 @@ void Jbw_EditBox::Event(SDL_Event* e)
 			}
 		}
 		else {
-			LineColor = { 150, 150, 150, 255 };
+			Border.LineColor = J_C_Frame;
 			if (e->type == SDL_MOUSEBUTTONDOWN) {
 				Focus = false;
 			}
@@ -229,13 +252,13 @@ void Jbw_EditBox::Event(SDL_Event* e)
 	}
 	else if (e->type == SDL_TEXTINPUT) 	{
 		Add(e->text.text);
-//		Render();
+//		RdrEbx();
 	}
 	else if (e->type == SDL_KEYDOWN)
 	{
 		if (e->key.keysym.sym == SDLK_BACKSPACE) {
 			BackSpace();
-		//	Render();
+		//	RdrEbx();
 		}
 		else if (e->key.keysym.sym == SDLK_DELETE) {
 		}
@@ -260,7 +283,7 @@ void Jbw_EditBox::Event(SDL_Event* e)
 
 //	SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, Trdr);
 	
-	Render();
+	RdrEbx();
 }
 
 /*-----------------------------------------------------------------------------------------

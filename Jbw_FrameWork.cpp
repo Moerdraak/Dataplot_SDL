@@ -5,7 +5,7 @@
 ------------------------------------------------------------------------------------------*/
 Jbw_FrameWork::Jbw_FrameWork(void)
 {
-	// Initialise all the Framework Base pointers.
+	// Initialise all the ObjWork Base pointers.
 	TxtPtr = new Jbw_Text; 
 	EbxPtr = new Jbw_EditBox;
 	LbxPtr = new Jbw_ListBox;
@@ -20,6 +20,7 @@ Jbw_FrameWork::Jbw_FrameWork(void)
 bool Jbw_FrameWork::Create(SDL_Renderer* Rdr, int ObjType, std::string Tag, int Xpos, int Ypos,
 	int WidthOrColCnt, int HeightOrRowCnt, int FontSize, std::string Caption)
 {
+	bool Flag = true;
 	J_Properties Prop;
 	Prop.Rdr = Rdr;
 	Prop.x = Xpos;
@@ -32,7 +33,6 @@ bool Jbw_FrameWork::Create(SDL_Renderer* Rdr, int ObjType, std::string Tag, int 
 	Prop.Caption = Caption;
 	Prop.Tag = Tag;
 
-	bool Flag = false;
 	switch (ObjType) {
 	case J_TXT:
 		Flag = CreateTxt(&Prop);
@@ -41,19 +41,22 @@ bool Jbw_FrameWork::Create(SDL_Renderer* Rdr, int ObjType, std::string Tag, int 
 		Flag = CreateEbx(&Prop);
 		break;
 	case J_LBX:
-
+		Flag = CreateLbx(&Prop);
 		break;
 	case J_CBX:
-
+		Flag = CreateCbx(&Prop);
+		break;
+	case J_BTN:
+		Flag = CreateBtn(&Prop);
 		break;
 	case J_GRD:
 		Flag = CreateGrd(&Prop);
 		break;
 	default:
-		return false;
+		Flag = false;
 	}
 
-	return true;
+	return Flag;
 }
 
 /*------------------------------------------------------------------------------------------
@@ -108,10 +111,10 @@ bool Jbw_FrameWork::CreateEbx(J_Properties* Prop)
 	for (int I = 0; I < EbxCnt; I++) {
 		NewPtr[I] = EbxPtr[I]; // Copy all current TxtPtrs		
 	}
-	//	Child->InitEditBox(Rdr, x, y, w, h, Fsize);
+	//	Child->InitEditBox(Jrdr, x, y, w, h, Fsize);
 	NewPtr[EbxCnt].Id = EbxCnt;
 	NewPtr[EbxCnt].Tag.assign(Prop->Tag);
-	NewPtr[EbxCnt].InitEbx(Prop->Rdr, Prop->x, Prop->y, Prop->w, Prop->h, Prop->Fsize);
+	NewPtr[EbxCnt].InitEbx(Prop);
 	if (EbxCnt > 0) {
 		delete[] EbxPtr;
 	}
@@ -127,28 +130,28 @@ bool Jbw_FrameWork::CreateEbx(J_Properties* Prop)
 bool Jbw_FrameWork::CreateLbx(J_Properties* Prop)
 {
 	// Check for duplicates
-	for (int I = 0; I < EbxCnt; I++) {
+	for (int I = 0; I < LbxCnt; I++) {
 
-		if (isTag(J_EBX, I, Prop->Tag)) {
+		if (isTag(J_LBX, I, Prop->Tag)) {
 			return false;
 		}
 	}
 
 	// Create pointer with more memory
-	Jbw_ListBox* NewPtr = new Jbw_ListBox[EbxCnt + 1];
+	Jbw_ListBox* NewPtr = new Jbw_ListBox[LbxCnt + 1];
 
-	for (int I = 0; I < EbxCnt; I++) {
+	for (int I = 0; I < LbxCnt; I++) {
 		NewPtr[I] = LbxPtr[I]; // Copy all current TxtPtrs		
 	}
-	//	Child->InitEditBox(Rdr, x, y, w, h, Fsize);
-	NewPtr[EbxCnt].Id = EbxCnt;
-	NewPtr[EbxCnt].Tag.assign(Prop->Tag);
-//	NewPtr[EbxCnt].InitLbx(Prop->Rdr, Prop->x, Prop->y, Prop->w, Prop->h, Prop->Fsize);
-	if (EbxCnt > 0) {
+	//	Child->InitEditBox(Jrdr, x, y, w, h, Fsize);
+	NewPtr[LbxCnt].Id = LbxCnt;
+	NewPtr[LbxCnt].Tag.assign(Prop->Tag);
+	NewPtr[LbxCnt].InitLbx(Prop);
+	if (LbxCnt > 0) {
 		delete[] LbxPtr;
 	}
 	LbxPtr = NewPtr;
-	EbxCnt++;
+	LbxCnt++;
 
 	return true;
 }
@@ -171,10 +174,10 @@ bool Jbw_FrameWork::CreateCbx(J_Properties * Prop)
 		for (int I = 0; I < CbxCnt; I++) {
 			NewPtr[I] = CbxPtr[I]; // Copy all current TxtPtrs		
 		}
-		//	Child->InitEditBox(Rdr, x, y, w, h, Fsize);
+		//	Child->InitEditBox(Jrdr, x, y, w, h, Fsize);
 		NewPtr[CbxCnt].Id = CbxCnt;
 		NewPtr[CbxCnt].Tag.assign(Prop->Tag);
-//		NewPtr[CbxCnt].InitCbx(Prop->Rdr, Prop->x, Prop->y, Prop->w, Prop->h, Prop->Fsize);
+		NewPtr[CbxCnt].InitCbx(Prop);
 		if (CbxCnt > 0) {
 			delete[] CbxPtr;
 		}
@@ -182,6 +185,39 @@ bool Jbw_FrameWork::CreateCbx(J_Properties * Prop)
 		CbxCnt++;
 
 		return true;
+}
+
+/*------------------------------------------------------------------------------------------
+	FUNCTION: CreateBtn
+------------------------------------------------------------------------------------------*/
+bool Jbw_FrameWork::CreateBtn(J_Properties* Prop)
+{
+	// Check for duplicates
+	for (int I = 0; I < BtnCnt; I++) {
+
+		if (isTag(J_BTN, I, Prop->Tag)) {
+			return false;
+		}
+	}
+
+	// Create pointer with more memory
+	Jbw_Button* NewPtr = new Jbw_Button[BtnCnt + 1];
+
+	for (int I = 0; I < BtnCnt; I++) {
+		NewPtr[I] = BtnPtr[I]; // Copy all current BtnPtrs		
+	}
+	//	Child->InitEditBox(Jrdr, x, y, w, h, Fsize);
+	NewPtr[BtnCnt].Id = BtnCnt;
+	NewPtr[BtnCnt].Tag.assign(Prop->Tag);
+
+	NewPtr[BtnCnt].InitBtn(Prop);
+	if (BtnCnt > 0) {
+		delete[] BtnPtr;
+	}
+	BtnPtr = NewPtr;
+	BtnCnt++;
+
+	return true;
 }
 
 /*------------------------------------------------------------------------------------------
@@ -203,7 +239,7 @@ bool Jbw_FrameWork::CreateGrd(J_Properties* Prop)
 	for (int I = 0; I < GrdCnt; I++) {
 		NewPtr[I] = GrdPtr[I]; // Copy all current TxtPtrs		
 	}
-	//	Child->InitEditBox(Rdr, x, y, w, h, Fsize);
+	//	Child->InitEditBox(Jrdr, x, y, w, h, Fsize);
 	NewPtr[GrdCnt].Id = GrdCnt;
 	NewPtr[GrdCnt].Tag.assign(Prop->Tag);
 	NewPtr[GrdCnt].InitGrd(Prop->Rdr, Prop->Tag, Prop->x, Prop->y, Prop->ColCnt, Prop->RowCnt);
@@ -403,3 +439,47 @@ bool Jbw_FrameWork::GrdAdd(std::string Obj, int RowCol, int Number,
 	return true;
 }
 
+
+/*------------------------------------------------------------------------------------------
+FUNCTION: isTag
+------------------------------------------------------------------------------------------*/
+bool Jbw_FrameWork::isTag(int Type, int Id, std::string Tag)
+{
+	bool Flag = false;
+
+	switch (Type) {
+	case J_TXT:
+		if (Tag.compare(TxtPtr[Id].Tag) == 0) {
+			Flag = true;
+		}
+		break;
+	case J_EBX:
+		if (Tag.compare(EbxPtr[Id].Tag) == 0) {
+			Flag = true;
+		}
+		break;
+	case J_LBX:
+		if (Tag.compare(LbxPtr[Id].Tag) == 0) {
+			Flag = true;
+		}
+		break;
+	case J_CBX:
+		if (Tag.compare(CbxPtr[Id].Tag) == 0) {
+			Flag = true;
+		}
+		break;
+	case J_BTN:
+		if (Tag.compare(BtnPtr[Id].Tag) == 0) {
+			Flag = true;
+		}
+		break;
+	case J_GRD:
+		if (Tag.compare(GrdPtr[Id].Tag) == 0) {
+			Flag = true;
+		}
+		break;
+	default:
+		return false;
+	}
+	return Flag;
+}

@@ -1,49 +1,45 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "Jbw_Base.h"
 #include "Jbw_Text.h"
 #include "Jbw_Frame.h"
-//#include "Jbw_FrameWork.h" 
 #include <string>
 
-enum J_TxtAlign { J_LEFT, J_CENTRE, J_RIGHT };
-enum J_Type { J_EDIT, J_TEXT, J_COMB, J_LIST };
-enum J_MsgAck { J_OK, J_YES, J_YESNO };
-
-class Jbw_EditBox : public Jbw_Text, public Jbw_Frame { // This cause 2 x Id ?!?
+class Jbw_EditBox : public Jbw_Text { 
 private: 
 	
 public: 
-//	Jbw_FrameWork *J;
-
-
 	bool Focus = false;
 	int EditX = 0;
 	int	EditY = 0;
 	int EditW = 0;
 	int	EditH = 0;
 
-	J_TxtAlign Align = J_LEFT;
-	SDL_Color BackColor = {255, 255, 255, 255}; // {Red, Green, Blue, Alpha}
+	Jbw_Frame Border;
 
-	/*--------------------------------------------------------------------
-		Jbw_EditBox: CONSTRUCTORS
-	--------------------------------------------------------------------*/
+	J_Type Align = J_LEFT;
+//	SDL_Color BackColor = {255, 255, 255, 255}; // {Red, Green, Blue, Alpha}
+
+/*-----------------------------------------------------------------------------------------
+	CONSTRUCTORS
+------------------------------------------------------------------------------------------*/
+public:
 	Jbw_EditBox() {}; // 
 	Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h=14, int Fsize = 12);
+	Jbw_EditBox(J_Properties *Prop);
 	~Jbw_EditBox();
 
-	/*--------------------------------------------------------------------
-		Jbw_EditBox: PUBLIC FUNCTIONS 
-	--------------------------------------------------------------------*/
-	void InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h = 15, int Fsize = 12);
+/*-----------------------------------------------------------------------------------------
+	FUNCTIONS 
+------------------------------------------------------------------------------------------*/
+public:
+	void InitEbx(J_Properties *Prop);
+	void InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h = 14, int Fsize = 12);
 	void FitText(void);
 	bool SetEbx(std::string  *Var, const char* Val);
-	void Render(void);
-	void Event(SDL_Event* e);
-
-
-
+	void RdrEbx(void);
+	void EbxEvent(SDL_Event* e);
 
 	Uint32 static Flashy(Uint32 interval, void* param);
 

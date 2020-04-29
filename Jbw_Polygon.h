@@ -1,13 +1,9 @@
 #pragma once
 #include "SDL.h"
+#include "Jbw_Base.h"
 
-class Jbw_Polygon
-{
+class Jbw_Polygon : public Jbw_Base {
 public:
-	//short int Id = 0;
-	//std::string Tag = "";
-
-	SDL_Renderer* Prdr = NULL;
 	SDL_Point* PolyLine = NULL;
 	
 	int NumPoints = 0;
@@ -15,10 +11,7 @@ public:
 
 	Jbw_Polygon() {};
 	Jbw_Polygon(SDL_Renderer* Rdr);
-	~Jbw_Polygon()
-	{
-//		delete PolyLine;
-	};
+	~Jbw_Polygon() {};
 
 	void AddPoint(int x, int y);
 	void PolyRdr(void);

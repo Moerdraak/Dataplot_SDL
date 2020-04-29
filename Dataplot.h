@@ -34,7 +34,7 @@ public:
 //	SDL_Renderer* J_Rdr = NULL; // The User window renderer
 	SDL_Texture* LogoImage = NULL; //Current displayed texture
 
-	const int U_SCREEN_W = 1100;
+	const int U_SCREEN_W = 1070;
 	const int U_SCREEN_H = 600;
 
 	/*******************  CONSTRUCTORS  *******************/

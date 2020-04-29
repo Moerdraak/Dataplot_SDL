@@ -1,9 +1,9 @@
 #pragma once
 #include "SDL.h"
-class Jbw_Circle
-{
+#include "Jbw_Base.h"
+
+class Jbw_Circle : public Jbw_Base {
 public:
-	SDL_Renderer* Crdr = NULL;
 	int CirX = 0;
 	int CirY = 0;
 	int CirRad = 0;

@@ -1,24 +1,23 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "Jbw_Base.h"
 //#include "Jbw_FrameWork.h"
 #include <string>
 
-class Jbw_Text{
+/******************************************************************************************
+					             CLASS: Jbw_Text                  
+******************************************************************************************/
+class Jbw_Text : public Jbw_Base{
 public:
+	int TxtX = 0;
+	int TxtY = 0;
 
-//	FrameId* J;
-
-	short int Id = 0;
-	std::string Tag = "";
-	SDL_Renderer* Trdr = NULL;
 
 	TTF_Font* Font = NULL;
 	SDL_Texture* txtImage = NULL;
 	
 	int TxtSize = 0;
-	int TxtX = 0;
-	int TxtY = 0;
 	int Angle = 0;
 	SDL_RendererFlip Flip = SDL_FLIP_NONE;
 	SDL_Point RotPoint = { 0, 0 };
@@ -35,23 +34,25 @@ public:
 	SDL_Rect txtBox = { 0,0,0,0 };
 	SDL_Rect txtClip = { 0,0,0,0 };
 
-	/*--------------------------------------------------------------------
-	CONSTRUCTORS / DESTRUCTORS
-	--------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------
+		CONSTRUCTORS / DESTRUCTORS
+------------------------------------------------------------------------------------------*/
+public:
 	Jbw_Text() {};
 	Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
 
-	/*--------------------------------------------------------------------
-	FUNCTIONS
-	--------------------------------------------------------------------*/
-	void InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
+/*-----------------------------------------------------------------------------------------
+		FUNCTIONS
+------------------------------------------------------------------------------------------*/
+public:
+	void InitTxt(SDL_Renderer* TRdr, std::string NewText, int x, int y, int Fsize = 12);
 	bool SetTxt(std::string  *Var, const char* Val);
 	void Add(std::string XtraText);
 	void New(std::string NewText);
 	void Del(void);
 	void BackSpace(void);
 	void CreateTexture(void);
-	void Render(void);
+	void RdrTxt(void);
 	void TxtEvent(SDL_Event* e);
 
 };

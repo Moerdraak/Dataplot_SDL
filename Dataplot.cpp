@@ -2,6 +2,10 @@
 #include "Jbw_Text.h" // Temporary here
 SDL_Point* TmpPoints;
 
+//SDL_TimerCallback koos(void) {
+//	int a = 0;
+//	return this
+//}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +17,9 @@ int main(int argc, char* argv[])
 
 	Dataplot Dp; 
 	Dp.SetupScreen();
-	SDL_RenderPresent(Dp.J_Rdr);
+
+
+//	SDL_RenderPresent(Dp.J_Rdr);
 
 
 	//DpGraph* TmpGraph;
@@ -47,14 +53,26 @@ int main(int argc, char* argv[])
 	//Uint32 delay = (330 / 10) * 10; // To round it down to the nearest 10 ms 
 	//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 	/******************************/
+	
+	
+	Jbw_MsgBox Msg("TESTING TESTING", "Werk dit? \nDit werk!", J_YESNO, 100, 20);
+	Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
 
 
-	Dp.UserRender();
+	Uint32 delay = (5000 / 10) * 10; // To round it down to the nearest 10 ms 
+	
+//	SDL_TimerID my_timer_id = SDL_AddTimer(delay, &koos, &Dp);
 
+//	Dp.UserRender();
 
+	int Rendercnt = 0;
+	std::string RndrCnttxt;
 //	while (1) {
 //		if (SDL_PollEvent(&e)) {
 	while (SDL_WaitEvent(Dp.e) != 0){
+		RndrCnttxt.assign("The Render Count is now up to: ");
+		RndrCnttxt.append(std::to_string(Rendercnt++));
+		Dp.LbxPtr[0].AddText(RndrCnttxt);
 
 			// User requests quit
 			if (Dp.e->type == SDL_QUIT)
@@ -63,11 +81,18 @@ int main(int argc, char* argv[])
 				break;
 			}
 
-
-
 			for (int I = 0; I < Dp.EbxCnt; I++) {
-				Dp.EbxPtr[I].Event(Dp.e);
+				Dp.EbxPtr[I].EbxEvent(Dp.e);
 			}
+
+			for (int I = 0; I < Dp.BtnCnt; I++) {
+				Dp.BtnPtr[I].BtnEvent(Dp.e);
+			}
+
+			for (int I = 0; I < Dp.CbxCnt; I++) {
+				Dp.CbxPtr[I].CbxEvent(Dp.e);
+			}
+
 			for (int I = 0; I < Dp.GrdCnt; I++) {
 				Dp.GrdPtr[I].Event(Dp.e);
 			}
@@ -248,8 +273,9 @@ bool Dataplot::SetupScreen(void)
 
 	/*  Data Directory */
 	Create(J_Rdr, J_TXT, "txtDataDir", 12, 120, 0, 0, 12, "Data Directory:");
-	Create(J_Rdr, J_EBX, "edDataDir", 12, 135, 300, 18, 11);
+	Create(J_Rdr, J_EBX, "edDataDir", 12, 135, 328, 18, 11);
 	Set("edDataDir",  "Align", "J_LEFT");
+	Create(J_Rdr, J_BTN, "btnDataDir", 339, 135, 14, 18, 12, ":");
 
 	/*  File ID: */
 	Create(J_Rdr, J_TXT, "txtFileId", 12, 155, 0, 0, 12, "File ID:");
@@ -264,7 +290,7 @@ bool Dataplot::SetupScreen(void)
 
 	/*  Figure Combobox  */
 	Create(J_Rdr, J_TXT, "txtFigure", 12, 340, 0, 0, 12, "Select Figure");
-	Create(J_Rdr, J_EBX, "cbxFigure", 12, 355, 300, 18, 11);
+	Create(J_Rdr, J_CBX, "cbxFigure", 12, 355, 300, 18, 11);
 	Set("cbxFigure", "Align", "J_LEFT");
 
 	/*   Figure Type Button */
@@ -277,18 +303,29 @@ bool Dataplot::SetupScreen(void)
 	Set("edTitle", "Align", "J_LEFT");
 
 	/*  Y Axes label */
-	Create(J_Rdr, J_TXT, "txtYaxLabel", 12, 410, 0, 0, 12, "Y-Axes Label");
+	Create(J_Rdr, J_TXT, "ObjYaxLabel", 12, 410, 0, 0, 12, "Y-Axes Label");
 	Create(J_Rdr, J_EBX, "edYaxLabel", 12, 425, 300, 18, 11);
 	Set("edYaxLabel", "Align", "J_LEFT");
 
 	/*  X Axes label */
-	Create(J_Rdr, J_TXT, "txtXaxLabel", 12, 445, 0, 0, 12, "X-Axes Label");
+	Create(J_Rdr, J_TXT, "ObjXaxLabel", 12, 445, 0, 0, 12, "X-Axes Label");
 	Create(J_Rdr, J_EBX, "edXaxLabel", 12, 460, 300, 18, 11);
 	Set("edXaxLabel", "Align", "J_LEFT");
 
 	/*   Time On/Off Button */
 	Create(J_Rdr, J_TXT, "txtOnOffBtn", 260, 445, 0, 0, 12, "Time");
 
+	/*   Messages   */
+	Create(J_Rdr, J_TXT, "txtMessages", 12, 480, 0, 0, 12, "Messages");
+	Create(J_Rdr, J_LBX, "lbxMessage", 12, 495, 1048, 95, 11);
+	Create(J_Rdr, J_BTN, "btnClear", 1020, 475, 40, 18, 12, "Clear");
+
+	/* Plot Buttons  */
+	Create(J_Rdr, J_BTN, "btnPlot", 300, 230, 40, 18, 12, "Plot");
+	Create(J_Rdr, J_BTN, "btnPlotAll", 300, 250, 90, 18, 12, "Plot All Figures");
+	Create(J_Rdr, J_BTN, "btnUp", 300, 270, 40, 18, 12, "Up");
+	Create(J_Rdr, J_BTN, "btnDown", 300, 290, 40, 18, 12, "Down");
+	Create(J_Rdr, J_BTN, "btnAdd", 300, 310, 70, 18, 12, "Add Bits");
 
 
 
@@ -321,7 +358,7 @@ bool Dataplot::SetupScreen(void)
 
 
 /*------------------------------------------------------------------------------------------
-   PERFORM ALL RENEDERING TASKS
+   PERFORM ALL RENDERING TASKS
 ------------------------------------------------------------------------------------------*/
 void Dataplot::UserRender(void)
 {
@@ -331,32 +368,36 @@ void Dataplot::UserRender(void)
 
 	// Render Txt Objects	
 	for (int I = 0; I < TxtCnt; I++) {
-		TxtPtr[I].Render(); // ???!!!!! Write a Render call in Framework !!!!
+		TxtPtr[I].RdrTxt(); // ???!!!!! Write a Render call in ObjWork !!!!
 	}
 
 	// Render Edit Box  Objects	
 	for (int I = 0; I < EbxCnt; I++) {
-		EbxPtr[I].Render(); // ???!!!!! Write a Render call in Framework !!!!
+		EbxPtr[I].RdrEbx(); // ???!!!!! Write a Render call in ObjWork !!!!
 	}
 
 	// Render List Box  Objects	
-	for (int I = 0; I < EbxCnt; I++) {
-//		LbxPtr[I].Render(); // ???!!!!! Write a Render call in Framework !!!!
+	for (int I = 0; I < LbxCnt; I++) {
+		LbxPtr[I].RdrLbx(); 
 	}
 
 	// Render Combo Box  Objects	
-	for (int I = 0; I < EbxCnt; I++) {
-//		CbxPtr[I].Render(); // ???!!!!! Write a Render call in Framework !!!!
+	for (int I = 0; I < CbxCnt; I++) {
+		CbxPtr[I].RdrCbx(); 
+	}
+
+	// Render Buttons  Objects	
+	for (int I = 0; I < BtnCnt; I++) {
+			BtnPtr[I].RdrBtn(); 
+			SDL_RenderPresent(J_Rdr);
 	}
 
 	// Render Grid Objects
 	for (int I = 0; I < GrdCnt; I++) {
-		GrdPtr[I].Render(); // ???!!!!! Write a Render call in Framework !!!!
-		GrdPtr[I].FrameRdr();
+		GrdPtr[I].RdrGrd(); // ???!!!!! Write a Render call in ObjWork !!!!
 	}
 
 	SDL_RenderPresent(J_Rdr);
-
 
 	/****    SET VIEWPORT TO LOGO AREA     ****/
 	SDL_RenderSetViewport(J_Rdr, &LogoArea);

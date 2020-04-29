@@ -1,10 +1,15 @@
 #include "Jbw_MsgBox.h"
 
-Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int x, int y, int w, int h)
+/*-----------------------------------------------------------------------------------------
+	CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+
+Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x, int y, int w, int h)
 {
+	J_Properties P;
 	Window_w = w;
 	Window_h = h;
-	Type = InType;
+	MbxType = OkYesNo;
 
 	Font = TTF_OpenFont("fonts/arial.ttf", 12);
 	TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
@@ -13,44 +18,63 @@ Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_MsgAck InType, int 
 	Parser(Title, false);
 	Parser(Msg, false);
 
-	//Create User Window
-	MsgWindow = SDL_CreateWindow(Title.c_str(), x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
+	// Create User Window
+	MsgWindow = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
 		| SDL_WINDOW_BORDERLESS);
-	// Create renderer for User window
-	Render = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
 
-	// Create own Border
-	Border.w = Window_w; Border.h = Window_h;
+	// Create renderer for User window
+	Jrdr = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
+
+	// Create Border
+	FrameW = Window_w;
+	FrameH = Window_h;
 
 	// Create Header
-	edHeader = new Jbw_EditBox(Render, 0, 0, Window_w, 18);
-//	edHeader->Set(Title.c_str(), "Align", J_CENTRE, "TxtSize", 12);
-
-	SDL_SetRenderDrawColor(Render, 230, 230, 230, 255);
-	SDL_RenderClear(Render);
+	P.Rdr = Jrdr;
+	P.w = Window_w;
+	P.h = 18;
+	Header = new Jbw_EditBox(&P);
+	Header->Text.assign(Title);
 
 	RenderBox();
+
+	// Set Viewport for Message	
+	SDL_Rect Window = { 0, 0, Window_w, Window_h };
+	SDL_RenderSetViewport(Jrdr, &Window);
 	Parser(Msg, true);
 }
+
+/*-----------------------------------------------------------------------------------------
+	DESTRUCTOR
+------------------------------------------------------------------------------------------*/
+
 Jbw_MsgBox::~Jbw_MsgBox()
 {
+	if (MbxType == J_YESNO) {
+		delete btnNo;
+	}
+
+	delete btnAck;
+
 	SDL_DestroyWindow(MsgWindow);
-	SDL_DestroyRenderer(Render);
+	SDL_DestroyRenderer(Jrdr);
 	SDL_DestroyTexture(txtImage);
 	TTF_CloseFont(Font);
 
-	delete edHeader;
+	delete Header;
 	delete btnAck;
 	delete btnNo;
 
 	MsgWindow = NULL;
-	Render = NULL;
 	txtImage = NULL;
-	edHeader = NULL;
+	Header = NULL;
 	btnAck = NULL;
 	btnNo = NULL;
 }
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: Parser
+------------------------------------------------------------------------------------------*/
 
 void Jbw_MsgBox::Parser(std::string Txt, bool DoRender) {
 	int Cnt = 0;
@@ -63,20 +87,23 @@ void Jbw_MsgBox::Parser(std::string Txt, bool DoRender) {
 	if (Window_h < 110 + (Cnt - 4) * 12) {
 		Window_h = 110 + (Cnt - 4) * 12;
 	}
+	SDL_RenderPresent(Jrdr);
 }
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: RenderMsg
+------------------------------------------------------------------------------------------*/
 void Jbw_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
 	
 	txtSurf = TTF_RenderText_Blended(Font, Msg.c_str(), { 0, 0, 0, 255 });
-
-	txtBox.x = 20; //(Window_w - txtSurf->w) / 2;
+	SDL_Rect txtBox;
+	txtBox.x = 10; 
 	txtBox.y = 30 + Line * 12;
 	txtBox.w = txtSurf->w;
 	txtBox.h = txtSurf->h;
 	if (DoRender == true) {
-		txtImage = SDL_CreateTextureFromSurface(Render, txtSurf);
-		SDL_RenderCopyEx(Render, txtImage, 0, &txtBox, 0, 0, SDL_FLIP_NONE);
-		SDL_RenderPresent(Render);
+		txtImage = SDL_CreateTextureFromSurface(Jrdr, txtSurf);
+		SDL_RenderCopyEx(Jrdr, txtImage, 0, &txtBox, 0, 0, SDL_FLIP_NONE);
 		SDL_DestroyTexture(txtImage);
 	}
 	else { // DON'T RENDER just Set MsgBox to correct size for all text
@@ -88,55 +115,47 @@ void Jbw_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
 	SDL_FreeSurface(txtSurf);
 }
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: RenderBox
+------------------------------------------------------------------------------------------*/
 void Jbw_MsgBox::RenderBox(void) {
-	// Outside part of creating Border
-	SDL_SetRenderDrawColor(Render, 180, 180, 180, 255);
-	SDL_RenderFillRect(Render, &Border);
 	
-	// Inside part of creating Border
-	Border.x = Border.x + 1;
-	Border.y = Border.y + 1;
-	Border.w = Border.w -2;
-	Border.h = Border.h -2;
-	SDL_SetRenderDrawColor(Render, 230, 230, 230, 255);
-	SDL_RenderFillRect(Render, &Border);
-	SDL_RenderFillRect(Render, &Border);
+	SDL_SetRenderDrawColor(Jrdr, 230, 230, 230, 255);
+	SDL_RenderClear(Jrdr);
 
-	// Set Header Text / TITLE
-	//edHeader->BackColor = 200;
-	//edHeader->FrameColor = 180;
-	//edHeader->Render();
+	// Render Frame
+	LineColor = { 180, 180, 180, 255 };
+	CreatePts();
+	RdrFrame();
+
+	// Render Header
+	Header->Border.LineColor = J_C_Frame;
+	Header->Border.FillColor = J_C_Frame;
+	Header->Align = J_CENTRE;
+	Header->CreateTexture();
+	Header->RdrEbx();
 
 	// Create Buttons
-	int Btn_w = 40, Btn_h = 16, BtnSpace = 40, Btn_y = Window_h - 25;
-	int BtnYes_x = Window_w - 60; //(Window_w - Btn_w) / 2;
-	if (Type == J_YESNO) {
-		int BtnYes_x = Window_w - 120; // (Window_w - 2 * Btn_w ) / 2 - BtnSpace/2;
-		int BtnNo_x = Window_w - 60; //BtnYes_x + BtnSpace + Btn_w;
-		btnAck = new Jbw_EditBox(Render,  BtnYes_x, Btn_y, Btn_w, Btn_h);
-		btnAck->BackColor = { 200, 200, 200, 255 };
-		btnAck->LineColor = { 180, 180, 180, 255 };
-//		btnAck->Set("Yes", "Align", J_CENTRE, "TxtSize", 12);
+	int Btn_w = 40, Btn_h = 16, BtnSpace = 20, Btn_y = Window_h - 25;
 
-		btnNo = new Jbw_EditBox(Render, BtnNo_x, Btn_y, Btn_w, Btn_h);
-		btnNo->BackColor = { 200, 200, 200, 255 };
-		btnNo->LineColor = { 180, 180, 180, 255 };
-	//	btnNo->Set("No", "Align", J_CENTRE, "TxtSize", 12);
-		btnNo->Render();
+
+	// YES Button
+	btnAck = new Jbw_Button(Jrdr, Window_w - 100, Btn_y, Btn_w, Btn_h, "Yes", 12);
+
+	if (MbxType == J_YESNO) {
+		// NO Button
+		btnNo = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "No", 12);
+		btnNo->RdrBtn();
 	}
 	else {
-		btnAck = new Jbw_EditBox(Render, BtnYes_x, Btn_y, Btn_w, Btn_h);
-		btnAck->BackColor = { 200, 200, 200, 255 };
-		btnAck->LineColor = { 180, 180, 180, 255 };
-		if (Type == J_OK) {
-//			btnAck->Set("Okay", "Align", J_CENTRE, "TxtSize", 12);
+		btnAck->EditX = Window_w - 50;
+		if (MbxType == J_OK) {
+			btnAck->Text.assign("Okay");
 		}
 		else{
-//			btnAck->Set("Yes", "Align", J_CENTRE, "TxtSize", 12);
+			btnAck->Text.assign("Yes");
 		}
 	}
-	btnAck->Render();
-
-	SDL_RenderPresent(Render);
+	btnAck->RdrBtn();
 }
 
