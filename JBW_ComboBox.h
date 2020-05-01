@@ -5,6 +5,7 @@
 #include "JBW_EditBox.h"
 #include "JBW_ListBox.h"
 #include "Jbw_Frame.h"
+//#include "Jbw_FrameWork.h"
 #include <string>
 
 class Jbw_ComboBox : public Jbw_Base {
@@ -14,13 +15,16 @@ public:
 	Jbw_ListBox CbxList;
 	bool CbxListVis = false;
 
+//	Jbw_Frame* JbwPtr;
+
+	
 
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_ComboBox() {};
-	Jbw_ComboBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize);
+	Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize);
 	~Jbw_ComboBox();
 
 /*-----------------------------------------------------------------------------------------

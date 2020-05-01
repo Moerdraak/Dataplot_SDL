@@ -1,5 +1,4 @@
 #pragma once
-#include "SDL.h"
 #include "Jbw_Base.h"
 #include "Jbw_Polygon.h"
 

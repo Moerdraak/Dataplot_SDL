@@ -1,8 +1,6 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_ttf.h"
+#include "Jbw_Base.h"
 #include "Jbw_Button.h"
-#include <string>
 
 class Jbw_MsgBox : Jbw_Frame {
 public:

@@ -1,4 +1,5 @@
 #pragma once
+#include "Jbw_Base.h"
 #include "JBW_EditBox.h"
 class Jbw_Button : public Jbw_EditBox{
 public:

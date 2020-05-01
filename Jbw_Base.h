@@ -1,14 +1,14 @@
 #pragma once
 #include "SDL.h"
-//#include "Jbw_Frame.h" 
+#include "SDL_image.h"
+#include "SDL_ttf.h"
 #include <string>
-
 
 /******************************************************************************************
 								ENUM / CONSTANTS
 ******************************************************************************************/
 
-// ?!?!?! To  ENUM CLASS or not too ?!?!?!?!
+// ?!?!?! Too  ENUM CLASS or not Too ?!?!?!?!
 
 enum class J : const short int {
 	TXT, EBX, LBX, CBX, BTN, GRD, LEN, // ObjWork

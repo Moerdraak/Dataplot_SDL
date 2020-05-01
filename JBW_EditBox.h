@@ -1,10 +1,8 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_ttf.h"
+
 #include "Jbw_Base.h"
 #include "Jbw_Text.h"
 #include "Jbw_Frame.h"
-#include <string>
 
 class Jbw_EditBox : public Jbw_Text { 
 private: 

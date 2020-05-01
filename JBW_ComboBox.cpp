@@ -3,7 +3,7 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_ComboBox::Jbw_ComboBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+Jbw_ComboBox::Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
 	J_Properties P;
 	P.Rdr = Rdr;
@@ -62,14 +62,23 @@ void Jbw_ComboBox::RdrCbx(void)
 		CbxList.RdrLbx();
 	}
 	else {	
-		SDL_Rect FillArea = { CbxList.FrameX, CbxList.FrameY, CbxList.FrameW, CbxList.FrameH };
-		SDL_RenderSetViewport(Jrdr, &FillArea);
-		FillArea.x = 0; FillArea.y = 0;
-		SDL_SetRenderDrawColor(Jrdr, 230, 230, 230, 255);
-		SDL_RenderFillRect(Jrdr, &FillArea);
-		// Push Evnt To re-render all
-		// But for now 
-		// we'll cheat
+	//	SDL_Window *Big = new SDL_Window;
+		int x, y;
+	//	SDL_GetWindowPosition(UserWindow, &x, &y);
+		// Create User Window
+		SDL_Window* MsgWindow = SDL_CreateWindow("MsgBox", CbxList.FrameX, CbxList.FrameY, 
+			CbxList.FrameW, CbxList.FrameH, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | 
+			SDL_WINDOW_ALWAYS_ON_TOP);
+
+		// Create renderer
+		SDL_Renderer* LbxRdr = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
+
+		SDL_Rect FillArea = { 0, 0, CbxList.FrameW, CbxList.FrameH };
+		SDL_RenderSetViewport(LbxRdr, &FillArea);
+		SDL_SetRenderDrawColor(LbxRdr, 255, 255, 255, 255);
+		SDL_RenderFillRect(LbxRdr, &FillArea);
+		SDL_RenderPresent(LbxRdr);
+
 
 	}
 	CbxEdit.RdrEbx();

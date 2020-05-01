@@ -5,12 +5,36 @@
 ------------------------------------------------------------------------------------------*/
 Jbw_FrameWork::Jbw_FrameWork(void)
 {
+	//Initialize SDL
+	SDL_Init(SDL_INIT_VIDEO);
+
+	//Set texture filtering to linear
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); // https://wiki.libsdl.org/CategoryHints#Hints
+
+	// Initialize TrueType Fonts
+	TTF_Init();
+
 	// Initialise all the ObjWork Base pointers.
 	TxtPtr = new Jbw_Text; 
 	EbxPtr = new Jbw_EditBox;
 	LbxPtr = new Jbw_ListBox;
 	CbxPtr = new Jbw_ComboBox;
 	GrdPtr = new Jbw_Grid;
+}
+
+/*------------------------------------------------------------------------------------------
+	DESTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_FrameWork::~Jbw_FrameWork()
+{
+	IMG_Quit();
+	TTF_Quit();
+
+	delete[] TxtPtr;
+	delete[] EbxPtr;
+	delete[] LbxPtr;
+	delete[] CbxPtr;
+	delete[] GrdPtr;
 }
 
 /*------------------------------------------------------------------------------------------

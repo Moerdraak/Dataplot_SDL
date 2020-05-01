@@ -1,9 +1,5 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_ttf.h"
 #include "Jbw_Base.h"
-//#include "Jbw_FrameWork.h"
-#include <string>
 
 /******************************************************************************************
 					             CLASS: Jbw_Text                  
@@ -12,7 +8,6 @@ class Jbw_Text : public Jbw_Base{
 public:
 	int TxtX = 0;
 	int TxtY = 0;
-
 
 	TTF_Font* Font = NULL;
 	SDL_Texture* txtImage = NULL;

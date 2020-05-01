@@ -17,6 +17,19 @@
 ******************************************************************************************/
 class Jbw_FrameWork {
 public:
+	//struct handles {
+	//	SDL_Window* JbwGui;
+	//	SDL_Renderer* J_Rdr = NULL;
+
+	//	Jbw_Text* TxtPtr;
+	//	Jbw_EditBox* EbxPtr = NULL;
+	//	Jbw_ListBox* LbxPtr = NULL;
+	//	Jbw_ComboBox* CbxPtr = NULL;
+	//	Jbw_Button* BtnPtr = NULL;
+	//	Jbw_Grid* GrdPtr = NULL;
+	//} Jbwk;
+
+	SDL_Rect ScreenArea;
 
 	// These Pointers to keep track of all the Objects 
 	// by the Base Object
@@ -39,6 +52,12 @@ public:
 
 	bool Flash = false;
 
+	int GuiX = 100; // Give some random default screen size
+	int GuiY = 100; // To ease the pain for first time 
+	int GuiW = 500; // Hello World use
+	int GuiH = 700;
+
+	SDL_Window* JbwGui;
 	SDL_Renderer* J_Rdr = NULL;
 
 /*-----------------------------------------------------------------------------------------
@@ -46,10 +65,12 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_FrameWork(void);
-	~Jbw_FrameWork() {
-	//	Free();
-	};	
+	~Jbw_FrameWork();
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTIONS
+------------------------------------------------------------------------------------------*/
+	void ClearScreen(void);
 /*-----------------------------------------------------------------------------------------
 	CREATE FUNCTIONS
 ------------------------------------------------------------------------------------------*/

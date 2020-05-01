@@ -2,10 +2,17 @@
 #include "Jbw_Text.h" // Temporary here
 SDL_Point* TmpPoints;
 
-//SDL_TimerCallback koos(void) {
-//	int a = 0;
-//	return this
-//}
+
+
+
+
+Uint32 koos(Uint32 interval, void* param) {
+	
+	Dataplot* Dp = static_cast<Dataplot*>(param);
+	Dp->UserRender();
+	delete Dp;
+	return SDL_AddTimer(5000, &koos, param);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,9 +23,9 @@ int main(int argc, char* argv[])
 {
 
 	Dataplot Dp; 
-	Dp.SetupScreen();
+	Jbw_Handles handles = Dp.JbwCreateLayout();
 
-
+	
 //	SDL_RenderPresent(Dp.J_Rdr);
 
 
@@ -59,11 +66,10 @@ int main(int argc, char* argv[])
 	Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
 
 
-	Uint32 delay = (5000 / 10) * 10; // To round it down to the nearest 10 ms 
 	
-//	SDL_TimerID my_timer_id = SDL_AddTimer(delay, &koos, &Dp);
+//	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
-//	Dp.UserRender();
+	Dp.UserRender();
 
 	int Rendercnt = 0;
 	std::string RndrCnttxt;
@@ -112,41 +118,17 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//   CONSTRUCTOR 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-Dataplot::Dataplot() {
-	//Initialize SDL
-	SDL_Init(SDL_INIT_VIDEO);
-	//Set texture filtering to linear
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); // WTF
-//Create User Window
-	UserWindow = SDL_CreateWindow("Data Plot", 100, 200, U_SCREEN_W, U_SCREEN_H, SDL_WINDOW_OPENGL);
-	// Create renderer for User window
-	J_Rdr = SDL_CreateRenderer(UserWindow, -1, SDL_RENDERER_ACCELERATED);
 
-	// Initialize JPG loading
-	int imgFlags = IMG_INIT_JPG;
-	if (!(IMG_Init(imgFlags) & imgFlags))
-	{/* Throw Error  Image DLL missing*/
-	}
-
-	// Initialize TrueType Fonts
-	if (TTF_Init())
-	{ /** TRUE TYPE FONTS DLL missing */
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//   DESTRUCTOR 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*-----------------------------------------------------------------------------------------
+	DESTRUCTOR
+------------------------------------------------------------------------------------------*/
 Dataplot::~Dataplot() {
 
 	//Destroy window
 	SDL_DestroyRenderer(J_Rdr);
-	SDL_DestroyWindow(UserWindow);
+//	SDL_DestroyWindow(JbwGui);
 
-	UserWindow = NULL;
+	//JbwGui = NULL;
 	J_Rdr = NULL;
 
 	//Quit SDL subsystems
@@ -155,69 +137,6 @@ Dataplot::~Dataplot() {
 	TTF_Quit();
 };
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//   INITIALISE 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Dataplot::Init()
-{
-	//Initialization flag
-	bool success = true;
-
-	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-		success = false;
-	}
-	else
-	{
-		//Set texture filtering to linear
-		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) // WTF
-		{
-			printf("Warning: Linear texture filtering not enabled!");
-		}
-
-		//Create User Window
-		UserWindow = SDL_CreateWindow("Data Plot", 100, 200, U_SCREEN_W, U_SCREEN_H, SDL_WINDOW_OPENGL);
-		if (UserWindow == NULL)
-		{
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-			success = false;
-		}
-		else
-		{			
-			J_Rdr = SDL_CreateRenderer(UserWindow, -1, SDL_RENDERER_ACCELERATED); // Create renderer for window
-			if (J_Rdr == NULL)
-			{
-				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
-				success = false;
-			}
-			else
-			{
-				// Initialize renderer color
-				SDL_SetRenderDrawColor(J_Rdr, 0xFF, 0xFF, 0xFF, 0xFF);
-
-				// Initialize JPG loading
-				int imgFlags = IMG_INIT_JPG;
-				if (!(IMG_Init(imgFlags) & imgFlags))
-				{
-					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-					success = false;
-				}
-
-				// Initialize TrueType Fonts
-				if (TTF_Init())
-				{
-					printf("TTF could not initialize! SDL_TTF Error: %s\n", TTF_GetError());
-					success = false;
-				}
-			}			
-		}
-		
-	}
-	return success;
-}
 
 /*------------------------------------------------------------------------------------------
    CLOSE THE WINDOW
@@ -236,11 +155,22 @@ void Dataplot::Close()
 	//SDL_Quit();
 	//TTF_Quit();
 }
+
 /*------------------------------------------------------------------------------------------
-   SETUP SCREEN AREA 
+  FUNCTION: JbwCreateLayout:
+			First Thing to do, create the GUI and all the objects on the GUI.
+			?? Give the important handles back ??
 ------------------------------------------------------------------------------------------*/
-bool Dataplot::SetupScreen(void)
+Jbw_Handles Dataplot::JbwCreateLayout(void)
 {
+	Jbw_Handles h;
+
+	//Create User Window
+	h.JbwGui = SDL_CreateWindow("Data Plot", 100, 200, U_SCREEN_W, U_SCREEN_H, SDL_WINDOW_OPENGL);
+	
+	// Create renderer for User window
+	h.J_Rdr = SDL_CreateRenderer(JbwGui, -1, SDL_RENDERER_ACCELERATED); // https://wiki.libsdl.org/SDL_CreateRenderer
+
 	/****************  USER SCREEN  ****************/
 	//	ScreenArea;
 	ScreenArea.x = 0;
@@ -251,13 +181,17 @@ bool Dataplot::SetupScreen(void)
 	SDL_RenderFillRect(J_Rdr, &ScreenArea);
 
 	// Load the logo
-	SDL_Surface* loadedSurface = IMG_Load("Jabberwock.jpg");
-	if (!loadedSurface == NULL)
-	{
-		//Create texture from surface pixels
-		LogoImage = SDL_CreateTextureFromSurface(J_Rdr, loadedSurface);
-		SDL_FreeSurface(loadedSurface);
+	int imgFlags = IMG_INIT_JPG; // Initialize JPG loading
+	if ((IMG_Init(imgFlags) & imgFlags)) {
+		SDL_Surface* loadedSurface = IMG_Load("Jabberwock.jpg");
+		if (!loadedSurface == NULL)
+		{
+			//Create texture from surface pixels
+			LogoImage = SDL_CreateTextureFromSurface(J_Rdr, loadedSurface);
+			SDL_FreeSurface(loadedSurface);
+		}
 	}
+	
 
 	/*  DataPlot Heading */
 	Create(J_Rdr, J_TXT, "txtDataPlotName", 110, 10, 0, 0, 24, "DataPlot");
@@ -291,6 +225,7 @@ bool Dataplot::SetupScreen(void)
 	/*  Figure Combobox  */
 	Create(J_Rdr, J_TXT, "txtFigure", 12, 340, 0, 0, 12, "Select Figure");
 	Create(J_Rdr, J_CBX, "cbxFigure", 12, 355, 300, 18, 11);
+	
 	Set("cbxFigure", "Align", "J_LEFT");
 
 	/*   Figure Type Button */
@@ -353,7 +288,25 @@ bool Dataplot::SetupScreen(void)
 	LogoArea.w = 100;
 	LogoArea.h = 100;
 
-	return 0;
+	// Put all the stuff in the hanldes struct 
+	Jbw_Handles H;
+	H.JbwGui = JbwGui;
+	H.J_Rdr = J_Rdr;
+	H.TxtPtr = TxtPtr;
+	H.TxtCnt = TxtCnt;
+	H.EbxPtr = EbxPtr;
+	H.EbxCnt = EbxCnt;
+	H.LbxPtr = LbxPtr;
+	H.LbxCnt = LbxCnt;
+	H.CbxPtr = CbxPtr;
+	H.CbxCnt = CbxCnt;
+	H.BtnPtr = BtnPtr;
+	H.BtnCnt = BtnCnt;
+	H.GrdPtr = GrdPtr;
+	H.GrdCnt = GrdCnt;
+
+
+	return H;
 }
 
 
