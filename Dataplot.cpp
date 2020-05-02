@@ -66,8 +66,8 @@ int main(int argc, char* argv[])
 	/******************************/
 	
 	
-	Jbw_MsgBox Msg("TESTING TESTING", "Werk dit? \nDit werk!", J_YESNO, 100, 20);
-	Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
+	//Jbw_MsgBox Msg("TESTING TESTING", "Werk dit? \nDit werk!", J_YESNO, 100, 20);
+	//Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
 
 
 	
@@ -246,20 +246,32 @@ Jbw_Handles Dataplot::JbwCreateLayout(void)
 	/*  SETUP GRAPHICS TABLE AREA   */	
 	Create(J_Rdr, J_GRD, "grdFigure", 360, 35, 11, 10);
 
-	GrdSet("grdFigure", 0, 0,  "HdrName", "Parameter",   "ColWidth", "180");
-	GrdSet("grdFigure", 0, 1,  "HdrName", "Size",		  "ColWidth", "30");
-	GrdSet("grdFigure", 0, 2,  "HdrName", "Bit",		  "ColWidth", "55");
-	GrdSet("grdFigure", 0, 3,  "HdrName", "Description", "ColWidth", "120");
-	GrdSet("grdFigure", 0, 4,  "HdrName", "Offset",      "ColWidth", "40");
-	GrdSet("grdFigure", 0, 5,  "HdrName", "Factor",	  "ColWidth", "40");
-	GrdSet("grdFigure", 0, 6,  "HdrName", "Colour",	  "ColWidth", "70");
-	GrdSet("grdFigure", 0, 7,  "HdrName", "Symb.",		  "ColWidth", "40");
-	GrdSet("grdFigure", 0, 8,  "HdrName", "Line",		  "ColWidth", "40");
-	GrdSet("grdFigure", 0, 9,  "HdrName", "Step",		  "ColWidth", "40");
-	GrdSet("grdFigure", 0, 10, "HdrName", "Filter",	  "ColWidth", "40");
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Parameter", 180, J_EBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Size", 30, J_EBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Bit", 55, J_EBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Description", 120, J_EBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Offset", 40, J_EBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Factor", 40, J_EBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Colour", 70, J_CBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Symb.", 40, J_CBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Line", 40, J_CBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Step", 40, J_CBX);
+	GrdPtr->AddCol(J_Rdr, "grdFigure", "Filter", 40, J_EBX);
 
-	GrdSet("grdFigure", 0, 0, "RowHeightAll", "16", "RowTxtSize", "10");
-	GrdSet("grdFigure", 0, 0, "RowHeight", "18", "TxtSize", "12");
+	//GrdSet("grdFigure", 0, 0,  "HdrName", "Parameter",   "ColWidth", "180");
+	//GrdSet("grdFigure", 0, 1,  "HdrName", "Size",		  "ColWidth", "30");
+	//GrdSet("grdFigure", 0, 2,  "HdrName", "Bit",		  "ColWidth", "55");
+	//GrdSet("grdFigure", 0, 3,  "HdrName", "Description", "ColWidth", "120");
+	//GrdSet("grdFigure", 0, 4,  "HdrName", "Offset",      "ColWidth", "40");
+	//GrdSet("grdFigure", 0, 5,  "HdrName", "Factor",	  "ColWidth", "40");
+	//GrdSet("grdFigure", 0, 6,  "HdrName", "Colour",	  "ColWidth", "70");
+	//GrdSet("grdFigure", 0, 7,  "HdrName", "Symb.",		  "ColWidth", "40");
+	//GrdSet("grdFigure", 0, 8,  "HdrName", "Line",		  "ColWidth", "40");
+	//GrdSet("grdFigure", 0, 9,  "HdrName", "Step",		  "ColWidth", "40");
+	//GrdSet("grdFigure", 0, 10, "HdrName", "Filter",	  "ColWidth", "40");
+
+	//GrdSet("grdFigure", 0, 0, "RowHeightAll", "16", "RowTxtSize", "10");
+	//GrdSet("grdFigure", 0, 0, "RowHeight", "18", "TxtSize", "12");
 
 	// Logo Area
 	LogoArea.x = 3;

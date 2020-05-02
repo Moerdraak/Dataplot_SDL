@@ -431,7 +431,7 @@ bool Jbw_FrameWork::GrdSet(std::string Obj, int Row, int Col,
 		if (StrPtr[P]->compare("HdrName") == 0) {
 			for (int I = 0; I < PtrG->Cols; I++) {
 				if (I == Col) {
-					PtrG->Element[0][I].Text.assign(ValPtr[P]);
+					PtrG->Ebox[0][I].Text.assign(ValPtr[P]);
 				}
 			}
 		}

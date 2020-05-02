@@ -15,9 +15,7 @@ public:
 	int	EditH = 0;
 
 	Jbw_Frame Border;
-
 	J_Type Align = J_LEFT;
-//	SDL_Color BackColor = {255, 255, 255, 255}; // {Red, Green, Blue, Alpha}
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS

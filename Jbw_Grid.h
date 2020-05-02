@@ -1,10 +1,8 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_ttf.h"
 #include "Jbw_Base.h"
 #include "Jbw_Editbox.h"
-#include "Jbw_Frame.h"
-#include <string>
+#include "Jbw_ComboBox.h"
+
 
 class Jbw_Grid : public Jbw_Frame {
 private:
@@ -16,8 +14,12 @@ public:
 
 	short int Rows = 0;
 	short int Cols = 0;
+	J_Type* TypeHolder = NULL;
 
-	Jbw_EditBox** Element = NULL; // Element[Row][Col]
+	Jbw_EditBox** Ebox = NULL; // Element[Row][Col]
+	Jbw_ComboBox** Cbox = NULL;
+
+	void** Element = NULL;
 
 	SDL_Color RowColor = { 255, 255, 255, 255 }; // Red, Green, Blue, Alpha}
 	SDL_Color ARowColor = { 245, 245, 245, 255 };
@@ -36,7 +38,7 @@ public:
 	/*-----------------------------------------------*/
 	bool InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt);
 
-	void AddCol(std::string ColName, int Type = J_TXT, int w = 50, int h = 15);
+	void AddCol(SDL_Renderer* Rdr, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
 	void AddRow(int Num = 1);
 	void SetVal(int Row, int Col, int Val);
 	void SetVal(int Row, int Col, std::string Val);
