@@ -12,7 +12,7 @@ Jbw_Frame::Jbw_Frame(SDL_Renderer* Rdr, int Xo, int Yo, int Width, int Height, b
 	P.w = Width;
 	P.h = Height;
 	Fill = DoFill;
-
+	LineColor = J_C_Frame;
 	InitFrame(&P);
 }
 

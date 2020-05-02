@@ -12,22 +12,13 @@
 
 
 
+
+
 /******************************************************************************************
 						 CLASS: Jbw_FrameWork                    
 ******************************************************************************************/
 class Jbw_FrameWork {
 public:
-	//struct handles {
-	//	SDL_Window* JbwGui;
-	//	SDL_Renderer* J_Rdr = NULL;
-
-	//	Jbw_Text* TxtPtr;
-	//	Jbw_EditBox* EbxPtr = NULL;
-	//	Jbw_ListBox* LbxPtr = NULL;
-	//	Jbw_ComboBox* CbxPtr = NULL;
-	//	Jbw_Button* BtnPtr = NULL;
-	//	Jbw_Grid* GrdPtr = NULL;
-	//} Jbwk;
 
 	SDL_Rect ScreenArea;
 
@@ -51,14 +42,14 @@ public:
 	short int GrdCnt = 0;
 
 	bool Flash = false;
-
-	int GuiX = 100; // Give some random default screen size
-	int GuiY = 100; // To ease the pain for first time 
-	int GuiW = 500; // Hello World use
-	int GuiH = 700;
+	
+	// Give some random default screen size to ease the pain for first time Hello World use
+	SDL_Rect GuiArea = { 100, 100, 500, 700 }; 
 
 	SDL_Window* JbwGui;
 	SDL_Renderer* J_Rdr = NULL;
+
+	Jbw_Handles hhh;
 
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS / DESTRUCTORS

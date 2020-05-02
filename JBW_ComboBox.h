@@ -1,12 +1,9 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_ttf.h"
+
 #include "Jbw_Base.h"
 #include "JBW_EditBox.h"
 #include "JBW_ListBox.h"
 #include "Jbw_Frame.h"
-//#include "Jbw_FrameWork.h"
-#include <string>
 
 class Jbw_ComboBox : public Jbw_Base {
 public:
@@ -14,11 +11,8 @@ public:
 	Jbw_Button CbxBtn; // dropdown button
 	Jbw_ListBox CbxList;
 	bool CbxListVis = false;
-
-//	Jbw_Frame* JbwPtr;
-
-	
-
+	SDL_Window* ListWindow = NULL;
+	SDL_Renderer* ListRdr = NULL;
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -32,9 +26,8 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	void InitCbx(J_Properties* Prop);
-
-	void RdrCbx(void);
-	void CbxEvent(SDL_Event* e);
-	void CbxCall(J_Type Type, std::string Input = "");
+	void RdrCbx(Jbw_Handles h);
+	void CbxEvent(Jbw_Handles h, SDL_Event* e);
+	void CbxCall(Jbw_Handles h, J_Type Type, std::string Input = "");
 };
 

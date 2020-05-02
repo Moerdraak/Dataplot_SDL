@@ -3,9 +3,6 @@
 SDL_Point* TmpPoints;
 
 
-
-
-
 Uint32 koos(Uint32 interval, void* param) {
 	
 	Dataplot* Dp = static_cast<Dataplot*>(param);
@@ -23,7 +20,14 @@ int main(int argc, char* argv[])
 {
 
 	Dataplot Dp; 
-	Jbw_Handles handles = Dp.JbwCreateLayout();
+	Jbw_Handles h = Dp.JbwCreateLayout(); // SORT OUT Dp or handles DAMMIT
+
+	/*   INITIAL RENDER   */
+		//	ScreenArea;
+	// SORT OUT Dp or handles DAMMIT
+	SDL_SetRenderDrawColor(h.JbwRdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
+	SDL_RenderFillRect(h.JbwRdr, &Dp.GuiArea);
+
 
 	
 //	SDL_RenderPresent(Dp.J_Rdr);
@@ -96,7 +100,7 @@ int main(int argc, char* argv[])
 			}
 
 			for (int I = 0; I < Dp.CbxCnt; I++) {
-				Dp.CbxPtr[I].CbxEvent(Dp.e);
+				Dp.CbxPtr[I].CbxEvent(h, Dp.e);
 			}
 
 			for (int I = 0; I < Dp.GrdCnt; I++) {
@@ -119,42 +123,27 @@ int main(int argc, char* argv[])
 }
 
 
+////////////                         END MAIN                                      ///////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*-----------------------------------------------------------------------------------------
 	DESTRUCTOR
 ------------------------------------------------------------------------------------------*/
 Dataplot::~Dataplot() {
 
-	//Destroy window
+	//Destroy Window and Renderer
 	SDL_DestroyRenderer(J_Rdr);
-//	SDL_DestroyWindow(JbwGui);
+	SDL_DestroyWindow(JbwGui);
 
-	//JbwGui = NULL;
+	JbwGui = NULL;
 	J_Rdr = NULL;
 
 	//Quit SDL subsystems
-	IMG_Quit();
 	SDL_Quit();
 	TTF_Quit();
 };
 
-
-/*------------------------------------------------------------------------------------------
-   CLOSE THE WINDOW
-------------------------------------------------------------------------------------------*/
-void Dataplot::Close()
-{
-	////Destroy window
-	//SDL_DestroyRenderer(J_Rdr);
-	//SDL_DestroyWindow(UserWindow);
-
-	//UserWindow = NULL;
-	//J_Rdr = NULL;
-
-	////Quit SDL subsystems
-	//IMG_Quit();
-	//SDL_Quit();
-	//TTF_Quit();
-}
 
 /*------------------------------------------------------------------------------------------
   FUNCTION: JbwCreateLayout:
@@ -163,22 +152,12 @@ void Dataplot::Close()
 ------------------------------------------------------------------------------------------*/
 Jbw_Handles Dataplot::JbwCreateLayout(void)
 {
-	Jbw_Handles h;
-
-	//Create User Window
-	h.JbwGui = SDL_CreateWindow("Data Plot", 100, 200, U_SCREEN_W, U_SCREEN_H, SDL_WINDOW_OPENGL);
+	GuiArea.x = 100; GuiArea.y = 200; GuiArea.w = 1070; GuiArea.h = 600;
+	JbwGui = SDL_CreateWindow("Data Plot", GuiArea.x, GuiArea.y, GuiArea.w, GuiArea.h,
+		SDL_WINDOW_OPENGL);
 	
-	// Create renderer for User window
-	h.J_Rdr = SDL_CreateRenderer(JbwGui, -1, SDL_RENDERER_ACCELERATED); // https://wiki.libsdl.org/SDL_CreateRenderer
-
-	/****************  USER SCREEN  ****************/
-	//	ScreenArea;
-	ScreenArea.x = 0;
-	ScreenArea.y = 0;
-	ScreenArea.w = U_SCREEN_W;
-	ScreenArea.h = U_SCREEN_H;
-	SDL_SetRenderDrawColor(J_Rdr, 0xE8, 0xE8, 0xE8, 0xFF);
-	SDL_RenderFillRect(J_Rdr, &ScreenArea);
+	// Create renderer for User window https://wiki.libsdl.org/SDL_CreateRenderer
+	J_Rdr = SDL_CreateRenderer(JbwGui, -1, SDL_RENDERER_ACCELERATED); 
 
 	// Load the logo
 	int imgFlags = IMG_INIT_JPG; // Initialize JPG loading
@@ -191,8 +170,8 @@ Jbw_Handles Dataplot::JbwCreateLayout(void)
 			SDL_FreeSurface(loadedSurface);
 		}
 	}
+	IMG_Quit();
 	
-
 	/*  DataPlot Heading */
 	Create(J_Rdr, J_TXT, "txtDataPlotName", 110, 10, 0, 0, 24, "DataPlot");
 	Create(J_Rdr, J_TXT, "txtVersion", 110, 35, 0, 0, 11, "Version: c1.0");
@@ -288,27 +267,14 @@ Jbw_Handles Dataplot::JbwCreateLayout(void)
 	LogoArea.w = 100;
 	LogoArea.h = 100;
 
-	// Put all the stuff in the hanldes struct 
-	Jbw_Handles H;
-	H.JbwGui = JbwGui;
-	H.J_Rdr = J_Rdr;
-	H.TxtPtr = TxtPtr;
-	H.TxtCnt = TxtCnt;
-	H.EbxPtr = EbxPtr;
-	H.EbxCnt = EbxCnt;
-	H.LbxPtr = LbxPtr;
-	H.LbxCnt = LbxCnt;
-	H.CbxPtr = CbxPtr;
-	H.CbxCnt = CbxCnt;
-	H.BtnPtr = BtnPtr;
-	H.BtnCnt = BtnCnt;
-	H.GrdPtr = GrdPtr;
-	H.GrdCnt = GrdCnt;
-
-
-	return H;
+	// Put all the stuff in the handles struct 
+	Jbw_Handles h;
+	h.JbwGui = JbwGui;
+	h.JbwRdr = J_Rdr;
+	hhh.JbwGui = JbwGui;
+	hhh.JbwRdr = J_Rdr;
+	return h;
 }
-
 
 /*------------------------------------------------------------------------------------------
    PERFORM ALL RENDERING TASKS
@@ -333,12 +299,12 @@ void Dataplot::UserRender(void)
 	for (int I = 0; I < LbxCnt; I++) {
 		LbxPtr[I].RdrLbx(); 
 	}
-
+	
 	// Render Combo Box  Objects	
 	for (int I = 0; I < CbxCnt; I++) {
-		CbxPtr[I].RdrCbx(); 
+		CbxPtr[I].RdrCbx(hhh); 
 	}
-
+	
 	// Render Buttons  Objects	
 	for (int I = 0; I < BtnCnt; I++) {
 			BtnPtr[I].RdrBtn(); 

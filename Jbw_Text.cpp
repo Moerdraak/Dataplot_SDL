@@ -24,6 +24,7 @@ void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int
 FUNCTION: Create Texture
 ---------------------------------------------------------------*/
 void Jbw_Text::CreateTexture(void) {
+
 	Font = TTF_OpenFont("fonts/arial.ttf", TxtSize); // Load the default font	
 	TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
 

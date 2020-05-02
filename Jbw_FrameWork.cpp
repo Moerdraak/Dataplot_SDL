@@ -29,6 +29,7 @@ Jbw_FrameWork::~Jbw_FrameWork()
 {
 	IMG_Quit();
 	TTF_Quit();
+	SDL_Quit();
 
 	delete[] TxtPtr;
 	delete[] EbxPtr;

@@ -59,8 +59,8 @@ void Jbw_ListBox::InitLbx(J_Properties* Prop)
 	Slider->FillColor = J_C_BtnGrey;
 
 	// Create SliderButtons
-	SldrBtnUp = new Jbw_Button(Jrdr, FrameX + FrameW - 15, FrameY, 15, 15,"\^");
-	SldrBtnDwn = new Jbw_Button(Jrdr, FrameX + FrameW - 15, FrameY + FrameH - 15, 15, 15, "\^");
+	SldrBtnUp = new Jbw_Button(Jrdr, FrameX + FrameW - 15, FrameY, 15, 15,"^");
+	SldrBtnDwn = new Jbw_Button(Jrdr, FrameX + FrameW - 15, FrameY + FrameH - 15, 15, 15, "^");
 	SldrBtnDwn->Flip = SDL_FLIP_VERTICAL;
 }
 
@@ -102,7 +102,7 @@ void Jbw_ListBox::RdrLbx(void)
 
 
 	// Get number of lines that will fit into the ListBox display
-	int Lines = floor(FrameH / (FontSize + 1));
+	int Lines = (int)floor(FrameH / (FontSize + 1));
 	int FromLine = 0;
 	int ToLine = Cnt;
 	if (Cnt > Lines) {
@@ -112,7 +112,7 @@ void Jbw_ListBox::RdrLbx(void)
 		SldrBtnUp->RdrBtn(); // Render
 		SldrBtnDwn->RdrBtn(); // Render
 		
-		int Pos = floor(FromLine * (SliderBox->FrameH) / (Cnt)) - Lines;
+		int Pos = (int)floor(FromLine * (SliderBox->FrameH) / (Cnt)) - Lines;
 		Slider->FrameY = SliderBox->FrameY +  Pos; // Set Slider Position
 		Slider->FrameH = SliderBox->FrameH - (Slider->FrameY - SliderBox->FrameY) - 1;
 		Slider->CreatePts();

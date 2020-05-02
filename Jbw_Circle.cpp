@@ -14,7 +14,7 @@ void Jbw_Circle::CircleOpen()
 
     for (int X = 0; X < CirRad; X++)
     {
-        int Y = sqrt(CirRad * CirRad - X * X);
+        int Y = (int)sqrt(CirRad * CirRad - X * X);
 
         SDL_RenderDrawPoint(Jrdr, CirX + X, CirY + Y);
         SDL_RenderDrawPoint(Jrdr, CirX - X, CirY + Y);
@@ -25,7 +25,7 @@ void Jbw_Circle::CircleOpen()
 
     for (int Y = 0; Y < CirRad; Y++)
     {
-        int X = sqrt(CirRad * CirRad - Y * Y);
+        int X = (int)sqrt(CirRad * CirRad - Y * Y);
 
         SDL_RenderDrawPoint(Jrdr, CirX + X, CirY + Y);
         SDL_RenderDrawPoint(Jrdr, CirX  - X, CirY + Y);

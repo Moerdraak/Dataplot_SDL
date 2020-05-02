@@ -33,15 +33,15 @@ void Jbw_ComboBox::InitCbx(J_Properties* Prop)
 	Jrdr = Prop->Rdr;
 	
 	// initialise  Editbox 
-	P.w = Prop->w - 15;
+	P.w = Prop->w - 14;
 	CbxEdit.InitEbx(&P);
 
 	// Create Button
 	P = *Prop;
-	P.x = Prop->x + Prop->w - 16;
+	P.x = Prop->x + Prop->w - 15;
 	P.w = 15;
 	CbxBtn.InitBtn(&P);
-	CbxBtn.Text = "\^";
+	CbxBtn.Text = "^";
 	CbxBtn.Flip = SDL_FLIP_VERTICAL;
 
 	// Create List Box
@@ -56,30 +56,39 @@ void Jbw_ComboBox::InitCbx(J_Properties* Prop)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: RdrCbx
 ------------------------------------------------------------------------------------------*/
-void Jbw_ComboBox::RdrCbx(void)
+void Jbw_ComboBox::RdrCbx(Jbw_Handles h)
 {	
 	if (CbxListVis == true) {
-		CbxList.RdrLbx();
-	}
-	else {	
-	//	SDL_Window *Big = new SDL_Window;
-		int x, y;
-	//	SDL_GetWindowPosition(UserWindow, &x, &y);
-		// Create User Window
-		SDL_Window* MsgWindow = SDL_CreateWindow("MsgBox", CbxList.FrameX, CbxList.FrameY, 
-			CbxList.FrameW, CbxList.FrameH, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | 
+
+		// Get Main window current position
+		int x = 0, y = 0;
+		SDL_GetWindowPosition(h.JbwGui, &x, &y);
+
+		// Create List Window
+		ListWindow = SDL_CreateWindow("", x + CbxList.FrameX, y + CbxList.FrameY,
+			CbxList.FrameW + 1, CbxList.FrameH, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
 			SDL_WINDOW_ALWAYS_ON_TOP);
 
 		// Create renderer
-		SDL_Renderer* LbxRdr = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
+		ListRdr = SDL_CreateRenderer(ListWindow, -1, SDL_RENDERER_ACCELERATED);
+			
+		SDL_Rect LstBox = { 0, 0, CbxList.FrameW + 1, CbxList.FrameH };
+		SDL_RenderSetViewport(ListRdr, &LstBox);
+		
+		// Fill Box with white	
+		SDL_SetRenderDrawColor(ListRdr, 255, 255, 255, 255);
+		SDL_RenderFillRect(ListRdr, &LstBox);
+		
+		// Draw border around window
+		Jbw_Frame Border(ListRdr, 0, 0, CbxList.FrameW + 1, CbxList.FrameH, false);
+		Border.LineColor = J_C_Frame;
+		Border.RdrFrame();
 
-		SDL_Rect FillArea = { 0, 0, CbxList.FrameW, CbxList.FrameH };
-		SDL_RenderSetViewport(LbxRdr, &FillArea);
-		SDL_SetRenderDrawColor(LbxRdr, 255, 255, 255, 255);
-		SDL_RenderFillRect(LbxRdr, &FillArea);
-		SDL_RenderPresent(LbxRdr);
-
-
+		SDL_RenderPresent(ListRdr);
+	}
+	else if (ListWindow != NULL){
+		SDL_DestroyRenderer(ListRdr);
+		SDL_DestroyWindow(ListWindow);
 	}
 	CbxEdit.RdrEbx();
 	CbxBtn.RdrBtn();
@@ -90,7 +99,7 @@ void Jbw_ComboBox::RdrCbx(void)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: CbxEvent
 ------------------------------------------------------------------------------------------*/
-void Jbw_ComboBox::CbxEvent(SDL_Event* e)
+void Jbw_ComboBox::CbxEvent(Jbw_Handles h, SDL_Event* e)
 {
 	bool Inside = false;
 	bool Flag = false;
@@ -114,7 +123,7 @@ void Jbw_ComboBox::CbxEvent(SDL_Event* e)
 			case SDL_MOUSEBUTTONDOWN:
 				CbxBtn.Border.FillColor = J_C_BtnDwn;
 				CbxBtn.RdrBtn();
-				CbxCall(J_CLICK);
+				CbxCall(h, J_CLICK);
 
 				//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 				break;
@@ -138,6 +147,15 @@ void Jbw_ComboBox::CbxEvent(SDL_Event* e)
 				CbxBtn.RdrBtn();
 				msOver = false;
 			}
+			// If Combobox is open and user clicks anywhere outside of Combobox
+			// List area it must close the Listbox of Combobox
+			if (e->type == SDL_MOUSEBUTTONDOWN ) {
+				int a = 0;
+			}
+			if (e->type == SDL_MOUSEBUTTONDOWN && CbxListVis == true) {
+				CbxCall(h, J_CLICK); 
+			}
+
 		}
 	}
 }
@@ -145,19 +163,19 @@ void Jbw_ComboBox::CbxEvent(SDL_Event* e)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: CbxCall
 ------------------------------------------------------------------------------------------*/
-void Jbw_ComboBox::CbxCall(J_Type Type, std::string Input)
+void Jbw_ComboBox::CbxCall(Jbw_Handles h, J_Type Type, std::string Input)
 {
 	if (Type == J_CLICK) {
 		if (CbxListVis == false) {
 			CbxListVis = true;
-			RdrCbx();
+			RdrCbx(h);
 		}
 		else {
 			CbxListVis = false;
-			RdrCbx();
-			// Push User event to anything inside the Frame area so that it
-			// will render again.
+			RdrCbx(h);
 		}
-		
 	}
 }
+
+
+
