@@ -1,4 +1,4 @@
-#pragma once
+#pragma onceRowCnt
 #include "Jbw_Base.h"
 #include "Jbw_Editbox.h"
 #include "Jbw_ComboBox.h"
@@ -12,13 +12,15 @@ public:
 	int GridX = 0;
 	int GridY = 0;
 
-	short int Rows = 0;
-	short int Cols = 0;
-	J_Type* TypeHolder = NULL;
+	short int RowCnt = 0;
+	short int ColCnt = 0;
+	short int RowHeight = 0;
+	J_Type* ColType = NULL;
 
-	Jbw_EditBox** Ebox = NULL; // Element[Row][Col]
-	Jbw_ComboBox** Cbox = NULL;
+	Jbw_EditBox** Ebox = NULL; // DELETE
+	Jbw_ComboBox** Cbox = NULL; // DELETE
 
+	Jbw_EditBox* Header = NULL;
 	void** Element = NULL;
 
 	SDL_Color RowColor = { 255, 255, 255, 255 }; // Red, Green, Blue, Alpha}
@@ -30,15 +32,16 @@ public:
 	/*          Constructors / Destructors           */
 	/*-----------------------------------------------*/
 	Jbw_Grid() {};
-	Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt);
+	Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumCol, int NumRowCnt);
 	~Jbw_Grid();
 
 	/*************************************************/
 	/*               Create Functions                */
 	/*-----------------------------------------------*/
-	bool InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int ColCnt, int RowCnt);
+	bool InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumRow);
+	bool InitGrd(J_Properties* Prop);
 
-	void AddCol(SDL_Renderer* Rdr, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
+	void AddCol(Jbw_Handles handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
 	void AddRow(int Num = 1);
 	void SetVal(int Row, int Col, int Val);
 	void SetVal(int Row, int Col, std::string Val);

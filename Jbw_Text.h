@@ -40,6 +40,7 @@ public:
 		FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
+	void InitTxt(J_Properties* Prop);
 	void InitTxt(SDL_Renderer* TRdr, std::string NewText, int x, int y, int Fsize = 12);
 	bool SetTxt(std::string  *Var, const char* Val);
 	void Add(std::string XtraText);

@@ -6,7 +6,7 @@
 Jbw_ComboBox::Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
 	J_Properties P;
-	P.Rdr = Rdr;
+	P.handles.JbwRdr = Rdr;
 	P.x = x;
 	P.y = y;
 	P.w = w;
@@ -28,29 +28,35 @@ Jbw_ComboBox::~Jbw_ComboBox()
 ------------------------------------------------------------------------------------------*/
 void Jbw_ComboBox::InitCbx(J_Properties* Prop)
 {
-	J_Properties P = *Prop;
-
-	Jrdr = Prop->Rdr;
+	Id = Prop->Id;
+	Tag.assign(Prop->Tag);
+	Jrdr = Prop->handles.JbwRdr;
 	
-	// initialise  Editbox 
-	P.w = Prop->w - 14;
-	CbxEdit.InitEbx(&P);
+	// Don't use these properties any further
+	Prop->Id = -1;
+	Prop->Tag = " ";
+
+	// Create Editbox 
+	J_Properties Pedit = *Prop;
+	Pedit.w = Prop->w - 14;
+	CbxEdit.InitEbx(&Pedit);
 
 	// Create Button
-	P = *Prop;
-	P.x = Prop->x + Prop->w - 15;
-	P.w = 15;
-	CbxBtn.InitBtn(&P);
+	J_Properties Pbtn = *Prop;
+	Pbtn.x = Prop->x + Prop->w - 15;
+	Pbtn.w = 15;
+	CbxBtn.InitBtn(&Pbtn);
 	CbxBtn.Text = "^";
 	CbxBtn.Flip = SDL_FLIP_VERTICAL;
 
 	// Create List Box
-	P = *Prop;
-	P.y = Prop->y + Prop->h - 1;
-	P.w = Prop->w -1;
-	P.h = 40;
+	J_Properties Plbx = *Prop;
+	Plbx = *Prop;
+	Plbx.y = Prop->y + Prop->h - 1;
+	Plbx.w = Prop->w -1;
+	Plbx.h = 40;
 	CbxList.Visible = false;
-	CbxList.InitLbx(&P);
+	CbxList.InitLbx(&Plbx);
 }
 
 /*-----------------------------------------------------------------------------------------

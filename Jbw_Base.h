@@ -33,30 +33,14 @@ const SDL_Color J_C_LGrey = { 245, 245, 245, 255 };
 const SDL_Color J_C_msOver = { 210, 210, 210, 255 };
 const SDL_Color J_C_BtnDwn = { 150, 150, 150, 255 };
 
-/******************************************************************************************
-								 STRUCT: J_Properties
-******************************************************************************************/
-struct J_Properties {
-	SDL_Window* Gui;
-	SDL_Renderer* Rdr;
-	int x = 0;
-	int y = 0;
-	int w = 100;
-	int h = 15;
-	int Fsize = 12;
-	int ColCnt = 0;
-	int RowCnt = 0;
-	std::string Tag = "";
-	std::string Caption = "";
-	bool BoolVal = false;
-};
+
 
 /******************************************************************************************
 						 STRUCT holding Jbw Handles
 ******************************************************************************************/
 struct Jbw_Handles {
-	SDL_Rect GuiArea;
-	SDL_Window* JbwGui;
+	SDL_Rect GuiArea = { 0, 0, 0, 0 };
+	SDL_Window* JbwGui = NULL;
 	SDL_Renderer* JbwRdr = NULL;
 	//Jbw_Text* TxtPtr;
 	//Jbw_EditBox* EbxPtr = NULL;
@@ -71,6 +55,24 @@ struct Jbw_Handles {
 	//short int CbxCnt = 0;
 	//short int BtnCnt = 0;
 	//short int GrdCnt = 0;
+};
+
+/******************************************************************************************
+								 STRUCT: J_Properties
+******************************************************************************************/
+struct J_Properties {
+	Jbw_Handles handles;
+	int x = 0;
+	int y = 0;
+	int w = 100;
+	int h = 15;
+	int Fsize = 12;
+	int NumCol = 0;
+	int NumRow = 0;
+	int Id = -1;
+	std::string Tag = "";
+	std::string Caption = "";
+	bool BoolVal = false;
 };
 
 /******************************************************************************************

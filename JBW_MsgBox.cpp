@@ -6,7 +6,7 @@
 
 Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x, int y, int w, int h)
 {
-	J_Properties P;
+	
 	Window_w = w;
 	Window_h = h;
 	MbxType = OkYesNo;
@@ -30,10 +30,11 @@ Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x
 	FrameH = Window_h;
 
 	// Create Header
-	P.Rdr = Jrdr;
-	P.w = Window_w;
-	P.h = 18;
-	Header = new Jbw_EditBox(&P);
+	J_Properties Prop;
+	Prop.handles.JbwRdr = Jrdr;
+	Prop.w = Window_w;
+	Prop.h = 18;
+	Header = new Jbw_EditBox(&Prop);
 	Header->Text.assign(Title);
 
 	RenderBox();

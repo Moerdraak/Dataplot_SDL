@@ -6,7 +6,7 @@
 Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
 	J_Properties P;
-	P.Rdr = Rdr; 
+	P.handles.JbwRdr = Rdr; 
 	P.x = x; 
 	P.y = y; 
 	P.w = w;
@@ -36,7 +36,7 @@ Jbw_EditBox::~Jbw_EditBox() {
 void Jbw_EditBox::InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
 	J_Properties P;
-	P.Rdr = Rdr;
+	P.handles.JbwRdr = Rdr;
 	P.x = x;
 	P.y = y;
 	P.w = w;
@@ -49,11 +49,14 @@ void Jbw_EditBox::InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsi
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::InitEbx(J_Properties *Prop)
 {
+	Id = Prop->Id;
+	Tag.assign(Prop->Tag);
+	Jrdr = Prop->handles.JbwRdr;
 	EditX = Prop->x + 1; EditY = Prop->y + 1; EditW = Prop->w - 2; EditH = Prop->h - 2;
 	Border.InitFrame(Prop);
 	Border.Fill = true;
 	Border.LineColor = J_C_Frame;
-	Jrdr = Prop->Rdr;
+	
 	TxtSize = Prop->Fsize;
 }
 
@@ -202,7 +205,7 @@ void Jbw_EditBox::RdrEbx(void)
 	// Size and Set Text for Rendering
 	FitText();
 	SDL_RenderCopyEx(Jrdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
-	
+
 	// Render to screen
 	SDL_RenderPresent(Jrdr); 
 }

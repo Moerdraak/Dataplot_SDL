@@ -13,13 +13,30 @@ FUNCTION: Initialise Text
 ---------------------------------------------------------------*/
 void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
 {
-	Jrdr = Rdr;
-	Text.assign(NewText);
-	TxtX = x;
-	TxtY = y;
-	TxtSize = Fsize;
+	J_Properties Prop;
+	Prop.handles.JbwRdr = Rdr;
+	Prop.Caption.assign(NewText);
+	Prop.x = x;
+	Prop.y = y;
+	Prop.Fsize = Fsize;
+	InitTxt(&Prop);
+}
+
+/*---------------------------------------------------------------
+FUNCTION: Initialise Text
+---------------------------------------------------------------*/
+void Jbw_Text::InitTxt(J_Properties* Prop) 
+{
+	Id = Prop->Id;
+	Tag.assign(Prop->Tag);
+	Jrdr = Prop->handles.JbwRdr;
+	Text.assign(Prop->Caption);
+	TxtX = Prop->x;
+	TxtY = Prop->y;
+	TxtSize = Prop->Fsize;
 	CreateTexture();
 }
+
 /*---------------------------------------------------------------
 FUNCTION: Create Texture
 ---------------------------------------------------------------*/
@@ -57,7 +74,7 @@ void Jbw_Text::CreateTexture(void) {
 	txtImage = SDL_CreateTextureFromSurface(Jrdr, txtSurf); // Move it from RAM to VRAM -> Graphics card which makes it much faster
 
 	txtClip = { 0, 0, txtSurf->w, txtSurf->h };
-	txtBox = { 0/*TxtX*/, 0/*TxtY*/ , txtSurf->w, txtSurf->h };
+	txtBox = { 0, 0 , txtSurf->w, txtSurf->h };
 
 	SDL_FreeSurface(txtSurf); // Free the memory of SDL_Surface
 }

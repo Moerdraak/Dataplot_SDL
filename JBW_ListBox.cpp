@@ -6,7 +6,7 @@
 Jbw_ListBox::Jbw_ListBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
 {
 	J_Properties P;
-	P.Rdr = Rdr;
+	P.handles.JbwRdr = Rdr;
 	P.x = x;
 	P.y = y;
 	P.w = w;
@@ -22,7 +22,6 @@ Jbw_ListBox::Jbw_ListBox(J_Properties* Prop)
 {
 	delete SliderBox;
 	delete[] TextList;
-
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -37,7 +36,10 @@ Jbw_ListBox::~Jbw_ListBox() {
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::InitLbx(J_Properties* Prop)
 {
-	Jrdr = Prop->Rdr;
+	Id = Prop->Id;
+	Tag.assign(Prop->Tag);
+	Jrdr = Prop->handles.JbwRdr;
+
 	FrameX = Prop->x;
 	FrameY = Prop->y;
 	FrameW = Prop->w;

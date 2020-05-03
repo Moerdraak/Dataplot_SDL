@@ -7,12 +7,12 @@ Jbw_Button::Jbw_Button(SDL_Renderer* Rdr, int x, int y, int w, int h,
 	std::string Caption, int Fsize)
 {
 	J_Properties P;
-	P.Rdr = Rdr;
+	P.handles.JbwRdr = Rdr;
 	P.x = x;
 	P.y = y;
 	P.w = w;
 	P.h = h;
-	P.Caption = Caption;
+	P.Caption.assign(Caption);
 	P.Fsize = Fsize;
 	InitBtn(&P);
 }
@@ -38,14 +38,16 @@ Jbw_Button::~Jbw_Button()
 ------------------------------------------------------------------------------------------*/
 void Jbw_Button::InitBtn(J_Properties* Prop)
 {
-	Text = Prop->Caption;
+	Id = Prop->Id;
+	Tag.assign(Prop->Tag);
+	Jrdr = Prop->handles.JbwRdr;
+	Text.assign(Prop->Caption);
 	Align = J_CENTRE;
 	EditX = Prop->x + 1; EditY = Prop->y + 1; EditW = Prop->w - 2; EditH = Prop->h - 2;
 	Border.InitFrame(Prop);
 	Border.Fill = true;
 	Border.LineColor = J_C_Frame;
 	Border.FillColor = J_C_BtnGrey;
-	Jrdr = Prop->Rdr;
 	TxtSize = Prop->Fsize;
 	CreateTexture();
 }

@@ -5,22 +5,22 @@
 ------------------------------------------------------------------------------------------*/
 Jbw_Frame::Jbw_Frame(SDL_Renderer* Rdr, int Xo, int Yo, int Width, int Height, bool DoFill)
 {
-	J_Properties P;
-	P.Rdr = Rdr;
-	P.x = Xo;
-	P.y = Yo;
-	P.w = Width;
-	P.h = Height;
+	J_Properties Prop;
+	Prop.handles.JbwRdr = Rdr;
+	Prop.x = Xo;
+	Prop.y = Yo;
+	Prop.w = Width;
+	Prop.h = Height;
 	Fill = DoFill;
 	LineColor = J_C_Frame;
-	InitFrame(&P);
+	InitFrame(&Prop);
 }
 
 /*---------------------------------------------------------------
 FUNCTION:
 ---------------------------------------------------------------*/
 void Jbw_Frame::InitFrame(J_Properties* Prop) {
-	Jrdr = Prop->Rdr;
+	Jrdr = Prop->handles.JbwRdr;
 	FrameX = Prop->x;
 	FrameY = Prop->y;
 	FrameW = Prop->w;

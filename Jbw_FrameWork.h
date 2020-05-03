@@ -46,10 +46,7 @@ public:
 	// Give some random default screen size to ease the pain for first time Hello World use
 	SDL_Rect GuiArea = { 100, 100, 500, 700 }; 
 
-	SDL_Window* JbwGui;
-	SDL_Renderer* J_Rdr = NULL;
-
-	Jbw_Handles hhh;
+	Jbw_Handles handles;
 
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS / DESTRUCTORS
@@ -66,8 +63,8 @@ public:
 	CREATE FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	bool Create(SDL_Renderer* Rdr, int ObjType, std::string Tag,
-		int Xpos, int Ypos, int WidthOrColCnt, int HeightOrRowCnt,
+	bool Create(Jbw_Handles handles, int ObjType, std::string Tag,
+		int Xpos, int Ypos, int WidthOrNumCol, int HeightOrNumRowCnt,
 		int FontSize = 12, std::string Caption = "");
 	bool CreateTxt(J_Properties* Prop);
 	bool CreateEbx(J_Properties* Prop);
