@@ -7,12 +7,21 @@
 
 class Jbw_ComboBox : public Jbw_Base {
 public:
+
+	int ComboX = 0;
+	int ComboY = 0;
+	int ComboW = 0;
+	int ComboH = 0;
+
+
 	Jbw_Button CbxEdit;
 	Jbw_Button CbxBtn; // dropdown button
 	Jbw_ListBox CbxList;
 	bool CbxListVis = false;
 	SDL_Window* ListWindow = NULL;
 	SDL_Renderer* ListRdr = NULL;
+	int LbxCnt = 0;
+	std::string* LbxTxt = NULL;
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -26,8 +35,10 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	void InitCbx(J_Properties* Prop);
-	void RdrCbx(Jbw_Handles h);
-	void CbxEvent(Jbw_Handles h, SDL_Event* e);
-	void CbxCall(Jbw_Handles h, J_Type Type, std::string Input = "");
+	void AddRow(Jbw_Handles* h, std::string NewText);
+	void RdrCbx(Jbw_Handles* h);
+	void CbxEvent(Jbw_Handles* h);
+	void CbxCall(Jbw_Handles* h, J_Type Type, std::string Input = "");
+	
 };
 

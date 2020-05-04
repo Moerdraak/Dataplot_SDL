@@ -20,8 +20,10 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	void InitBtn(J_Properties* Prop);
+
 	void RdrBtn(void);
-	void BtnEvent(SDL_Event* e);
-	void SetmsOver(bool State);
+	J_Type BtnEvent(Jbw_Handles* h);
+	
+
 };
 

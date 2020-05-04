@@ -80,7 +80,7 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 
 	//txtRandom = new Jbw_EditBox(GRender, J_TXT, 0, 0, 10);
 
-	Create(handles, J_TXT, "txtRandom", 0, 0, 0, 0);
+	Create(&handles, J_TXT, "txtRandom", 0, 0, 0, 0);
 	//txtRandom = new Jbw_EditBox(Prop);
 
 	//Legend Area

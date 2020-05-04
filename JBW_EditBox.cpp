@@ -213,11 +213,11 @@ void Jbw_EditBox::RdrEbx(void)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::EbxEvent(SDL_Event* e)
+void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 {
 	bool Flag = false;
 	//If mouse event happened
-	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP){
+	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || h->Event.type == SDL_MOUSEBUTTONUP){
 		// Get mouse position
 		int x, y;
 		SDL_GetMouseState(&x, &y);
@@ -225,7 +225,7 @@ void Jbw_EditBox::EbxEvent(SDL_Event* e)
 		// Mouse pointer inside Edit box
 		if (x > EditX && x < EditX + EditW && y > EditY && y < EditY + EditH)
 		{
-			switch (e->type)
+			switch (h->Event.type)
 			{
 			case SDL_MOUSEMOTION:
 				Border.LineColor = { 0, 0, 0, 255 };
@@ -244,7 +244,7 @@ void Jbw_EditBox::EbxEvent(SDL_Event* e)
 		}
 		else {
 			Border.LineColor = J_C_Frame;
-			if (e->type == SDL_MOUSEBUTTONDOWN) {
+			if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
 				Focus = false;
 			}
 		}
@@ -253,24 +253,24 @@ void Jbw_EditBox::EbxEvent(SDL_Event* e)
 	if (Focus == false) {
 		return;
 	}
-	else if (e->type == SDL_TEXTINPUT) 	{
-		Add(e->text.text);
+	else if (h->Event.type == SDL_TEXTINPUT) 	{
+		Add(h->Event.text.text);
 //		RdrEbx();
 	}
-	else if (e->type == SDL_KEYDOWN)
+	else if (h->Event.type == SDL_KEYDOWN)
 	{
-		if (e->key.keysym.sym == SDLK_BACKSPACE) {
+		if (h->Event.key.keysym.sym == SDLK_BACKSPACE) {
 			BackSpace();
 		//	RdrEbx();
 		}
-		else if (e->key.keysym.sym == SDLK_DELETE) {
+		else if (h->Event.key.keysym.sym == SDLK_DELETE) {
 		}
-		else if (e->key.keysym.sym) {
+		else if (h->Event.key.keysym.sym) {
 		}
 	}
 	if (0) {
-		if (e->type == SDL_USEREVENT) {
-			e->user.data1;
+		if (h->Event.type == SDL_USEREVENT) {
+			h->Event.user.data1;
 			my_function();
 			//	Uint32* AAA{ static_cast<Uint32*>(e->user.data1) };
 			//	void (*A) (void*) = e->type.user.data2;

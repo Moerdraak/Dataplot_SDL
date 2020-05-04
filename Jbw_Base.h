@@ -17,10 +17,12 @@ enum class J : const short int {
 };
 
 enum J_Type : const short int {
+	J_NULL,
 	J_TXT, J_EBX, J_LBX, J_CBX, J_BTN,  J_GRD, J_LEN, // ObjWork
 	J_LEFT, J_CENTRE, J_RIGHT, // TxtBox
 	J_OK, J_YES, J_YESNO, // MsgBox
-	J_CLICK   // Callback events
+	J_CLICK, 
+	J_BTN_CLICK// Callback events
 };
 
 const SDL_Color J_C_Window = { 230, 230, 230, 255 };
@@ -38,23 +40,34 @@ const SDL_Color J_C_BtnDwn = { 150, 150, 150, 255 };
 /******************************************************************************************
 						 STRUCT holding Jbw Handles
 ******************************************************************************************/
+// Forward declarations for Jbw_Handles 
+class Jbw_Text;
+class Jbw_EditBox;
+class Jbw_ListBox;
+class Jbw_ComboBox;
+class Jbw_Button;
+class Jbw_Grid;
+
 struct Jbw_Handles {
 	SDL_Rect GuiArea = { 0, 0, 0, 0 };
 	SDL_Window* JbwGui = NULL;
 	SDL_Renderer* JbwRdr = NULL;
-	//Jbw_Text* TxtPtr;
-	//Jbw_EditBox* EbxPtr = NULL;
-	//Jbw_ListBox* LbxPtr = NULL;
-	//Jbw_ComboBox* CbxPtr = NULL;
-	//Jbw_Button* BtnPtr = NULL;
-	//Jbw_Grid* GrdPtr = NULL;
+	SDL_Event Event;
+	Jbw_Text* TxtPtr;
+	Jbw_EditBox* EbxPtr = NULL;
+	Jbw_ListBox* LbxPtr = NULL;
+	Jbw_ComboBox* CbxPtr = NULL;
+	Jbw_Button* BtnPtr = NULL;
+	Jbw_Grid* GrdPtr = NULL;
+	
+	void** Jbw_Obj;
 
-	//short int TxtCnt = 0;
-	//short int EbxCnt = 0;
-	//short int LbxCnt = 0;
-	//short int CbxCnt = 0;
-	//short int BtnCnt = 0;
-	//short int GrdCnt = 0;
+	short int *TxtCnt = 0;
+	short int *EbxCnt = 0;
+	short int *LbxCnt = 0;
+	short int *CbxCnt = 0;
+	short int *BtnCnt = 0;
+	short int *GrdCnt = 0;
 };
 
 /******************************************************************************************

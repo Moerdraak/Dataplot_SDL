@@ -160,3 +160,108 @@ void Jbw_MsgBox::RenderBox(void) {
 	btnAck->RdrBtn();
 }
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: MsgBox
+------------------------------------------------------------------------------------------*/
+J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
+	int x, int y, int w , int h )
+{
+	Window_w = w;
+	Window_h = h;
+	MbxType = OkYesNo;
+
+	Font = TTF_OpenFont("fonts/arial.ttf", 12);
+	TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
+
+	// Get Window Size
+	Parser(Title, false);
+	Parser(Msg, false);
+
+	// Create User Window
+	MsgWindow = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
+		| SDL_WINDOW_BORDERLESS);
+
+	// Create renderer for User window
+	Jrdr = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
+
+	// Create Border
+	FrameW = Window_w;
+	FrameH = Window_h;
+
+	// Create Header
+	J_Properties Prop;
+	Prop.handles.JbwRdr = Jrdr;
+	Prop.w = Window_w;
+	Prop.h = 18;
+	Header = new Jbw_EditBox(&Prop);
+	Header->Text.assign(Title);
+
+	RenderBox();
+
+	// Set Viewport for Message	
+	SDL_Rect Window = { 0, 0, Window_w, Window_h };
+	SDL_RenderSetViewport(Jrdr, &Window);
+	Parser(Msg, true);
+	
+	int Flag = false;
+	SDL_Event e;
+	while (SDL_WaitEvent(&e) != 0) {
+		//If mouse event happened
+		if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN ||
+			e.type == SDL_MOUSEBUTTONUP) {
+			// Get mouse position
+			int x, y;
+			SDL_GetMouseState(&x, &y);
+
+			// Mouse pointer inside Edit box
+			if (x > btnAck->EditX && x < btnAck->EditX + btnAck->EditW 
+				&& y > btnAck->EditY && y < btnAck->EditY + btnAck->EditH)
+			{
+				switch (e.type)
+				{
+				case SDL_MOUSEMOTION:
+					msOver == true;
+					btnAck->Border.FillColor = J_C_msOver;
+					btnAck->Border.LineColor = J_C_Black;
+					break;
+
+				case SDL_MOUSEBUTTONDOWN:
+					btnAck->Border.FillColor = J_C_BtnDwn;
+					btnAck->RdrBtn();
+					Flag = true;
+					//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
+					break;
+
+				case SDL_MOUSEBUTTONUP:
+					btnAck->Border.FillColor = J_C_msOver;
+					btnAck->RdrBtn();
+					break;
+				}
+				if (btnAck->Inside == false) {
+					btnAck->Inside = true;
+					btnAck->RdrBtn();
+				}
+			}
+			else {
+				btnAck->Border.LineColor = J_C_Frame;
+				btnAck->Border.FillColor = J_C_BtnGrey;
+
+				if (msOver == true) {
+					btnAck->RdrBtn();
+					msOver = false;
+				}
+			}
+		}
+
+
+		if (Flag == true) {
+			break;
+		}
+	}
+	delete Header;
+	TTF_CloseFont(Font);
+	SDL_DestroyRenderer(Jrdr);
+	SDL_DestroyWindow(MsgWindow);
+
+	return J_OK;
+}

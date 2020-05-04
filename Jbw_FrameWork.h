@@ -17,7 +17,7 @@
 /******************************************************************************************
 						 CLASS: Jbw_FrameWork                    
 ******************************************************************************************/
-class Jbw_FrameWork {
+class Jbw_FrameWork : public Jbw_Button {
 public:
 
 	SDL_Rect ScreenArea;
@@ -31,7 +31,7 @@ public:
 	Jbw_Button* BtnPtr = NULL;
 	Jbw_Grid* GrdPtr = NULL;
 
-	SDL_Event *e = new SDL_Event;
+
 	SDL_Point FlashingI[2] = { {500, 500},{ 500, 550} };
 
 	short int TxtCnt = 0;
@@ -46,7 +46,7 @@ public:
 	// Give some random default screen size to ease the pain for first time Hello World use
 	SDL_Rect GuiArea = { 100, 100, 500, 700 }; 
 
-	Jbw_Handles handles;
+	Jbw_Handles handles; // Remove the pointer DAMMIT
 
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS / DESTRUCTORS
@@ -58,12 +58,15 @@ public:
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
-	void ClearScreen(void);
+	void lbxClear(std::string Tag);
+	Jbw_MsgBox msg;
+	void MsgBox(std::string Title, std::string Msg, int x, int y, int w = 150, int h = 100);
+
 /*-----------------------------------------------------------------------------------------
 	CREATE FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	bool Create(Jbw_Handles handles, int ObjType, std::string Tag,
+	bool Create(Jbw_Handles* handles, int ObjType, std::string Tag,
 		int Xpos, int Ypos, int WidthOrNumCol, int HeightOrNumRowCnt,
 		int FontSize = 12, std::string Caption = "");
 	bool CreateTxt(J_Properties* Prop);

@@ -1,8 +1,7 @@
-#pragma onceRowCnt
+#pragma once
 #include "Jbw_Base.h"
 #include "Jbw_Editbox.h"
 #include "Jbw_ComboBox.h"
-
 
 class Jbw_Grid : public Jbw_Frame {
 private:
@@ -15,6 +14,8 @@ public:
 	short int RowCnt = 0;
 	short int ColCnt = 0;
 	short int RowHeight = 0;
+	short int TotalW = 0;
+
 	J_Type* ColType = NULL;
 
 	Jbw_EditBox** Ebox = NULL; // DELETE
@@ -41,7 +42,7 @@ public:
 	bool InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumRow);
 	bool InitGrd(J_Properties* Prop);
 
-	void AddCol(Jbw_Handles handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
+	void AddCol(Jbw_Handles* handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
 	void AddRow(int Num = 1);
 	void SetVal(int Row, int Col, int Val);
 	void SetVal(int Row, int Col, std::string Val);
@@ -56,7 +57,7 @@ public:
 	void TxtSize(int Row, int Col, int FontSize);
 	double GetVal(int Row, int Col);
 	std::string GetTxt(int Row, int Col);
-	void Event(SDL_Event* e);
-	void RdrGrd(void);
+	void Event(Jbw_Handles *Handles);
+	void RdrGrd(Jbw_Handles* h);
 };
 

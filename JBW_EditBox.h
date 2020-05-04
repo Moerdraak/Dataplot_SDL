@@ -35,7 +35,7 @@ public:
 	void FitText(void);
 	bool SetEbx(std::string  *Var, const char* Val);
 	void RdrEbx(void);
-	void EbxEvent(SDL_Event* e);
+	void EbxEvent(Jbw_Handles* h);
 
 	Uint32 static Flashy(Uint32 interval, void* param);
 

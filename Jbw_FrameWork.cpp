@@ -42,12 +42,12 @@ Jbw_FrameWork::~Jbw_FrameWork()
 	FUNCTION: Create
 				The MAIN CREATE function used by the Coder.
 ------------------------------------------------------------------------------------------*/
-bool Jbw_FrameWork::Create(Jbw_Handles handles, int ObjType, std::string Tag, int Xpos, int Ypos,
+bool Jbw_FrameWork::Create(Jbw_Handles* handles, int ObjType, std::string Tag, int Xpos, int Ypos,
 	int WidthOrNumCol, int HeightOrNumRow, int FontSize, std::string Caption)
 {
 	bool Flag = true;
 	J_Properties Prop;
-	Prop.handles = handles;
+	Prop.handles = *handles;
 	Prop.x = Xpos;
 	Prop.y = Ypos;
 	Prop.w = WidthOrNumCol;			// For most Objects
@@ -441,7 +441,7 @@ bool Jbw_FrameWork::GrdSet(std::string Obj, int Row, int Col,
 }
 
 /*------------------------------------------------------------------------------------------
-FUNCTION: GrdAdd
+	FUNCTION: GrdAdd
 ------------------------------------------------------------------------------------------*/
 bool Jbw_FrameWork::GrdAdd(std::string Obj, int RowCol, int Number,
 	std::string ColName, int Objtype)
@@ -452,7 +452,7 @@ bool Jbw_FrameWork::GrdAdd(std::string Obj, int RowCol, int Number,
 
 
 /*------------------------------------------------------------------------------------------
-FUNCTION: isTag
+	FUNCTION: isTag
 ------------------------------------------------------------------------------------------*/
 bool Jbw_FrameWork::isTag(int Type, int Id, std::string Tag)
 {
@@ -493,4 +493,28 @@ bool Jbw_FrameWork::isTag(int Type, int Id, std::string Tag)
 		return false;
 	}
 	return Flag;
+}
+
+/*------------------------------------------------------------------------------------------
+/*                                  List Box STuff                                        */
+/*------------------------------------------------------------------------------------------
+	FUNCTION: lbxClear
+------------------------------------------------------------------------------------------*/
+void Jbw_FrameWork::lbxClear(std::string Tag)
+{
+	for (int I = 0; I < LbxCnt; I++) {
+		if (isTag(J_LBX, I, Tag)) {
+			LbxPtr[I].Clear();
+			LbxPtr[I].RdrLbx();
+		}
+	}
+}
+
+/*------------------------------------------------------------------------------------------
+	FUNCTION: MsgBox
+------------------------------------------------------------------------------------------*/
+void MsgBox(std::string Title, std::string Msg, J_Type YesNo, int x, int y, int w = 150, int h = 100)
+{
+	
+//	J_Type Answer = MsgBox(Title, Msg, YesNo, x, y, w, h);
 }

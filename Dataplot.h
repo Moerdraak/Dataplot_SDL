@@ -35,6 +35,21 @@ public:
 	~Dataplot();
 
 	/*******************  FUNCTIONS  *******************/
-	Jbw_Handles JbwCreateLayout(void);
+	Jbw_Handles* JbwCreateLayout(void);
 	void UserRender(void);
+	void TheLoop(void);
+
+	/*******************************************************
+	               Gui Specific Objects
+	*******************************************************/
+	Jbw_EditBox* Ding;
+	Jbw_ListBox* MsgMsg;
+	Jbw_Grid* Tst;
+	Jbw_Button* btnDataDir;
+	
+	/*******************************************************
+			   Gui Objects Callbacks
+	*******************************************************/
+	void btnClear_Click(Jbw_Handles* h);
+	void btnDataDir_Click(Jbw_Handles* h);
 };

@@ -1,11 +1,22 @@
 #include "Jbw_Grid.h"
-#include <typeinfo>"
+#include <typeinfo>
+
 /*-----------------------------------------------------------------------------------------
 CONSTRUCTOR: 
 ------------------------------------------------------------------------------------------*/
 Jbw_Grid::Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumCol, int NumRow)
 {
-	InitGrd(Rdr, GridName, x, y, NumRow);
+	Tag.assign(GridName);
+	Jrdr = Rdr;
+
+	GridX = x;
+	GridY = y;
+	RowCnt = NumRow;
+	RowHeight = NumCol; // bit of Bullshit here using the FontSize variable for row Height
+
+	// Frame
+	FrameX = GridX;
+	FrameY = GridY;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -25,7 +36,7 @@ Jbw_Grid::~Jbw_Grid()
 bool Jbw_Grid::InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumRow) 
 {
 	J_Properties Prop;
-	Prop.handles.JbwRdr;
+	Prop.handles.JbwRdr = Rdr;
 	Prop.Tag.assign(GridName);
 	Prop.x = x;
 	Prop.y = y;
@@ -57,17 +68,15 @@ bool Jbw_Grid::InitGrd(J_Properties * Prop)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: 
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::AddCol(Jbw_Handles handles, std::string Obj, std::string ColName, int Width, J_Type Type)
+void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName, int Width, J_Type Type)
 {
 	J_Properties Prop;
 
-	Prop.handles = handles;
+	Prop.handles = *handles;
 	Prop.x = GridX;
 	Prop.y = GridY;
 	Prop.w = Width;
 	Prop.h = RowHeight;
-
-	static int TotalW = 0;
 	
 	Prop.x = GridX + TotalW;
 	TotalW += Width - 1;
@@ -135,19 +144,6 @@ void Jbw_Grid::AddCol(Jbw_Handles handles, std::string Obj, std::string ColName,
 	}
 
 	Element = TmpElement;
-	Jbw_EditBox* Eb1 = static_cast<Jbw_EditBox*>(Element[0]);
-	Jbw_EditBox* Eb2 = static_cast<Jbw_EditBox*>(Element[1]);
-	Jbw_EditBox* Eb3 = static_cast<Jbw_EditBox*>(Element[2]);
-	Jbw_EditBox* Eb4 = static_cast<Jbw_EditBox*>(Element[3]);
-	Jbw_EditBox* Eb5 = static_cast<Jbw_EditBox*>(Element[4]);
-	Jbw_EditBox* Eb6 = static_cast<Jbw_EditBox*>(Element[5]);
-
-	Jbw_ComboBox* Cb1 = static_cast<Jbw_ComboBox*>(Element[6]);
-	Jbw_ComboBox* Cb2 = static_cast<Jbw_ComboBox*>(Element[7]);
-	Jbw_ComboBox* Cb3 = static_cast<Jbw_ComboBox*>(Element[8]);
-	Jbw_ComboBox* Cb4 = static_cast<Jbw_ComboBox*>(Element[9]);
-
-	Jbw_EditBox* Eb7 = static_cast<Jbw_EditBox*>(Element[10]);
 	ColCnt++;
 }
 
@@ -347,13 +343,10 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: Render Grid
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::RdrGrd(void)
+void Jbw_Grid::RdrGrd(Jbw_Handles* h)
 {
 	Jbw_EditBox* Eb = NULL; // [Col][Row]
 	Jbw_ComboBox* Cb = NULL;
-
-	Jbw_Handles h;
-	h.JbwRdr = Jrdr;
 
 	for (int I = 0; I < ColCnt; I++) {
 		if (ColType[I] == J_EBX) {
@@ -380,11 +373,20 @@ void Jbw_Grid::RdrGrd(void)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: Event
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::Event(SDL_Event* e)
+void Jbw_Grid::Event(Jbw_Handles* Handles)
 {
-	for (int I = RowCnt - 1; I >= 0; I--) { // So that Heading is Rendered last
-		for (int J = 0; J < ColCnt; J++) {
-//			Ebox[I][J].EbxEvent(e);
+	for (int I = 0; I < ColCnt; I++) {
+		if (ColType[I] == J_EBX) {
+			Jbw_EditBox* Eb = static_cast<Jbw_EditBox*>(Element[I]);
+			for (int J = 0; J < RowCnt; J++) {
+				Eb[J].EbxEvent(Handles);
+			}
+		}
+		else {
+			Jbw_ComboBox* Cb = static_cast<Jbw_ComboBox*>(Element[I]);
+			for (int J = 0; J < RowCnt; J++) {
+				Cb[J].CbxEvent(Handles);
+			}
 		}
 	}
 }

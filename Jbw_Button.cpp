@@ -52,6 +52,8 @@ void Jbw_Button::InitBtn(J_Properties* Prop)
 	CreateTexture();
 }
 
+
+
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: RdrBtn
 ------------------------------------------------------------------------------------------*/
@@ -64,11 +66,12 @@ void Jbw_Button::RdrBtn(void)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: BtnEvent
 ------------------------------------------------------------------------------------------*/
-void Jbw_Button::BtnEvent(SDL_Event* e)
+J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
 {
-
+	J_Type EventType = J_NULL;
 	//If mouse event happened
-	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
+	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || 
+		h->Event.type == SDL_MOUSEBUTTONUP) {
 		// Get mouse position
 		int x, y;
 		SDL_GetMouseState(&x, &y);
@@ -78,7 +81,7 @@ void Jbw_Button::BtnEvent(SDL_Event* e)
 		{
 
 
-			switch (e->type)
+			switch (h->Event.type)
 			{
 			case SDL_MOUSEMOTION:
 				msOver = true;
@@ -89,7 +92,7 @@ void Jbw_Button::BtnEvent(SDL_Event* e)
 			case SDL_MOUSEBUTTONDOWN:
 				Border.FillColor = J_C_BtnDwn;
 				RdrBtn();
-
+				EventType = J_BTN_CLICK;
 				//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 				break;
 
@@ -114,4 +117,5 @@ void Jbw_Button::BtnEvent(SDL_Event* e)
 			}
 		}
 	}
+	return EventType;
 }

@@ -93,6 +93,8 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 void Jbw_ListBox::Clear(void)
 {
 	delete[] TextList;
+	TextList = NULL;
+	Cnt = 0;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -100,8 +102,11 @@ void Jbw_ListBox::Clear(void)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::RdrLbx(void)
 {	
-	RdrFrame(); // Render Frame of ListBox
-
+	SDL_Rect RdrBox = { FrameX, FrameY, FrameW, FrameH };
+	SDL_RenderSetViewport(Jrdr, &RdrBox);
+	
+	// Render Frame of ListBox
+	RdrFrame(); 
 
 	// Get number of lines that will fit into the ListBox display
 	int Lines = (int)floor(FrameH / (FontSize + 1));
@@ -121,10 +126,13 @@ void Jbw_ListBox::RdrLbx(void)
 		Slider->RdrFrame();
 	}
 
-	for (int I = FromLine; I < ToLine; I++) {
-		TextList[I].TxtY = FrameY + 3 + (I- FromLine) * (FontSize + 1);
-		TextList[I].CreateTexture();
-		TextList[I].RdrTxt();
+	// Render Text Inside ListBox
+	if (TextList != NULL) {
+		for (int I = FromLine; I < ToLine; I++) {
+			TextList[I].TxtY = FrameY + 3 + (I - FromLine) * (FontSize + 1);
+			TextList[I].CreateTexture();
+			TextList[I].RdrTxt();
+		}
 	}
 
 	SDL_RenderPresent(Jrdr); // Render to screen
