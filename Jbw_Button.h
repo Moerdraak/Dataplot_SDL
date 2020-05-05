@@ -4,8 +4,6 @@
 class Jbw_Button : public Jbw_EditBox{
 public:
 
-	bool Inside = false;
-
 
 /*-----------------------------------------------------------------------------------------
 	 CONSTRUCTORS

@@ -35,6 +35,7 @@ public:
 public:
 	Jbw_Text() {};
 	Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
+	~Jbw_Text();
 
 /*-----------------------------------------------------------------------------------------
 		FUNCTIONS
@@ -50,6 +51,5 @@ public:
 	void CreateTexture(void);
 	void RdrTxt(void);
 	void TxtEvent(SDL_Event* e);
-
 };
 

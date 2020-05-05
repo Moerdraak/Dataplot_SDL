@@ -45,6 +45,10 @@ public:
 	Jbw_EditBox* Ding;
 	Jbw_ListBox* MsgMsg;
 	Jbw_Grid* Tst;
+
+	Jbw_Grid* grdFigure;
+	Jbw_ComboBox* cbxNew;
+	Jbw_TextBox* txtNew;
 	Jbw_Button* btnDataDir;
 	
 	/*******************************************************

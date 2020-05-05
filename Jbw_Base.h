@@ -20,7 +20,7 @@ enum J_Type : const short int {
 	J_NULL,
 	J_TXT, J_EBX, J_LBX, J_CBX, J_BTN,  J_GRD, J_LEN, // ObjWork
 	J_LEFT, J_CENTRE, J_RIGHT, // TxtBox
-	J_OK, J_YES, J_YESNO, // MsgBox
+	J_OK, J_YES, J_NO, J_YESNO, // MsgBox
 	J_CLICK, 
 	J_BTN_CLICK// Callback events
 };
@@ -98,9 +98,10 @@ public:
 	SDL_Renderer* Jrdr;
 
 	bool Visible = true;
-	bool enabled = true;
-
+	bool Enabled = true;
+	bool Focus = false;
 	bool msOver = false;
+	bool DoRender = false;
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS / DESTRUCTORS

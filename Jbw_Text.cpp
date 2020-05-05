@@ -1,7 +1,7 @@
 #include "Jbw_Text.h"
 
 /*---------------------------------------------------------------
-CONSTRUCTOR:
+	CONSTRUCTOR:
 ---------------------------------------------------------------*/
 Jbw_Text::Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
 {
@@ -9,7 +9,21 @@ Jbw_Text::Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsi
 }
 
 /*---------------------------------------------------------------
-FUNCTION: Initialise Text
+	DESTRUCTOR:
+---------------------------------------------------------------*/
+Jbw_Text::~Jbw_Text()
+{
+//	SDL_DestroyTexture(txtImage);// Copy all current TxtPtrs		
+								// DANGER DANGER If you delete txtImage like you should with Destructor
+								// This does not copy well - Write a copy constructor to ensure new 
+								// Memory space is created for stuff inside TxtPtr 
+								// THIS WILL become important when I start fixing all my memory leaks.
+	Font = NULL;
+	txtImage = NULL;
+}
+
+/*---------------------------------------------------------------
+	FUNCTION: Initialise Text
 ---------------------------------------------------------------*/
 void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
 {

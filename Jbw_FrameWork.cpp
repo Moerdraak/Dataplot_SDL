@@ -101,6 +101,10 @@ bool Jbw_FrameWork::CreateTxt(J_Properties* Prop)
 	   
 	for (int I = 0; I < TxtCnt; I++) {
 		NewPtr[I] = TxtPtr[I]; // Copy all current TxtPtrs		
+								// DANGER DANGER If you delete txtImage like you should with Destructor
+								// This does not copy well - Write a copy constructor to ensure new 
+								// Memory space is created for stuff inside TxtPtr 
+								// THIS WILL become important when I start fixing all my memory leaks.
 	}
 
 	Prop->Id = TxtCnt;
@@ -505,7 +509,7 @@ void Jbw_FrameWork::lbxClear(std::string Tag)
 	for (int I = 0; I < LbxCnt; I++) {
 		if (isTag(J_LBX, I, Tag)) {
 			LbxPtr[I].Clear();
-			LbxPtr[I].RdrLbx();
+			LbxPtr[I].RdrLbx(&handles);
 		}
 	}
 }

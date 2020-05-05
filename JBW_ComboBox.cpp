@@ -3,7 +3,8 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_ComboBox::Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+Jbw_ComboBox::Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize, 
+	bool IsGridBtn)
 {
 	J_Properties P;
 	P.handles.JbwRdr = Rdr;
@@ -12,6 +13,7 @@ Jbw_ComboBox::Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int F
 	P.w = w;
 	P.h = h;
 	P.Fsize = Fsize;
+	P.BoolVal = IsGridBtn;
 	InitCbx(&P);
 }
 
@@ -32,6 +34,7 @@ void Jbw_ComboBox::InitCbx(J_Properties* Prop)
 	Tag.assign(Prop->Tag);
 	Jrdr = Prop->handles.JbwRdr;
 	
+	GridBtn = Prop->BoolVal;
 	ComboX = Prop->x; // Needed for the CbxList during Rendering
 	ComboY = Prop->y; // Needed for the CbxList during Rendering
 	ComboW = Prop->w; // Needed for the CbxList during Rendering
@@ -43,7 +46,13 @@ void Jbw_ComboBox::InitCbx(J_Properties* Prop)
 
 	// Initialize Editbox 
 	J_Properties Pedit = *Prop;
-	Pedit.w = Prop->w - 14;
+	if (GridBtn == true) {
+		Pedit.w = Prop->w;
+	}
+	else {
+		Pedit.w = Prop->w - 14;
+	}
+	
 	CbxEdit.InitEbx(&Pedit);
 
 	// Initialize Button
@@ -109,7 +118,7 @@ void Jbw_ComboBox::RdrCbx(Jbw_Handles* h)
 		}
 		SDL_RenderPresent(ListRdr);
 
-		CbxList.RdrLbx();
+		CbxList.RdrLbx(h);
 
 		SDL_RenderPresent(ListRdr);
 
@@ -121,12 +130,12 @@ void Jbw_ComboBox::RdrCbx(Jbw_Handles* h)
 		SDL_RenderPresent(ListRdr);
 		
 	//	h->LbxPtr[0].AddText("Opening List");
-		
+	//	h->LbxPtr[0].RdrLbx(h);	
 	}
 	else if (ListWindow != NULL){
 		SDL_DestroyRenderer(ListRdr);
 		SDL_DestroyWindow(ListWindow);
-	//	h->LbxPtr[0].AddText("Closing List");
+		CbxList.Clear();
 	}
 	CbxEdit.RdrEbx();
 	CbxBtn.RdrBtn();
@@ -142,104 +151,48 @@ void Jbw_ComboBox::CbxEvent(Jbw_Handles *h)
 	bool Inside = false;
 	bool Flag = false;
 
-	Jbw_ListBox* Tmp = static_cast<Jbw_ListBox*>(h->Jbw_Obj[1]);
-
 	if (h->Event.type == SDL_WINDOWEVENT && CbxListVis == true) {
 		if (h->Event.window.event == SDL_WINDOWEVENT_FOCUS_LOST && 
 			strcmp(SDL_GetWindowTitle(SDL_GetWindowFromID(h->Event.window.windowID)), 
 				"CbxList") == 0) {
-			h->LbxPtr[0].AddText("Focus outside");
-			Tmp->AddText("Focus outside");
 			CbxListVis = false;
 			RdrCbx(h);
 		}
 	}
 
+	// EditBox Events
+	CbxEdit.EbxEvent(h);
 
-	//If mouse event happened
-	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || 
-		h->Event.type == SDL_MOUSEBUTTONUP) {
-		// Get mouse position
-		int x, y, Rx, Ry, Gx, Gy;
-		SDL_GetMouseState(&x, &y);
-		SDL_GetRelativeMouseState(&Rx, &Ry);
-		SDL_GetGlobalMouseState(&Gx, &Gy);
-
-		int wPosX, wPosY;
-		SDL_GetWindowPosition(h->JbwGui, &wPosX, &wPosY);
-
-		if (!(x > ComboX && x < CbxBtn.EditX + CbxBtn.EditW 
-			&& Gy > wPosY + ComboY && Gy < wPosY + ComboY + ComboH + 80)
-			&& CbxListVis == true)
-		{
-				if (h->Event.type == SDL_MOUSEBUTTONDOWN && (Tag.compare("cbxFigure") == 0)) {
-					h->LbxPtr[0].AddText("!Click!");
-					Tmp->AddText("!Click!");
-				}
-			}
-		
-		// Mouse pointer inside Dropdown button
-		if (x > CbxBtn.EditX&& x < CbxBtn.EditX + CbxBtn.EditW && y > CbxBtn.EditY&& y < CbxBtn.EditY + CbxBtn.EditH)
-		{
-			switch (h->Event.type)
-			{
-			case SDL_MOUSEMOTION:
-				msOver = true;
-				CbxBtn.Border.FillColor = J_C_msOver;
-				CbxBtn.Border.LineColor = J_C_Black;
-				break;
-
-			case SDL_MOUSEBUTTONDOWN:
-				CbxBtn.Border.FillColor = J_C_BtnDwn;
-				CbxBtn.RdrBtn();
-				CbxCall(h, J_CLICK);;
-				break;
-
-			case SDL_MOUSEBUTTONUP:
-				CbxBtn.Border.FillColor = J_C_msOver;
-				CbxBtn.RdrBtn();
-				break;
-			}
-			if (Inside == false) {
-				Inside = true;
-				CbxBtn.RdrBtn();
-			}
-		}
-		else {
-			Inside = false;
-			CbxBtn.Border.LineColor = J_C_Frame;
-			CbxBtn.Border.FillColor = J_C_BtnGrey;
-
-			if (msOver == true) {
-				CbxBtn.RdrBtn();
-				msOver = false;
-			}
-			if (h->Event.type == SDL_MOUSEBUTTONDOWN && (Tag.compare("cbxFigure") == 0)) {
-
-			}
-
-		}
-	}
-}
-
-/*-----------------------------------------------------------------------------------------
-	FUNCTION: CbxCall
-------------------------------------------------------------------------------------------*/
-void Jbw_ComboBox::CbxCall(Jbw_Handles *h, J_Type Type, std::string Input)
-{
-	
-
-	if (Type == J_CLICK) {
-		if (CbxListVis == false) {
+	if (GridBtn == true) {
+		if (CbxBtn.BtnEvent(h) == J_BTN_CLICK && CbxListVis == false) {
 			CbxListVis = true;
 			RdrCbx(h);
 		}
+
+		if (CbxBtn.msOver == true || CbxEdit.msOver == true) {
+			CbxBtn.RdrBtn();
+		}
 		else {
-			CbxListVis = false;
+			CbxEdit.RdrEbx();
+		}
+	}
+	else {		
+		if (CbxBtn.BtnEvent(h) == J_BTN_CLICK && CbxListVis == false) {
+			CbxListVis = true;
 			RdrCbx(h);
 		}
 	}
+
+	// Listbox Events
+	if (ListWindow != NULL) {
+		CbxList.RdrLbx(h);
+	}
+
+
+
 }
+
+
 
 
 

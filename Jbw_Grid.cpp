@@ -24,10 +24,16 @@ DESTRUCTOR:
 ------------------------------------------------------------------------------------------*/
 Jbw_Grid::~Jbw_Grid()
 {
-	for (int I = 0; I < RowCnt; I++) {
-			delete Ebox[I];
+	delete[] Header;
+	delete[] ColType;
+
+	Jbw_EditBox* a;
+
+	for (int I = 0; I < ColCnt; I++) {
+		a = static_cast<Jbw_EditBox*>(Element[I]);
+//		delete a;
 	}
-	delete Ebox;
+	delete[] Element;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -132,7 +138,9 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 		for (int I = 0; I < RowCnt; I++) {
 			Prop.y += Prop.h - 1;
 			Prop.w = Width;
+			Prop.BoolVal = true;
 			Cb[I].InitCbx(&Prop);
+			Cb[I].CbxEdit.Enabled = false;
 		}
 	}
 	
@@ -280,7 +288,7 @@ FUNCTION: SetColWidth
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetColWidth(int Col, int w)
 {
-	int Wdiff = w - Ebox[0][Col].EditW;
+	int Wdiff = w - Ebox[0][Col].TbxW;
 
 	if (Col == -1){ //Set all Column's the same
 
@@ -289,12 +297,12 @@ void Jbw_Grid::SetColWidth(int Col, int w)
 		FrameW += Wdiff - 1; // Set outside Frame with
 
 		for (int I = 0; I < RowCnt; I++) {
-			Ebox[I][Col].EditW = w - 2;
+			Ebox[I][Col].TbxW = w - 2;
 			Ebox[I][Col].Border.FrameW = w;
 		}
 		for (int I = Col + 1; I < ColCnt; I++) {
 			for (int J = 0; J < RowCnt; J++) {
-					Ebox[J][I].EditX += Wdiff - 1;
+					Ebox[J][I].TbxH += Wdiff - 1;
 					Ebox[J][I].Border.FrameX += Wdiff - 1;
 			}
 		}
@@ -307,14 +315,14 @@ FUNCTION: SetRowHeight
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetRowHeight(int Row, int h)
 {
-	int Ys = Ebox[0][0].EditY;
+	int Ys = Ebox[0][0].TbxY;
 
 	if (Row == -1) { //Set all Row's the same
 		for (int I = 0; I < RowCnt; I++) {
 
 			for (int J = 0; J < ColCnt; J++) {
-				Ebox[I][J].EditH = h;
-				Ebox[I][J].EditY = Ys;
+				Ebox[I][J].TbxH = h;
+				Ebox[I][J].TbxY = Ys;
 				Ebox[I][J].Border.FrameH = h + 1;
 				Ebox[I][J].Border.FrameY = Ys;
 			}
@@ -323,16 +331,16 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 		FrameH = (RowCnt) * h + RowCnt  ;
 	}
 	else { // Set Specific Column width
-		int Hdiff = h - Ebox[Row][0].EditH - 2;
+		int Hdiff = h - Ebox[Row][0].TbxH - 2;
 		FrameH += Hdiff + 1; // Set outside Frame Height
 
 		for (int I = 0; I < ColCnt; I++) {
-			Ebox[Row][I].EditH = h - 2;
+			Ebox[Row][I].TbxH = h - 2;
 			Ebox[Row][I].Border.FrameH = h;
 		}
 		for (int I = Row + 1; I < RowCnt; I++) {
 			for (int J = 0; J < ColCnt; J++) {
-				Ebox[I][J].EditY += Hdiff;
+				Ebox[I][J].TbxY += Hdiff;
 				Ebox[I][J].Border.FrameY += Hdiff;
 			}
 		}

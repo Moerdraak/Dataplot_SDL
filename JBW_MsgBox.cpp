@@ -51,26 +51,24 @@ Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x
 
 Jbw_MsgBox::~Jbw_MsgBox()
 {
-	if (MbxType == J_YESNO) {
-		delete btnNo;
+	Close();
+}
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: Close
+------------------------------------------------------------------------------------------*/
+void Jbw_MsgBox::Close(void)
+{
+	if (btnNo != NULL) {
+		delete btnNo; btnNo = NULL;
 	}
+	delete btnAck; btnAck = NULL;
+	delete Header; Header = NULL;
 
-	delete btnAck;
-
-	SDL_DestroyWindow(MsgWindow);
-	SDL_DestroyRenderer(Jrdr);
-	SDL_DestroyTexture(txtImage);
-	TTF_CloseFont(Font);
-
-	delete Header;
-	delete btnAck;
-	delete btnNo;
-
-	MsgWindow = NULL;
-	txtImage = NULL;
-	Header = NULL;
-	btnAck = NULL;
-	btnNo = NULL;
+	SDL_DestroyWindow(MsgWindow); MsgWindow = NULL;
+	SDL_DestroyRenderer(Jrdr); Jrdr = NULL;
+	SDL_DestroyTexture(txtImage); txtImage = NULL;
+	TTF_CloseFont(Font); Font = NULL;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -139,22 +137,19 @@ void Jbw_MsgBox::RenderBox(void) {
 	// Create Buttons
 	int Btn_w = 40, Btn_h = 16, BtnSpace = 20, Btn_y = Window_h - 25;
 
-
-	// YES Button
-	btnAck = new Jbw_Button(Jrdr, Window_w - 100, Btn_y, Btn_w, Btn_h, "Yes", 12);
-
 	if (MbxType == J_YESNO) {
+		// YES Button
+		btnAck = new Jbw_Button(Jrdr, Window_w - 100, Btn_y, Btn_w, Btn_h, "Yes", 12);
 		// NO Button
 		btnNo = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "No", 12);
 		btnNo->RdrBtn();
 	}
 	else {
-		btnAck->EditX = Window_w - 50;
 		if (MbxType == J_OK) {
-			btnAck->Text.assign("Okay");
+			btnAck = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "Okay", 12);
 		}
 		else{
-			btnAck->Text.assign("Yes");
+			btnAck = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "Yes", 12);
 		}
 	}
 	btnAck->RdrBtn();
@@ -166,6 +161,7 @@ void Jbw_MsgBox::RenderBox(void) {
 J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	int x, int y, int w , int h )
 {
+	J_Type Answer = J_NULL;
 	Window_w = w;
 	Window_h = h;
 	MbxType = OkYesNo;
@@ -204,64 +200,23 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	Parser(Msg, true);
 	
 	int Flag = false;
-	SDL_Event e;
-	while (SDL_WaitEvent(&e) != 0) {
-		//If mouse event happened
-		if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN ||
-			e.type == SDL_MOUSEBUTTONUP) {
-			// Get mouse position
-			int x, y;
-			SDL_GetMouseState(&x, &y);
 
-			// Mouse pointer inside Edit box
-			if (x > btnAck->EditX && x < btnAck->EditX + btnAck->EditW 
-				&& y > btnAck->EditY && y < btnAck->EditY + btnAck->EditH)
-			{
-				switch (e.type)
-				{
-				case SDL_MOUSEMOTION:
-					msOver == true;
-					btnAck->Border.FillColor = J_C_msOver;
-					btnAck->Border.LineColor = J_C_Black;
-					break;
+	Jbw_Handles H;
 
-				case SDL_MOUSEBUTTONDOWN:
-					btnAck->Border.FillColor = J_C_BtnDwn;
-					btnAck->RdrBtn();
-					Flag = true;
-					//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
-					break;
+	while (SDL_WaitEvent(&H.Event) != 0) {
 
-				case SDL_MOUSEBUTTONUP:
-					btnAck->Border.FillColor = J_C_msOver;
-					btnAck->RdrBtn();
-					break;
-				}
-				if (btnAck->Inside == false) {
-					btnAck->Inside = true;
-					btnAck->RdrBtn();
-				}
-			}
-			else {
-				btnAck->Border.LineColor = J_C_Frame;
-				btnAck->Border.FillColor = J_C_BtnGrey;
-
-				if (msOver == true) {
-					btnAck->RdrBtn();
-					msOver = false;
-				}
-			}
-		}
-
-
-		if (Flag == true) {
+		// Check When Buttons are Clicked
+		if (btnAck->BtnEvent(&H) == J_BTN_CLICK) {
+			Answer = J_YES;
 			break;
 		}
+		if (btnNo != NULL) {
+			if (btnNo->BtnEvent(&H) == J_BTN_CLICK) {
+				Answer = J_NO;
+				break;
+			}
+		}
 	}
-	delete Header;
-	TTF_CloseFont(Font);
-	SDL_DestroyRenderer(Jrdr);
-	SDL_DestroyWindow(MsgWindow);
-
-	return J_OK;
+	Close();
+	return Answer;
 }

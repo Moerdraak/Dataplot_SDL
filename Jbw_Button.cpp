@@ -43,7 +43,7 @@ void Jbw_Button::InitBtn(J_Properties* Prop)
 	Jrdr = Prop->handles.JbwRdr;
 	Text.assign(Prop->Caption);
 	Align = J_CENTRE;
-	EditX = Prop->x + 1; EditY = Prop->y + 1; EditW = Prop->w - 2; EditH = Prop->h - 2;
+	TbxX = Prop->x + 1; TbxY = Prop->y + 1; TbxW = Prop->w - 2; TbxH = Prop->h - 2;
 	Border.InitFrame(Prop);
 	Border.Fill = true;
 	Border.LineColor = J_C_Frame;
@@ -77,18 +77,11 @@ J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
 		SDL_GetMouseState(&x, &y);
 
 		// Mouse pointer inside Edit box
-		if (x > EditX&& x < EditX + EditW && y > EditY&& y < EditY + EditH)
+		if (x > TbxX && x < TbxX + TbxW && y > TbxY && y < TbxY + TbxH)
 		{
-
-
+			msOver = true;
 			switch (h->Event.type)
 			{
-			case SDL_MOUSEMOTION:
-				msOver = true;
-				Border.FillColor = J_C_msOver;
-				Border.LineColor = J_C_Black;
-				break;
-
 			case SDL_MOUSEBUTTONDOWN:
 				Border.FillColor = J_C_BtnDwn;
 				RdrBtn();
@@ -100,20 +93,23 @@ J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
 				Border.FillColor = J_C_msOver;
 				RdrBtn();
 				break;
-			}			
-			if (Inside == false) {
-				Inside = true;
+			}		
+
+			Border.FillColor = J_C_msOver;
+			Border.LineColor = J_C_Black;
+			if (DoRender == false) {
+				DoRender = true;
 				RdrBtn();
 			}
 		}
 		else {
-			Inside = false;
+			msOver = false;
 			Border.LineColor = J_C_Frame;
 			Border.FillColor = J_C_BtnGrey;
 			
-			if (msOver == true ) {
+			if (DoRender == true ) {
+				DoRender = false;
 				RdrBtn();
-				msOver = false;	
 			}
 		}
 	}

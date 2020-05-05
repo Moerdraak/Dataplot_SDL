@@ -21,7 +21,7 @@ Jbw_ListBox::Jbw_ListBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsiz
 Jbw_ListBox::Jbw_ListBox(J_Properties* Prop)
 {
 	delete SliderBox;
-	delete[] TextList;
+	delete[] TxtList;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ void Jbw_ListBox::InitLbx(J_Properties* Prop)
 	Id = Prop->Id;
 	Tag.assign(Prop->Tag);
 	Jrdr = Prop->handles.JbwRdr;
-
+	
 	FrameX = Prop->x;
 	FrameY = Prop->y;
 	FrameW = Prop->w;
@@ -71,20 +71,22 @@ void Jbw_ListBox::InitLbx(J_Properties* Prop)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::AddText(std::string NewTxt)
 {
+
 	// Create pointer with more memory
-	Jbw_Text* NewList = new Jbw_Text[Cnt + 1];
+	Jbw_TextBox* NList = new Jbw_TextBox[Cnt + 1];
 
 	for (int I = 0; I < Cnt; I++) {
-		NewList[I] = TextList[I]; // Copy all current TxtPtrs		
+		NList[I] = TxtList[I]; // Copy all current TxtPtrs		
 	}
-	NewList[Cnt].InitTxt(Jrdr, NewTxt, FrameX + 3, FrameY + 3, FontSize);
+
+	NList[Cnt].InitTbx(Jrdr, NewTxt, FrameX + 3, FrameY + 3, FrameW - 5, 15);
+	NList[Cnt].Add(NewTxt);
 
 	if (Cnt > 0) {
-		delete[] TextList;
+		delete[] TxtList;
 	}
-	TextList = NewList;
+	TxtList = NList;
 	Cnt++;
-	RdrLbx();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -92,15 +94,15 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::Clear(void)
 {
-	delete[] TextList;
-	TextList = NULL;
+	delete[] TxtList;
+	TxtList = NULL;
 	Cnt = 0;
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: Create
 ------------------------------------------------------------------------------------------*/
-void Jbw_ListBox::RdrLbx(void)
+void Jbw_ListBox::RdrLbx(Jbw_Handles* h)
 {	
 	SDL_Rect RdrBox = { FrameX, FrameY, FrameW, FrameH };
 	SDL_RenderSetViewport(Jrdr, &RdrBox);
@@ -109,9 +111,9 @@ void Jbw_ListBox::RdrLbx(void)
 	RdrFrame(); 
 
 	// Get number of lines that will fit into the ListBox display
-	int Lines = (int)floor(FrameH / (FontSize + 1));
-	int FromLine = 0;
-	int ToLine = Cnt;
+	Lines = (int)floor(FrameH / (FontSize + 1));
+	FromLine = 0;
+	ToLine = Cnt;
 	if (Cnt > Lines) {
 		FromLine = Cnt - Lines;
 		ToLine = FromLine + Lines;
@@ -119,96 +121,88 @@ void Jbw_ListBox::RdrLbx(void)
 		SldrBtnUp->RdrBtn(); // Render
 		SldrBtnDwn->RdrBtn(); // Render
 		
-		int Pos = (int)floor(FromLine * (SliderBox->FrameH) / (Cnt)) - Lines;
-		Slider->FrameY = SliderBox->FrameY +  Pos; // Set Slider Position
+		Slider->FrameY = SliderBox->FrameY + 
+			(int)floor(FromLine * (SliderBox->FrameH) / (Cnt)) - Lines;
 		Slider->FrameH = SliderBox->FrameH - (Slider->FrameY - SliderBox->FrameY) - 1;
 		Slider->CreatePts();
 		Slider->RdrFrame();
 	}
 
 	// Render Text Inside ListBox
-	if (TextList != NULL) {
+	if (TxtList != NULL && TxtRendered == false) {
+		TxtRendered = true;
 		for (int I = FromLine; I < ToLine; I++) {
-			TextList[I].TxtY = FrameY + 3 + (I - FromLine) * (FontSize + 1);
-			TextList[I].CreateTexture();
-			TextList[I].RdrTxt();
+			TxtList[I].TbxY = FrameY + 3 + (I - FromLine) * (FontSize + 1);
+			TxtList[I].Border.FrameY = FrameY + 3 + (I - FromLine) * (FontSize + 4);
+			TxtList[I].Border.CreatePts();
+			TxtList[I].ShowFrame = true;
+			TxtList[I].Border.LineColor = J_C_White;
+			TxtList[I].Border.FillColor = J_C_White;
+			TxtList[I].CreateTexture();
+			TxtList[I].RdrTbx();			
 		}
 	}
-
 	SDL_RenderPresent(Jrdr); // Render to screen
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER
 ------------------------------------------------------------------------------------------*/
-void Jbw_ListBox::LbxEvent(SDL_Event* e)
+void Jbw_ListBox::LbxEvent(Jbw_Handles* h)
 {
-	//bool Flag = false;
-	////If mouse event happened
-	//if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
-	//	// Get mouse position
-	//	int x, y;
-	//	SDL_GetMouseState(&x, &y);
+	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN 
+		|| h->Event.type == SDL_MOUSEBUTTONUP) {
+		// Get mouse position
+		int x, y;
+		SDL_GetMouseState(&x, &y);
 
-	//	// Mouse pointer inside Drpdown Button 
-	//	if (x > EditX&& x < EditX + EditW && y > EditY&& y < EditY + EditH)
-	//	{
-	//		switch (e->type)
-	//		{
-	//		case SDL_MOUSEMOTION:
-	//			Border.LineColor = { 0, 0, 0, 255 };
-	//			break;
+		// Mouse pointer inside Edit box
+		if (x > FrameX && x < FrameX + FrameW
+			&& y > FrameY && y < FrameY + FrameH)
+		{
+			msOver = true;
+			//	RdrLbx(h);
+			if (TxtList != NULL) {
+				//		TxtList[0].EbxEvent(h);
+			}
+			for (int I = FromLine; I < ToLine; I++) {
+				
+				if (x > TxtList[I].TbxX && x < TxtList[I].TbxX + TxtList[I].TbxW
+					&& y > TxtList[I].TbxY + 6 && y < TxtList[I].TbxY + 7 + TxtList[I].TbxH) {
+					
+					if (TxtList[I].DoRender == false) {
+						TxtList[I].msOver = true;
+						TxtList[I].Border.FillColor = J_C_Grey;
+						TxtList[I].RdrTbx();
+						TxtList[I].DoRender = true;
+					}
+					// Mouse button Click
+					if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
+						Index = I;
+					}
+				}
+				else {
 
-	//		case SDL_MOUSEBUTTONDOWN:
-	//			//	BackColor = { 0, 0, 0, 255 };
-	//			Focus = true;
-	//			//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
-	//			break;
-
-	//		case SDL_MOUSEBUTTONUP:
-	//			//	BackColor = { 255, 255, 255, 255 };
-	//			break;
-	//		}
-	//	}
-	//	else {
-	//		Border.LineColor = J_C_Frame;
-	//		if (e->type == SDL_MOUSEBUTTONDOWN) {
-	//			Focus = false;
-	//		}
-	//	}
-	//}
-
-	//if (Focus == false) {
-	//	return;
-	//}
-	//else if (e->type == SDL_TEXTINPUT) {
-	//	Add(e->text.text);
-	//	//		RdrEbx();
-	//}
-	//else if (e->type == SDL_KEYDOWN)
-	//{
-	//	if (e->key.keysym.sym == SDLK_BACKSPACE) {
-	//		BackSpace();
-	//		//	RdrEbx();
-	//	}
-	//	else if (e->key.keysym.sym == SDLK_DELETE) {
-	//	}
-	//	else if (e->key.keysym.sym) {
-	//	}
-	//}
-	//if (0) {
-	//	if (e->type == SDL_USEREVENT) {
-	//		e->user.data1;
-	//		my_function();
-	//		//	Uint32* AAA{ static_cast<Uint32*>(e->user.data1) };
-	//		//	void (*A) (void*) = e->type.user.data2;
-	//		//	*A();
-
-
-	//	}
-	//}
-
-
-
-	RdrLbx();
+					if (TxtList[I].DoRender == true) {
+						TxtList[I].msOver = false;
+						TxtList[I].Border.FillColor = J_C_White;
+						if (Index == I) {
+							for (int J = FromLine; J < ToLine; J++) {
+								TxtList[J].Border.LineColor = J_C_White;
+								TxtList[J].RdrTbx();
+							}
+							TxtList[I].Border.LineColor = J_C_BtnGrey;
+						}
+						TxtList[I].RdrTbx();
+						TxtList[I].DoRender = false;
+					}
+				}
+				
+			}
+			char TxtTxt[10];
+			sprintf_s(TxtTxt, "I = %d", Index);
+			h->EbxPtr[2].New(TxtTxt);
+			h->EbxPtr[2].RdrEbx();
+		}
+	}
 }

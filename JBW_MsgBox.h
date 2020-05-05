@@ -2,7 +2,7 @@
 #include "Jbw_Base.h"
 #include "Jbw_Button.h"
 
-class Jbw_MsgBox : Jbw_Frame {
+class Jbw_MsgBox : private Jbw_Frame {
 public:
 	SDL_Window* MsgWindow = NULL; 
 	TTF_Font* Font = NULL;
@@ -21,6 +21,7 @@ public:
 	Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);
 	~Jbw_MsgBox();
+	void Close(void);
 	
 	J_Type MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);

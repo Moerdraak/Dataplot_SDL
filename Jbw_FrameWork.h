@@ -6,18 +6,13 @@
 #include "Jbw_ComboBox.h"
 #include "Jbw_ListBox.h"
 #include "Jbw_MsgBox.h"
-#include "Jbw_Text.h"
 #include "Jbw_Grid.h"
 #include <typeinfo>
-
-
-
-
 
 /******************************************************************************************
 						 CLASS: Jbw_FrameWork                    
 ******************************************************************************************/
-class Jbw_FrameWork : public Jbw_Button {
+class Jbw_FrameWork : public Jbw_MsgBox {
 public:
 
 	SDL_Rect ScreenArea;
@@ -30,8 +25,7 @@ public:
 	Jbw_ComboBox* CbxPtr = NULL;
 	Jbw_Button* BtnPtr = NULL;
 	Jbw_Grid* GrdPtr = NULL;
-
-
+	
 	SDL_Point FlashingI[2] = { {500, 500},{ 500, 550} };
 
 	short int TxtCnt = 0;
@@ -59,8 +53,6 @@ public:
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 	void lbxClear(std::string Tag);
-	Jbw_MsgBox msg;
-	void MsgBox(std::string Title, std::string Msg, int x, int y, int w = 150, int h = 100);
 
 /*-----------------------------------------------------------------------------------------
 	CREATE FUNCTIONS
