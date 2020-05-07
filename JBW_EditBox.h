@@ -9,9 +9,6 @@ private:
 	
 public: 
 
-
-
-
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -27,7 +24,6 @@ public:
 public:
 	void InitEbx(J_Properties *Prop);
 	void InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h = 14, int Fsize = 12);
-//	void FitText(void);
 	bool SetEbx(std::string  *Var, const char* Val);
 	void RdrEbx(void);
 	void EbxEvent(Jbw_Handles* h);

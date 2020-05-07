@@ -97,13 +97,23 @@ void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 			switch (h->Event.type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
-				Focus = true;
+				if (h->Event.button.button == 1) {
+					Focus = true;
+				}
+				else if (h->Event.button.button == 3) {
+				Add(SDL_GetClipboardText());
+				RdrEbx();
+				}
 				break;
 
 			case SDL_MOUSEBUTTONUP:
 			//	BackColor = { 255, 255, 255, 255 };
 				break;
 			}
+			
+
+			
+
 
 			Border.LineColor = J_C_Black;
 			if (DoRender == false) {

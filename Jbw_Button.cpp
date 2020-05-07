@@ -83,20 +83,21 @@ J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
 			switch (h->Event.type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
-				Border.FillColor = J_C_BtnDwn;
+				Border.FillColor = ClickColor;
 				RdrBtn();
 				EventType = J_BTN_CLICK;
 				//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				Border.FillColor = J_C_msOver;
+				Border.FillColor = HoverColor;
 				RdrBtn();
 				break;
 			}		
 
-			Border.FillColor = J_C_msOver;
-			Border.LineColor = J_C_Black;
+			Border.FillColor = HoverColor;
+			Border.LineColor = HoverBorderColor;
+			;
 			if (DoRender == false) {
 				DoRender = true;
 				RdrBtn();
@@ -104,8 +105,8 @@ J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
 		}
 		else {
 			msOver = false;
-			Border.LineColor = J_C_Frame;
-			Border.FillColor = J_C_BtnGrey;
+			Border.LineColor = BtnBorderColor;
+			Border.FillColor = BtnColor;
 			
 			if (DoRender == true ) {
 				DoRender = false;

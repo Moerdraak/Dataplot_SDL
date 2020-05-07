@@ -79,7 +79,6 @@ void Jbw_ComboBox::AddRow(Jbw_Handles* h, std::string NewText)
 	}
 	LbxTxt = TmpLbxTxt;
 	LbxTxt[LbxCnt++].assign(NewText);
-
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -129,8 +128,8 @@ void Jbw_ComboBox::RdrCbx(Jbw_Handles* h)
 
 		SDL_RenderPresent(ListRdr);
 		
-	//	h->LbxPtr[0].AddText("Opening List");
-	//	h->LbxPtr[0].RdrLbx(h);	
+		h->LbxPtr[0].AddText("Opening List");
+		h->LbxPtr[0].RdrLbx(h);	
 	}
 	else if (ListWindow != NULL){
 		SDL_DestroyRenderer(ListRdr);
@@ -160,6 +159,8 @@ void Jbw_ComboBox::CbxEvent(Jbw_Handles *h)
 		}
 	}
 
+	
+
 	// EditBox Events
 	CbxEdit.EbxEvent(h);
 
@@ -179,6 +180,7 @@ void Jbw_ComboBox::CbxEvent(Jbw_Handles *h)
 	else {		
 		if (CbxBtn.BtnEvent(h) == J_BTN_CLICK && CbxListVis == false) {
 			CbxListVis = true;
+			h->LbxPtr[0].AddText("Yo Yo Yo!");
 			RdrCbx(h);
 		}
 	}
@@ -187,9 +189,6 @@ void Jbw_ComboBox::CbxEvent(Jbw_Handles *h)
 	if (ListWindow != NULL) {
 		CbxList.RdrLbx(h);
 	}
-
-
-
 }
 
 

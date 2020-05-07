@@ -38,7 +38,7 @@ public:
 	bool Flash = false;
 	
 	// Give some random default screen size to ease the pain for first time Hello World use
-	SDL_Rect GuiArea = { 100, 100, 500, 700 }; 
+	//SDL_Rect GuiArea = { 100, 100, 500, 700 }; 
 
 	Jbw_Handles handles; // Remove the pointer DAMMIT
 

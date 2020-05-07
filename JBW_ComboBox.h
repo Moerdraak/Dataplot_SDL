@@ -41,6 +41,5 @@ public:
 	void RdrCbx(Jbw_Handles* h);
 	void CbxEvent(Jbw_Handles* h);
 
-	
 };
 

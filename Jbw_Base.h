@@ -95,6 +95,7 @@ class Jbw_Base{
 public:	
 	short int Id = 0;
 	std::string Tag = "";
+	Jbw_Handles *h;
 	SDL_Renderer* Jrdr;
 
 	bool Visible = true;

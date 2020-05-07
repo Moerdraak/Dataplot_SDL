@@ -87,6 +87,7 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 	}
 	TxtList = NList;
 	Cnt++;
+	TxtRendered = false;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -109,9 +110,9 @@ void Jbw_ListBox::RdrLbx(Jbw_Handles* h)
 	
 	// Render Frame of ListBox
 	RdrFrame(); 
-
+	int TxtWidth = FrameW - 5;
 	// Get number of lines that will fit into the ListBox display
-	Lines = (int)floor(FrameH / (FontSize + 1));
+	Lines = (int)floor(FrameH / (FontSize + 5));
 	FromLine = 0;
 	ToLine = Cnt;
 	if (Cnt > Lines) {
@@ -126,6 +127,7 @@ void Jbw_ListBox::RdrLbx(Jbw_Handles* h)
 		Slider->FrameH = SliderBox->FrameH - (Slider->FrameY - SliderBox->FrameY) - 1;
 		Slider->CreatePts();
 		Slider->RdrFrame();
+		TxtWidth -= 15;
 	}
 
 	// Render Text Inside ListBox
@@ -133,6 +135,8 @@ void Jbw_ListBox::RdrLbx(Jbw_Handles* h)
 		TxtRendered = true;
 		for (int I = FromLine; I < ToLine; I++) {
 			TxtList[I].TbxY = FrameY + 3 + (I - FromLine) * (FontSize + 1);
+			TxtList[I].TbxW = TxtWidth - 2;
+			TxtList[I].Border.FrameW = TxtWidth;
 			TxtList[I].Border.FrameY = FrameY + 3 + (I - FromLine) * (FontSize + 4);
 			TxtList[I].Border.CreatePts();
 			TxtList[I].ShowFrame = true;
@@ -197,7 +201,6 @@ void Jbw_ListBox::LbxEvent(Jbw_Handles* h)
 						TxtList[I].DoRender = false;
 					}
 				}
-				
 			}
 			char TxtTxt[10];
 			sprintf_s(TxtTxt, "I = %d", Index);

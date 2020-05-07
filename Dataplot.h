@@ -1,14 +1,11 @@
 #pragma once
 #include "Jbw_Base.h"
 #include <stdio.h>
-//#include "SDL_image.h"
-//#include "SDL_ttf.h"
-//#include <string>
 #include <sstream>
 #include "Jbw_Polygon.h"
 #include "Jbw_FrameWork.h"
 #include "Jbw_Circle.h"
-
+#include "Jbw_Menu.h"
 
 /****************************************************************************************/
 /*******************************  DO NOT EDIT  ******************************************/
@@ -42,6 +39,8 @@ public:
 	/*******************************************************
 	               Gui Specific Objects
 	*******************************************************/
+	Jbw_Menu* Menu;
+
 	Jbw_EditBox* Ding;
 	Jbw_ListBox* MsgMsg;
 	Jbw_Grid* Tst;

@@ -26,8 +26,7 @@ int main(int argc, char* argv[])
 		//	ScreenArea;
 	// SORT OUT Dp or handles DAMMIT
 	SDL_SetRenderDrawColor(h->JbwRdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
-	SDL_RenderFillRect(h->JbwRdr, &Dp.GuiArea);
-
+	SDL_RenderFillRect(h->JbwRdr, &h->GuiArea);
 
 	
 //	SDL_RenderPresent(Dp.J_Rdr);
@@ -90,7 +89,6 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-
 ////////////                         END MAIN                                      ///////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +110,6 @@ Dataplot::~Dataplot() {
 	TTF_Quit();
 };
 
-
 /*------------------------------------------------------------------------------------------
   FUNCTION: JbwCreateLayout:
 			First Thing to do, create the GUI and all the objects on the GUI.
@@ -120,8 +117,10 @@ Dataplot::~Dataplot() {
 ------------------------------------------------------------------------------------------*/
 Jbw_Handles* Dataplot::JbwCreateLayout(void)
 {
-	GuiArea.x = 100; GuiArea.y = 200; GuiArea.w = 1070; GuiArea.h = 600;
-	handles.JbwGui = SDL_CreateWindow("Data Plot", GuiArea.x, GuiArea.y, GuiArea.w, GuiArea.h,
+	handles.GuiArea.x = 100; handles.GuiArea.y = 200; 
+	handles.GuiArea.w = 1070; handles.GuiArea.h = 600;
+	handles.JbwGui = SDL_CreateWindow("Data Plot", handles.GuiArea.x, handles.GuiArea.y, 
+		handles.GuiArea.w, handles.GuiArea.h,
 		SDL_WINDOW_OPENGL);
 	
 	// Create renderer for User window https://wiki.libsdl.org/SDL_CreateRenderer
@@ -142,10 +141,10 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 		else {
 			LbxPtr[0].AddText(SDL_GetError());
 		}
-
 	}
 	IMG_Quit();
 	
+
 	/***   START Framework Change Xperiment   ***/
 	//void** TmpH = new void*[10];
 	//handles.Jbw_Obj = TmpH;
@@ -164,8 +163,6 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	//Tst->AddCol(&handles, "r", "Bit", 55, J_EBX);
 	/***   END Framework Change Xperiment   ***/
 
-
-
 	///////// TEXT BOX   ////////////////////
 	txtNew = new Jbw_TextBox(handles.JbwRdr, "Some Basic Text", 500, 400, 300, 15, 12);
 	txtNew->ShowFrame = true;
@@ -177,33 +174,41 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 
 	cbxNew = new Jbw_ComboBox(handles.JbwRdr,  500, 355, 300, 18, 11, true);
 
+
+	/*  Dataplot Menu  */
+	Menu = new Jbw_Menu(&handles);
+	Menu->MenuAdd("File", 40);
+	Menu->MenuAdd("Tools", 50);
+	Menu->MenuAdd("Help", 40);
+
+
 	/*  DataPlot Heading */
-	Create(&handles, J_TXT, "txtDataPlotName", 128, 10, 0, 0, 24, "DataPlot");
-	Create(&handles, J_TXT, "txtVersion", 132, 35, 0, 0, 11, "Version: c1.0");
+	Create(&handles, J_TXT, "txtDataPlotName", 128, 30, 0, 0, 24, "DataPlot");
+	Create(&handles, J_TXT, "txtVersion", 132, 55, 0, 0, 11, "Version: c1.0");
 
 	/*  Project Detail */
-	Create(&handles, J_TXT, "txt1", 112, 90, 0, 0, 12, "Loaded Config:");
-	Create(&handles, J_TXT, "txtProject", 202, 90, 0, 0, 12, "Rooivalk");
+	Create(&handles, J_TXT, "txt1", 112, 120, 0, 0, 12, "Loaded Config:");
+	Create(&handles, J_TXT, "txtProject", 202, 120, 0, 0, 12, "Rooivalk");
 	Set("txtProject", "F_Bold", "1"); // make it Bold
 
 	/*  Bitplot/Wordplot Heading */
-	Create(&handles, J_TXT, "txtBpWp", 360, 8, 0, 0, 18, "Bit plot");
+	Create(&handles, J_TXT, "txtBpWp", 360, 30, 0, 0, 18, "Bit plot");
 
 	/*  Data Directory */
-	Create(&handles, J_TXT, "txtDataDir", 12, 120, 0, 0, 12, "Data Directory:");
-	Create(&handles, J_EBX, "edDataDir", 12, 135, 328, 18, 11);
+	Create(&handles, J_TXT, "txtDataDir", 12, 140, 0, 0, 12, "Data Directory:");
+	Create(&handles, J_EBX, "edDataDir", 12, 155, 328, 18, 11);
 	Set("edDataDir",  "Align", "J_LEFT");
 //	Create(&handles, J_BTN, "btnDataDir", 339, 135, 14, 18, 12, ":");
-	btnDataDir = new Jbw_Button(handles.JbwRdr, 339, 135, 14, 18, ":", 12);
+	btnDataDir = new Jbw_Button(handles.JbwRdr, 339, 155, 14, 18, ":", 12);
 
 	/*  File ID: */
-	Create(&handles, J_TXT, "txtFileId", 12, 155, 0, 0, 12, "File ID:");
-	Create(&handles, J_EBX, "edFileId", 12, 170, 40, 18, 11);
+	Create(&handles, J_TXT, "txtFileId", 12, 175, 0, 0, 12, "File ID:");
+	Create(&handles, J_EBX, "edFileId", 12, 190, 40, 18, 11);
 	Set("edFileId", "Align", "J_LEFT");
 
 	/*  DataSet Description */
-	Create(&handles, J_TXT, "txtDataSet", 12, 190, 0, 0, 12, "Dataset Description:");
-	Create(&handles, J_EBX, "edDataSet", 12, 205, 300, 18, 11);
+	Create(&handles, J_TXT, "txtDataSet", 12, 210, 0, 0, 12, "Dataset Description:");
+	Create(&handles, J_EBX, "edDataSet", 12, 225, 300, 18, 11);
 	Set("edDataSet", "Text", "Rooivalk Rocket Flight test at OTB (2019-02-03)",
 		 "Align", "J_LEFT");
 
@@ -249,7 +254,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*  SETUP GRAPHICS TABLE AREA   */	
 //	grdFigure = new Jbw_Grid(360, 35, 0, 10, 18);
 
-	Create(&handles, J_GRD, "grdFigure", 360, 35, 0, 10, 18);
+	Create(&handles, J_GRD, "grdFigure", 360, 55, 0, 10, 18);
 	GrdPtr->AddCol(&handles, "grdFigure", "Parameter", 180, J_EBX);
 	GrdPtr->AddCol(&handles, "grdFigure", "Size", 30, J_EBX);
 	GrdPtr->AddCol(&handles, "grdFigure", "Bit", 55, J_EBX);
@@ -264,7 +269,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 
 	// Logo Area
 	LogoArea.x = 3;
-	LogoArea.y = 3;
+	LogoArea.y = 20;
 	LogoArea.w = 100;
 	LogoArea.h = 100;
 	
@@ -302,7 +307,7 @@ void Dataplot::TheLoop(void)
 
 		cbxNew->CbxEvent(&handles);
 
-
+		Menu->MnuEvent(&handles);
 
 		if (handles.Event.type == SDL_QUIT)
 		{
@@ -351,8 +356,11 @@ void Dataplot::TheLoop(void)
 void Dataplot::UserRender(void)
 {
 	// Clear screen
-	SDL_SetRenderDrawColor(handles.JbwRdr, 230, 230, 230, 255); // This sets the color you clear the screen to ( see below )
-	SDL_RenderClear(handles.JbwRdr); // This clears the rendering target with the draw color set above
+	SDL_SetRenderDrawColor(handles.JbwRdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a); 
+	SDL_RenderClear(handles.JbwRdr); 
+
+	// Rnder the Menu
+	Menu->MnuRdr(&handles);
 
 
 
