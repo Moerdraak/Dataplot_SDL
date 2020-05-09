@@ -459,18 +459,20 @@ void Dataplot::btnPlot_Click(Jbw_Handles* h)
 	DpGraph* Figure = new DpGraph(h);
 	Figure->Prev = NULL;
 
-	//Figure->Next = new DpGraph(h); // Create a new instance adressed by this Figure's Next pointer
-	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
-	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
-	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
+	Figure->Next = new DpGraph(h); // Create a new instance adressed by this Figure's Next pointer
+	Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
+	Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
+	Figure = Figure->Next; // Move the Figure pointer to the new Figure.
 
-	//Figure->Next = new DpGraph(h);
-	//Figure->Next->Prev = Figure; 
-	//Figure->Next->Next = NULL; 
-	//Figure = Figure->Next; 
-	//
+	Figure->Next = new DpGraph(h);
+	Figure->Next->Prev = Figure; 
+	Figure->Next->Next = NULL; 
+	Figure = Figure->Next; 
+	
 
 	Figure->GraphRender(1);
+	Figure->Prev->GraphRender(2);
+	Figure->Prev->Prev->GraphRender(3);
 }
 
 /*------------------------------------------------------------------------------------------

@@ -194,18 +194,6 @@ void Jbw_TextBox::RdrTbx(void)
 		int Tmp = Border.FrameW;
 		Border.FrameW = Border.FrameH;
 		Border.FrameH = Tmp;
-
-		//Tmp = TbxW;
-		//TbxW = TbxH;
-		//TbxH = Tmp;
-
-		//Tmp = txtBox.w;
-		//txtBox.w = txtBox.h;
-		//txtBox.h = Tmp;
-
-		//Tmp = txtClip.w;
-		//txtClip.w = txtClip.h;
-		//txtClip.h = Tmp;
 	}
 
 	// Size and Set Frame for Rendering
