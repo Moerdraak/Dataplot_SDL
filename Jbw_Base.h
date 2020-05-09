@@ -60,6 +60,9 @@ struct Jbw_Handles {
 	Jbw_Button* BtnPtr = NULL;
 	Jbw_Grid* GrdPtr = NULL;
 	
+	Jbw_Button** Buttons;
+	Jbw_EditBox** Ebox;
+
 	void** Jbw_Obj;
 
 	short int *TxtCnt = 0;

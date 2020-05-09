@@ -1,7 +1,8 @@
 #include "Dataplot.h"
 #include "Jbw_Text.h" // Temporary here
-SDL_Point* TmpPoints;
 
+
+SDL_Point* TmpPoints;
 
 Uint32 koos(Uint32 interval, void* param) {
 	
@@ -23,29 +24,12 @@ int main(int argc, char* argv[])
 	Jbw_Handles *h = Dp.JbwCreateLayout(); // SORT OUT Dp or handles DAMMIT
 
 	/*   INITIAL RENDER   */
-		//	ScreenArea;
+	//	ScreenArea;
 	// SORT OUT Dp or handles DAMMIT
 	SDL_SetRenderDrawColor(h->JbwRdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
 	SDL_RenderFillRect(h->JbwRdr, &h->GuiArea);
 
-	
-//	SDL_RenderPresent(Dp.J_Rdr);
-
-
-	//DpGraph* TmpGraph;
-	//DpGraph* Figure = new DpGraph(&Dp);
-	//Figure->Prev = NULL;
-	//
-	//Figure->Next = new DpGraph(&Dp); // Create a new instance adressed by this Figure's Next pointer
-	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
-	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
-	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
-
-
-	//Figure->Next = new DpGraph(&Dp); // Create a new instance adressed by this Figure's Next pointer
-	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
-	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
-	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
+	// SDL_RenderPresent(Dp.J_Rdr);
 
 	//Main loop flag
 	bool quit = false;
@@ -63,7 +47,6 @@ int main(int argc, char* argv[])
 	//Uint32 delay = (330 / 10) * 10; // To round it down to the nearest 10 ms 
 	//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 	/******************************/
-	
 	
 	//Jbw_MsgBox Msg("TESTING TESTING", "Werk dit? \nDit werk!", J_YESNO, 100, 20);
 	//Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
@@ -196,7 +179,10 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 
 	/*  Data Directory */
 	Create(&handles, J_TXT, "txtDataDir", 12, 140, 0, 0, 12, "Data Directory:");
-	Create(&handles, J_EBX, "edDataDir", 12, 155, 328, 18, 11);
+//	Create(&handles, J_EBX, "edDataDir", 12, 155, 328, 18, 11);
+	edDataDir = new Jbw_EditBox(handles.JbwRdr, 12, 155, 328, 18, 11);
+	edDataDir->Tag.assign("edDataDir");
+
 	Set("edDataDir",  "Align", "J_LEFT");
 //	Create(&handles, J_BTN, "btnDataDir", 339, 135, 14, 18, 12, ":");
 	btnDataDir = new Jbw_Button(handles.JbwRdr, 339, 155, 14, 18, ":", 12);
@@ -245,11 +231,12 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	Create(&handles, J_BTN, "btnClear", 1020, 475, 40, 18, 12, "Clear");
 
 	/* Plot Buttons  */
-	Create(&handles, J_BTN, "btnPlot", 300, 230, 40, 18, 12, "Plot");
-	Create(&handles, J_BTN, "btnPlotAll", 300, 250, 90, 18, 12, "Plot All Figures");
-	Create(&handles, J_BTN, "btnUp", 300, 270, 40, 18, 12, "Up");
-	Create(&handles, J_BTN, "btnDown", 300, 290, 40, 18, 12, "Down");
-	Create(&handles, J_BTN, "btnAdd", 300, 310, 70, 18, 12, "Add Bits");
+	//	Create(&handles, J_BTN, "btnPlot", 300, 230, 40, 18, 12, "Plot");
+	btnPlot = new Jbw_Button(handles.JbwRdr, 350, 250, 40, 18, "Plot", 12);
+	Create(&handles, J_BTN, "btnPlotAll", 350, 270, 90, 18, 12, "Plot All Figures");
+	Create(&handles, J_BTN, "btnUp", 350, 290, 40, 18, 12, "Up");
+	Create(&handles, J_BTN, "btnDown", 350, 310, 40, 18, 12, "Down");
+	Create(&handles, J_BTN, "btnAdd", 350, 330, 70, 18, 12, "Add Bits");
 
 	/*  SETUP GRAPHICS TABLE AREA   */	
 //	grdFigure = new Jbw_Grid(360, 35, 0, 10, 18);
@@ -288,6 +275,13 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	handles.BtnCnt = &BtnCnt;
 	handles.GrdCnt = &GrdCnt;
 
+	handles.Buttons = new Jbw_Button*[10];
+	handles.Buttons[0] = btnDataDir;
+	handles.Buttons[1] = btnPlot;
+	
+	handles.Ebox = new Jbw_EditBox * [10];
+	handles.Ebox[0] = edDataDir;
+
 	return &handles;
 }
 
@@ -305,8 +299,8 @@ void Dataplot::TheLoop(void)
 	//	Tst->RdrGrd(&handles);
 		// User requests quit
 
+		edDataDir->EbxEvent(&handles);
 		cbxNew->CbxEvent(&handles);
-
 		Menu->MnuEvent(&handles);
 
 		if (handles.Event.type == SDL_QUIT)
@@ -347,6 +341,11 @@ void Dataplot::TheLoop(void)
 			LbxPtr[I].LbxEvent(&handles);
 		}
 
+		if (btnPlot->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnPlot_Click(&handles);
+		}
+
+
 	}
 }
 
@@ -362,7 +361,7 @@ void Dataplot::UserRender(void)
 	// Rnder the Menu
 	Menu->MnuRdr(&handles);
 
-
+	edDataDir->RdrEbx();
 
 
 	LbxPtr[0].AddText("Eeen");
@@ -370,11 +369,19 @@ void Dataplot::UserRender(void)
 	LbxPtr[0].AddText("Drieen");
 	LbxPtr[0].AddText("Vieeeeeeeeeer");
 
+	edDataDir->Text.assign("data.txt");
+	edDataDir->CreateTexture();
+	edDataDir->RdrEbx();
+
+
+
+
 	//Ding->RdrEbx();
 	//Tst->RdrGrd(&handles);
 
 	txtNew->RdrTbx();
 	cbxNew->RdrCbx(&handles);
+	btnPlot->RdrBtn();
 
 	// Render Txt Objects	
 	for (int I = 0; I < TxtCnt; I++) {
@@ -441,4 +448,51 @@ void Dataplot::btnDataDir_Click(Jbw_Handles* h)
 		Answer = MsgBox("YOU REALLY DON'T GET THIS ??", "This will take some time. "
 			"For now just type in the full path and name. Like non-lazy people.", J_OK, 400, 300);
 	}
+}
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: btnPlot_Click
+------------------------------------------------------------------------------------------*/
+void Dataplot::btnPlot_Click(Jbw_Handles* h)
+{
+	DpGraph* TmpGraph;
+	DpGraph* Figure = new DpGraph(h);
+	Figure->Prev = NULL;
+
+	//Figure->Next = new DpGraph(h); // Create a new instance adressed by this Figure's Next pointer
+	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
+	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
+	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
+
+	//Figure->Next = new DpGraph(h);
+	//Figure->Next->Prev = Figure; 
+	//Figure->Next->Next = NULL; 
+	//Figure = Figure->Next; 
+	//
+
+	Figure->GraphRender(1);
+}
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: btnPlotAll_Click
+------------------------------------------------------------------------------------------*/
+void btnPlotAll_Click(Jbw_Handles* h)
+{
+
+}
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: btnAdd_Click
+------------------------------------------------------------------------------------------*/
+void btnAdd_Click(Jbw_Handles* h)
+{
+
+}
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: btnUp_Click
+------------------------------------------------------------------------------------------*/
+void btnUp_Click(Jbw_Handles* h)
+{
+
 }

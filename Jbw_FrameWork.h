@@ -71,7 +71,7 @@ public:
 /*-----------------------------------------------------------------------------------------
 	GET / SET FUNCTIONS          
 ------------------------------------------------------------------------------------------*/
-	int Get(std::string Obj, int Type);
+	std::string GetS(Jbw_Handles* h, std::string Obj, std::string Property);
 
 	bool Set(std::string Obj, std::string  Prop1, const char* Val1,
 		std::string  Prop2 = "NULL", const char* Val2 = "",

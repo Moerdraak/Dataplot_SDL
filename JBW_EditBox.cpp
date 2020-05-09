@@ -195,3 +195,25 @@ Uint32 Jbw_EditBox::Flashy(Uint32 interval, void* param)
 	SDL_PushEvent(&event);
 	return(interval);
 }
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: GetS
+------------------------------------------------------------------------------------------*/
+std::string Jbw_EditBox::EboxGetS(std::string Property)
+{
+	if (Property == "Text") {
+		return Text;
+	}
+	else if (Property == "Something1") {
+
+	}
+	else if (Property == "Something2") {
+
+	}
+	else if (Property == "Something3") {
+
+	}
+	else { // No match
+		return "";
+	}
+}

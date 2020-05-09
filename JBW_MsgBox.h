@@ -3,7 +3,7 @@
 #include "Jbw_Button.h"
 
 class Jbw_MsgBox : private Jbw_Frame {
-public:
+private:
 	SDL_Window* MsgWindow = NULL; 
 	TTF_Font* Font = NULL;
 	SDL_Texture* txtImage = NULL;
@@ -16,7 +16,7 @@ public:
 	int Window_w;
 	int Window_h;
 	int TxtSize = 10;
-
+public:
 	Jbw_MsgBox() {};
 	Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);
@@ -26,6 +26,7 @@ public:
 	J_Type MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);
 
+private:
 	void RenderMsg(std::string Msg, int Line, bool DoRender);
 	void RenderBox(void);
 	void Parser(std::string Txt, bool DoRender);

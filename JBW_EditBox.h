@@ -27,6 +27,7 @@ public:
 	bool SetEbx(std::string  *Var, const char* Val);
 	void RdrEbx(void);
 	void EbxEvent(Jbw_Handles* h);
+	std::string EboxGetS(std::string Property);
 
 	Uint32 static Flashy(Uint32 interval, void* param);
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_image.h"
 #include "Jbw_Base.h"
+//#include "SDL.h"
+//#include "SDL_image.h"
 #include "Jbw_FrameWork.h"
 #include "Jbw_EditBox.h"
 #include "data.h"
@@ -22,7 +22,7 @@ public:
 	TData* BaseData = NULL;
 	TData *FreqData = NULL;
 
-	const Dataplot* Dp;
+	Jbw_Handles *handles;
 
 	// BASE OBJECTS
 	SDL_Window* GraphWindow = NULL; // The window we'll be rendering to DOESN'T BELONG HERE MUST BE CREATED ON THE FLY
@@ -37,16 +37,14 @@ public:
 
 
 	// TEXT OBJECTS
-	Jbw_EditBox* txtGraphTitle;
-	Jbw_EditBox* txtTestTitle;
-	Jbw_EditBox* txtLegend;
-	Jbw_EditBox* ObjXlabel;
-	Jbw_EditBox* ObjYlabel;
-	Jbw_EditBox* txtRandom;
+	Jbw_TextBox* txtGraphTitle;
+	Jbw_TextBox* txtTestTitle;
+	Jbw_TextBox* txtLegend;
+	Jbw_TextBox* ObjXlabel;
+	Jbw_TextBox* ObjYlabel;
+	Jbw_TextBox* txtRandom;
 
 	// EDITBOX OBJECTS
-
-
 
 	// BUTTONS
 
@@ -56,7 +54,7 @@ public:
 	const int GRAPH_H = 500;
 
 	/*******************  CONSTRUCTORS  *******************/
-	DpGraph(const Dataplot* Dp);
+	DpGraph(Jbw_Handles* h);
 	~DpGraph();
 
 	DpGraph* Next;

@@ -2,6 +2,8 @@
 #include "Jbw_Base.h"
 #include <stdio.h>
 #include <sstream>
+#include "DpGraph.h"
+
 #include "Jbw_Polygon.h"
 #include "Jbw_FrameWork.h"
 #include "Jbw_Circle.h"
@@ -11,6 +13,9 @@
 /*******************************  DO NOT EDIT  ******************************************/
 /****************************************************************************************/
 
+class Dp_Handles {
+
+};
 
 /**************************************************************************************
 	CLASS: DataPlot    (Jbw_GUI = JaBberWock Graphical User Interface)
@@ -41,7 +46,7 @@ public:
 	*******************************************************/
 	Jbw_Menu* Menu;
 
-	Jbw_EditBox* Ding;
+	Jbw_EditBox* edDataDir;
 	Jbw_ListBox* MsgMsg;
 	Jbw_Grid* Tst;
 
@@ -49,10 +54,17 @@ public:
 	Jbw_ComboBox* cbxNew;
 	Jbw_TextBox* txtNew;
 	Jbw_Button* btnDataDir;
+	Jbw_Button* btnPlot;
 	
 	/*******************************************************
 			   Gui Objects Callbacks
 	*******************************************************/
 	void btnClear_Click(Jbw_Handles* h);
 	void btnDataDir_Click(Jbw_Handles* h);
+	void btnPlot_Click(Jbw_Handles* h);
+	void btnPlotAll_Click(Jbw_Handles* h);
+	void btnAdd_Click(Jbw_Handles* h);
+	void btnUp_Click(Jbw_Handles* h);
+	void btnDown_Click(Jbw_Handles* h);
+
 };

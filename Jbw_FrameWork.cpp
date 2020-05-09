@@ -338,16 +338,15 @@ FUNCTION: Get()  (Overload 1)
 	Get Property by Instance Name
 	Return: Int
 ------------------------------------------------------------------------------------------*/
-int Jbw_FrameWork::Get(std::string Obj, int Property) 
+std::string Jbw_FrameWork::GetS(Jbw_Handles* h, std::string Obj, std::string Property)
 {
-
 	// Test if it is an Edit Box parameter
-	for (int I = 0; I < EbxCnt; I++) {
+	for (int I = 0; I < *h->EbxCnt; I++) {
 		if (isTag(J_EBX, I, Obj)) {
-
+			return h->EbxPtr[I].EboxGetS(Property);
 		}
 	}
-	return NULL;
+	return "";
 }
 
 /*------------------------------------------------------------------------------------------

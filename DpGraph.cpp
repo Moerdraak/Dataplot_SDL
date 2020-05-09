@@ -22,14 +22,12 @@ DpGraph::~DpGraph() {
 
 };
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //   GRAPH WINDOW CONSTRUCTOR
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-DpGraph::DpGraph(const Dataplot* PtrDp) {
+DpGraph::DpGraph(Jbw_Handles* h) {
 
-	Dp = PtrDp;
+	handles = h;
 	// Create Graph window
 	GraphWindow = SDL_CreateWindow("Data Plot", 500, 300, G_SCREEN_W, G_SCREEN_H, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
@@ -41,22 +39,34 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	// Set up Screen Area
 
 	/* TEXT: Test Title */
+	txtTestTitle = new Jbw_TextBox(GRender, "Test Title", 75, 8, GRAPH_W, 15, 12);
+	txtTestTitle->Align = J_CENTRE;
+
 	//txtTestTitle = new Jbw_EditBox(GRender, J_TEXT, 75, 8, GRAPH_W, 15);
 	//txtTestTitle->Set("Test Title", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Graph Title */
+	txtGraphTitle = new Jbw_TextBox(GRender, "Graph Title", 75, 24, GRAPH_W, 15, 12);
+	txtGraphTitle->Align = J_CENTRE;
 	//txtGraphTitle = new Jbw_EditBox(GRender, J_TEXT, 75, 24, GRAPH_W, 15);
 	//txtGraphTitle->Set("Graph Title", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Legend */
+	txtLegend = new Jbw_TextBox(GRender, "LEGEND", G_SCREEN_W - 115, 40, 100, 15, 12);
+	txtLegend->Align = J_CENTRE;
 	//txtLegend = new Jbw_EditBox(GRender, J_TEXT, G_SCREEN_W - 115, 40, 100);
 	//txtLegend->Set("LEGEND", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: X Label */
+	ObjXlabel = new Jbw_TextBox(GRender, "X-Axes Label", 75, 570, GRAPH_W, 16, 12);
+	ObjXlabel->Align = J_CENTRE;
 	//ObjXlabel = new Jbw_EditBox(GRender, J_TEXT, 75, 570, GRAPH_W, 16); // Create Edit box
 	//ObjXlabel->Set("X-Axes Label", "TxtSize", 12, "Align", J_CENTRE);
 
 	///* TEXT: Y Label */
+	ObjYlabel = new Jbw_TextBox(GRender, "Y-Axes Label", 10, 40, GRAPH_H, 16, 12);
+	ObjYlabel->Align = J_CENTRE;
+	ObjYlabel->Angle = -90;
 	//ObjYlabel = new Jbw_EditBox(GRender, J_TEXT, 10, 40, GRAPH_H, 15); // Create Edit box
 	//ObjYlabel->Set("Y-Axes Label", "TxtSize", 12, "Align", J_CENTRE, "Angle", -90);
 
@@ -78,9 +88,9 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	GraphArea.w = GRAPH_W;
 	GraphArea.h = GRAPH_H;
 
-	//txtRandom = new Jbw_EditBox(GRender, J_TXT, 0, 0, 10);
+	txtRandom = new Jbw_EditBox(GRender, J_TXT, 0, 0, 10);
 
-	Create(&handles, J_TXT, "txtRandom", 0, 0, 0, 0);
+	Create(handles, J_TXT, "txtRandom", 0, 0, 0, 0);
 	//txtRandom = new Jbw_EditBox(Prop);
 
 	//Legend Area
@@ -90,8 +100,10 @@ DpGraph::DpGraph(const Dataplot* PtrDp) {
 	LegendArea.w = 100;
 	LegendArea.h = 100;
 
-	/**************       Do MYSTUFFS      *******************/
-	BaseData = new TData("Data.txt"); // Read in data from a txt file
+	/**************       Do MYSTUFFS      **************/
+//	std::string aa = GetS(handles, "edXaxLabel", "Text" );
+
+	BaseData = new TData(h->Ebox[0]->Text); // Read in data from a txt file
 	FreqData = new TData;
 }
 
@@ -136,8 +148,6 @@ void DpGraph::GraphRender(int Config)
 		}
 	}
 
-
-
 	char TmpTxt[50];
 	//Clear screen
 	SDL_SetRenderDrawColor(GRender, 230, 230, 230, 255); // This sets the color you clear the screen to ( see below )
@@ -151,11 +161,12 @@ void DpGraph::GraphRender(int Config)
 	SDL_SetRenderDrawColor(GRender, 255, 255, 255, 255);
 	SDL_RenderFillRect(GRender, &LegendArea);
 
-	txtLegend->RdrTxt();
-//	txtGraphTitle->Set("Cannon Vibration");	txtGraphTitle->Render();
-//	txtTestTitle->Set(Dp->edDataSet->Text); txtTestTitle->Render();
-//	ObjXlabel->Set(Dp->edXaxLabel->Text); ObjXlabel->Render();
-//	ObjYlabel->Set("Vibration (g)"); ObjYlabel->Render();
+	txtTestTitle->RdrTbx();
+	txtGraphTitle->RdrTbx();
+	txtLegend->RdrTbx();
+	ObjXlabel->RdrTbx();
+	ObjYlabel->RdrTbx();
+
 
 	double xxx = 453656.34;
 	// X Values
@@ -167,22 +178,29 @@ void DpGraph::GraphRender(int Config)
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
 //			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 544, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->RdrTxt();
+			txtRandom->InitTbx(GRender, TmpTxt, 50 + I * (GRAPH_W / 10), 545, 10, 50, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
+
 		}
 	}
 	else {
 		N = (int)MaxNum.length() - 4;
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
-//			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 545, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->RdrTxt();
+			txtRandom->InitTbx(GRender, TmpTxt, 50 + I * (GRAPH_W / 10), 545, 50, 15, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
 		}
 
-//		txtRandom->Set("x 10", "x", 800, "y", 527, "TxtSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
-		txtRandom->RdrTxt();
+		txtRandom->InitTbx(GRender, "x 10", 800, 527, 30, 14, 12);
+		txtRandom->Align = J_RIGHT;
+		txtRandom->RdrTbx();
+
 		sprintf_s(TmpTxt, "%d", N);
-//		txtRandom->Set(TmpTxt, "x", 831, "y", 520, "TxtSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
-		txtRandom->RdrTxt();
+		txtRandom->InitTbx(GRender, TmpTxt, 831, 520, 30, 15, 10);
+		txtRandom->Align = J_LEFT;
+		txtRandom->RdrTbx();
 	}
 
 	// Y Values
@@ -191,23 +209,28 @@ void DpGraph::GraphRender(int Config)
 	if (xxx < 10000) {
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
+
 //			txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->RdrTxt();
+			txtRandom->InitTbx(GRender, TmpTxt, 28, 534 - I * (GRAPH_H / 10), 50, 10, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->Angle = -90;
+			txtRandom->RdrTbx();
 		}
 	}
 	else {
 		N = (int)MaxNum.length() - 4;
 		for (int I = 10; I >= 0; I--) {
 			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
-	//		txtRandom->Set(TmpTxt, "x", 28, "y", 534 - I * (GRAPH_H / 10), "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->RdrTxt();
+			txtRandom->InitTbx(GRender, TmpTxt, 28, 534 - I * (GRAPH_H / 10), 50, 15, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
 		}
 
 //		txtRandom->Set("x 10", "x", 32, "y", 15, "TxtSize", 12, "w", 30, "h", 14, "Align", J_RIGHT);
-		txtRandom->RdrTxt();
+//		txtRandom->RdrTbx();
 		sprintf_s(TmpTxt, "%d", N);
 //		txtRandom->Set(TmpTxt, "x", 63, "y", 8, "TxtSize", 10, "w", 30, "h", 10, "Align", J_LEFT);
-		txtRandom->RdrTxt();
+//		txtRandom->RdrTbx();
 	}
 	//	SDL_RenderPresent(GRender);
 

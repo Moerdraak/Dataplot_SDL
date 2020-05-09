@@ -38,6 +38,7 @@ void Jbw_TextBox::InitTbx(SDL_Renderer* Rdr, std::string Text, int x, int y, int
 {
 	J_Properties P;
 	P.handles.JbwRdr = Rdr;
+	P.Caption.assign(Text);
 	P.x = x;
 	P.y = y;
 	P.w = w;
@@ -194,9 +195,17 @@ void Jbw_TextBox::RdrTbx(void)
 		Border.FrameW = Border.FrameH;
 		Border.FrameH = Tmp;
 
-		Tmp = TbxW;
-		TbxW = TbxH;
-		TbxH = Tmp;
+		//Tmp = TbxW;
+		//TbxW = TbxH;
+		//TbxH = Tmp;
+
+		//Tmp = txtBox.w;
+		//txtBox.w = txtBox.h;
+		//txtBox.h = Tmp;
+
+		//Tmp = txtClip.w;
+		//txtClip.w = txtClip.h;
+		//txtClip.h = Tmp;
 	}
 
 	// Size and Set Frame for Rendering
@@ -215,6 +224,4 @@ void Jbw_TextBox::RdrTbx(void)
 	// Render to screen
 	SDL_RenderPresent(Jrdr);
 }
-
-
 
