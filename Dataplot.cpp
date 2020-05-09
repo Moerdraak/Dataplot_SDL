@@ -478,7 +478,7 @@ void Dataplot::btnPlot_Click(Jbw_Handles* h)
 /*------------------------------------------------------------------------------------------
   FUNCTION: btnPlotAll_Click
 ------------------------------------------------------------------------------------------*/
-void btnPlotAll_Click(Jbw_Handles* h)
+void Dataplot::btnPlotAll_Click(Jbw_Handles* h)
 {
 
 }
@@ -486,7 +486,7 @@ void btnPlotAll_Click(Jbw_Handles* h)
 /*------------------------------------------------------------------------------------------
   FUNCTION: btnAdd_Click
 ------------------------------------------------------------------------------------------*/
-void btnAdd_Click(Jbw_Handles* h)
+void Dataplot::btnAdd_Click(Jbw_Handles* h)
 {
 
 }
@@ -494,7 +494,7 @@ void btnAdd_Click(Jbw_Handles* h)
 /*------------------------------------------------------------------------------------------
   FUNCTION: btnUp_Click
 ------------------------------------------------------------------------------------------*/
-void btnUp_Click(Jbw_Handles* h)
+void Dataplot::btnUp_Click(Jbw_Handles* h)
 {
 
 }
