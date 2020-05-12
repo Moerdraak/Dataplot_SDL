@@ -322,6 +322,7 @@ void Dataplot::UserRender(void)
 	lbxMessage->AddText("Lyn Twee, sy Index moet 1 wees");
 	lbxMessage->AddText("Lyn Drie, sy Index moet 2 wees");
 	lbxMessage->AddText("Lyn Vier, sy Index moet 3 wees");
+	lbxMessage->RdrLbx();
 
 	edDataDir->Text.assign("data.txt");
 	edDataDir->CreateTexture();
@@ -421,8 +422,6 @@ void Dataplot::TheLoop(void)
 	}
 }
 
-
-
 /*------------------------------------------------------------------------------------------
   FUNCTION: BtnClear_Click
 ------------------------------------------------------------------------------------------*/
@@ -463,7 +462,6 @@ void Dataplot::btnPlot_Click(Jbw_Handles* h)
 	Figure->Next->Next = NULL; 
 	Figure = Figure->Next; 
 	
-
 	Figure->GraphRender(1);
 	Figure->Prev->GraphRender(2);
 	Figure->Prev->Prev->GraphRender(3);

@@ -37,7 +37,8 @@ Jbw_Grid::~Jbw_Grid()
 /*-----------------------------------------------------------------------------------------
 FUNCTION: 
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName, int Width, J_Type Type)
+void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName, int Width, 
+	J_Type Type)
 {
 	// Add Header for the collumn
 	Jbw_EditBox *TmpHeader = new Jbw_EditBox[ColCnt + 1];
@@ -81,14 +82,16 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 		TmpElement[ColCnt] = static_cast<Jbw_EditBox*>(new Jbw_EditBox[RowCnt]);
 		Eb = static_cast<Jbw_EditBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
-			Eb[I].InitEbx(handles, GridX + TotalW, GridY + I * (RowHeight - 1), Width, RowHeight);
+			Eb[I].InitEbx(handles, GridX + TotalW, GridY + (I + 1) * (RowHeight - 1), 
+				Width, RowHeight);
 		}
 	} 
 	else { // Type == J_CBX
 		TmpElement[ColCnt] = static_cast<Jbw_ComboBox*>(new Jbw_ComboBox[RowCnt]);
 		Cb = static_cast<Jbw_ComboBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
-			Cb[I].InitCbx(handles, GridX + TotalW, GridY + I * (RowHeight - 1), Width, RowHeight, true);
+			Cb[I].InitCbx(handles, GridX + TotalW, GridY + (I + 1) * (RowHeight - 1), 
+				Width, RowHeight, true);
 			Cb[I].CbxEdit->Enabled = false;
 		}
 	}
