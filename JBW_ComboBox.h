@@ -13,14 +13,12 @@ public:
 	int ComboW = 0;
 	int ComboH = 0;
 
-
-	Jbw_Button CbxEdit;
-	Jbw_Button CbxBtn; // dropdown button
-	Jbw_ListBox CbxList;
+	Jbw_EditBox *CbxEdit = NULL;
+	Jbw_Button* CbxBtn = NULL; // dropdown button
+	Jbw_ListBox* CbxList = NULL;
+	Jbw_Handles* lsthandles = NULL;
 	bool GridBtn = false;
 	bool CbxListVis = false;
-	SDL_Window* ListWindow = NULL;
-	SDL_Renderer* ListRdr = NULL;
 	int LbxCnt = 0;
 	std::string* LbxTxt = NULL;
 /*-----------------------------------------------------------------------------------------
@@ -28,7 +26,7 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_ComboBox() {};
-	Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize, 
+	Jbw_ComboBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
 		bool IsGridBtn = false);
 	~Jbw_ComboBox();
 
@@ -36,10 +34,10 @@ public:
 		FUNCTION DECLARATIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitCbx(J_Properties* Prop);
-	void AddRow(Jbw_Handles* h, std::string NewText);
-	void RdrCbx(Jbw_Handles* h);
-	void CbxEvent(Jbw_Handles* h);
-
+	void InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
+		bool IsGridBtn = false);
+	void AddRow(std::string NewText);
+	void RdrCbx(void);
+	void CbxEvent(void);
 };
 

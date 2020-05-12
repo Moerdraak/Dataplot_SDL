@@ -3,24 +3,9 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+Jbw_EditBox::Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr; 
-	P.x = x; 
-	P.y = y; 
-	P.w = w;
-	P.h = h;
-	P.Fsize = Fsize;
-	InitEbx(&P);
-}
-
-/*-----------------------------------------------------------------------------------------
-	CONSTRUCTOR
-------------------------------------------------------------------------------------------*/
-Jbw_EditBox::Jbw_EditBox(J_Properties *Prop)
-{
-	InitEbx(Prop);
+	InitEbx(handles, x, y, w, h, Fsize);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -33,31 +18,15 @@ Jbw_EditBox::~Jbw_EditBox() {
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: InitEbx
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+void Jbw_EditBox::InitEbx(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr;
-	P.x = x;
-	P.y = y;
-	P.w = w;
-	P.h = h;
-	P.Fsize = Fsize;
-	InitEbx(&P);
-}
-/*-----------------------------------------------------------------------------------------
-	FUNCTION: InitEbx
-------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::InitEbx(J_Properties *Prop)
-{
-	Id = Prop->Id;
-	Tag.assign(Prop->Tag);
-	Jrdr = Prop->handles.JbwRdr;
-	TbxX = Prop->x + 1; TbxY = Prop->y + 1; TbxW = Prop->w - 2; TbxH = Prop->h - 2;
-	Border.InitFrame(Prop);
-	Border.Fill = true;
-	Border.LineColor = J_C_Frame;
-	
-	TxtSize = Prop->Fsize;
+	Jhandle = handles;
+	TbxX = x + 1;
+	TbxY = y + 1;
+	TbxW = w - 2;
+	TbxH = h - 2;
+	TxtSize = Fsize;
+	Border = new Jbw_Frame(handles, x, y, w, h, true);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -115,7 +84,7 @@ void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 			
 
 
-			Border.LineColor = J_C_Black;
+			Border->LineColor = J_C_Black;
 			if (DoRender == false) {
 				DoRender = true;
 				RdrEbx();
@@ -125,11 +94,11 @@ void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 			msOver = false;
 			if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
 				Focus = false;
-				Border.LineColor = J_C_Frame;
+				Border->LineColor = J_C_Frame;
 				RdrEbx();
 			}
 
-			Border.LineColor = J_C_Frame;
+			Border->LineColor = J_C_Frame;
 			if (DoRender == true) {
 				DoRender = false;
 				RdrEbx();
@@ -149,7 +118,7 @@ void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 
 			}
 		}
-		Border.LineColor = J_C_Black;
+		Border->LineColor = J_C_Black;
 		RdrEbx();
 	}
 
@@ -201,8 +170,9 @@ Uint32 Jbw_EditBox::Flashy(Uint32 interval, void* param)
 ------------------------------------------------------------------------------------------*/
 std::string Jbw_EditBox::EboxGetS(std::string Property)
 {
+	std::string Answer = "";
 	if (Property == "Text") {
-		return Text;
+		Answer.assign(Text);
 	}
 	else if (Property == "Something1") {
 
@@ -213,7 +183,5 @@ std::string Jbw_EditBox::EboxGetS(std::string Property)
 	else if (Property == "Something3") {
 
 	}
-	else { // No match
-		return "";
-	}
+	return Answer;
 }

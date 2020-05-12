@@ -2,11 +2,11 @@
 #include "Jbw_Base.h"
 #include "Jbw_Button.h"
 
-class Jbw_MsgBox : private Jbw_Frame {
+class Jbw_MsgBox : private Jbw_Base {
 private:
-	SDL_Window* MsgWindow = NULL; 
 	TTF_Font* Font = NULL;
 	SDL_Texture* txtImage = NULL;
+	Jbw_Frame* MsgFrame = NULL;
 	Jbw_EditBox* Header = NULL;
 	Jbw_Button* btnAck = NULL;
 	Jbw_Button* btnNo = NULL;

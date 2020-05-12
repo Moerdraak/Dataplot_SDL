@@ -58,15 +58,15 @@ public:
 	CREATE FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	bool Create(Jbw_Handles* handles, int ObjType, std::string Tag,
-		int Xpos, int Ypos, int WidthOrNumCol, int HeightOrNumRowCnt,
-		int FontSize = 12, std::string Caption = "");
-	bool CreateTxt(J_Properties* Prop);
-	bool CreateEbx(J_Properties* Prop);
-	bool CreateLbx(J_Properties* Prop);
-	bool CreateCbx(J_Properties* Prop);
-	bool CreateBtn(J_Properties* Prop);
-	bool CreateGrd(J_Properties* Prop);
+//	bool Create(Jbw_Handles* handles, int ObjType, std::string Tag,
+//		int Xpos, int Ypos, int WidthOrNumCol, int HeightOrNumRowCnt,
+//		int FontSize = 12, std::string Caption = "");
+//	bool CreateTxt(J_Properties* Prop);
+////	bool CreateEbx(J_Properties* Prop);
+//	bool CreateLbx(J_Properties* Prop);
+////	bool CreateCbx(J_Properties* Prop);
+//	bool CreateBtn(J_Properties* Prop);
+//	bool CreateGrd(J_Properties* Prop);
 
 /*-----------------------------------------------------------------------------------------
 	GET / SET FUNCTIONS          

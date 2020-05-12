@@ -16,18 +16,15 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_Frame(){};	
-	Jbw_Frame(SDL_Renderer* Rdr, int Xo, int Yo, int Width, int Height, bool DoFill = false);
-	~Jbw_Frame()
-	{
-
-	}
+	Jbw_Frame(Jbw_Handles* handles, int x, int y, int w, int h, bool DoFill = false);
+	~Jbw_Frame() {};
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
 	void CreatePts();
-	void InitFrame(J_Properties *Prop);
+//	void InitFrame(J_Properties *Prop);
 	void RdrFrame(void);
 };
 

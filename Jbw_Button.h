@@ -14,7 +14,7 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_Button() {}; // 
-	Jbw_Button(SDL_Renderer* Rdr, int x, int y, int w, int h, std::string Caption, 
+	Jbw_Button(Jbw_Handles* handles, int x, int y, int w, int h, std::string Caption,
 		int Fsize = 12);
 	~Jbw_Button();
 
@@ -22,7 +22,7 @@ public:
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitBtn(J_Properties* Prop);
+//	void InitBtn(J_Properties* Prop);
 
 	void RdrBtn(void);
 	J_Type BtnEvent(Jbw_Handles* h);

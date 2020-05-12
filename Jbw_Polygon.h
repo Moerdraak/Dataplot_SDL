@@ -10,7 +10,7 @@ public:
 	SDL_Color LineColor = { 0, 0, 0, 255 };
 
 	Jbw_Polygon() {};
-	Jbw_Polygon(SDL_Renderer* Rdr);
+	Jbw_Polygon(Jbw_Handles* handles);
 	~Jbw_Polygon() {};
 
 	void AddPoint(int x, int y);

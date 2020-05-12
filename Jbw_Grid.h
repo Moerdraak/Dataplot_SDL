@@ -33,15 +33,12 @@ public:
 	/*          Constructors / Destructors           */
 	/*-----------------------------------------------*/
 	Jbw_Grid() {};
-	Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumCol, int NumRowCnt);
+	Jbw_Grid(Jbw_Handles* handles, int x, int y, int NumCol, int NumRowCnt);
 	~Jbw_Grid();
 
 	/*************************************************/
 	/*               Create Functions                */
 	/*-----------------------------------------------*/
-	bool InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumRow);
-	bool InitGrd(J_Properties* Prop);
-
 	void AddCol(Jbw_Handles* handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
 	void AddRow(int Num = 1);
 	void SetVal(int Row, int Col, int Val);
@@ -57,7 +54,7 @@ public:
 	void TxtSize(int Row, int Col, int FontSize);
 	double GetVal(int Row, int Col);
 	std::string GetTxt(int Row, int Col);
-	void Event(Jbw_Handles *Handles);
-	void RdrGrd(Jbw_Handles* h);
+	void GrdEvent(Jbw_Handles *Handles);
+	void RdrGrd(void);
 };
 

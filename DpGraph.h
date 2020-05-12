@@ -22,7 +22,7 @@ public:
 	TData* BaseData = NULL;
 	TData *FreqData = NULL;
 
-	Jbw_Handles *handles;
+	Jbw_Handles *ghandles;
 
 	// BASE OBJECTS
 	SDL_Window* GraphWindow = NULL; // The window we'll be rendering to DOESN'T BELONG HERE MUST BE CREATED ON THE FLY

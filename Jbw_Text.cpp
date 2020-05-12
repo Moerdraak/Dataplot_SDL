@@ -3,9 +3,15 @@
 /*---------------------------------------------------------------
 	CONSTRUCTOR:
 ---------------------------------------------------------------*/
-Jbw_Text::Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
+Jbw_Text::Jbw_Text(Jbw_Handles* handles, std::string NewText, int x, int y, int Fsize, int TxtAngle)
 {
-	InitTxt(Rdr, NewText, x, y, Fsize);
+	Jhandle = handles;
+	Text.assign(NewText);
+	TxtX = x;
+	TxtY = y;
+	TxtSize = Fsize;
+	Angle = TxtAngle;
+	CreateTexture();
 }
 
 /*---------------------------------------------------------------
@@ -25,31 +31,31 @@ Jbw_Text::~Jbw_Text()
 /*---------------------------------------------------------------
 	FUNCTION: Initialise Text
 ---------------------------------------------------------------*/
-void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
-{
-	J_Properties Prop;
-	Prop.handles.JbwRdr = Rdr;
-	Prop.Caption.assign(NewText);
-	Prop.x = x;
-	Prop.y = y;
-	Prop.Fsize = Fsize;
-	InitTxt(&Prop);
-}
+//void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
+//{
+//	J_Properties Prop;
+//	Prop.handles.Rdr = Rdr;
+//	Prop.Caption.assign(NewText);
+//	Prop.x = x;
+//	Prop.y = y;
+//	Prop.Fsize = Fsize;
+//	InitTxt(&Prop);
+//}
 
 /*---------------------------------------------------------------
-FUNCTION: Initialise Text
----------------------------------------------------------------*/
-void Jbw_Text::InitTxt(J_Properties* Prop) 
-{
-	Id = Prop->Id;
-	Tag.assign(Prop->Tag);
-	Jrdr = Prop->handles.JbwRdr;
-	Text.assign(Prop->Caption);
-	TxtX = Prop->x;
-	TxtY = Prop->y;
-	TxtSize = Prop->Fsize;
-	CreateTexture();
-}
+//FUNCTION: Initialise Text
+//---------------------------------------------------------------*/
+//void Jbw_Text::InitTxt(J_Properties* Prop) 
+//{
+//	Id = Prop->Id;
+//	Tag.assign(Prop->Tag);
+//	Jrdr = Prop->handles.Rdr;
+//	Text.assign(Prop->Caption);
+//	TxtX = Prop->x;
+//	TxtY = Prop->y;
+//	TxtSize = Prop->Fsize;
+//	CreateTexture();
+//}
 
 /*---------------------------------------------------------------
 FUNCTION: Create Texture
@@ -85,7 +91,7 @@ void Jbw_Text::CreateTexture(void) {
 
 	// Free the previous txtImage
 	SDL_DestroyTexture(txtImage);
-	txtImage = SDL_CreateTextureFromSurface(Jrdr, txtSurf); // Move it from RAM to VRAM -> Graphics card which makes it much faster
+	txtImage = SDL_CreateTextureFromSurface(Jhandle->Rdr, txtSurf); // Move it from RAM to VRAM -> Graphics card which makes it much faster
 
 	txtClip = { 0, 0, txtSurf->w, txtSurf->h };
 	txtBox = { 0, 0 , txtSurf->w, txtSurf->h };
@@ -209,9 +215,9 @@ FUNCTION:
 void Jbw_Text::RdrTxt(void)
 {
 	SDL_Rect RdrArea = { TxtX, TxtY, txtBox.w, txtBox.h };
-	SDL_RenderSetViewport(Jrdr, &RdrArea);
+	SDL_RenderSetViewport(Jhandle->Rdr, &RdrArea);
 
-	SDL_RenderCopyEx(Jrdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
+	SDL_RenderCopyEx(Jhandle->Rdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
 }
 
 /*---------------------------------------------------------------

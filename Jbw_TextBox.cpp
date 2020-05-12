@@ -3,26 +3,27 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_TextBox::Jbw_TextBox(SDL_Renderer* Rdr, std::string Text, int x, int y, int w, int h, int Fsize)
+Jbw_TextBox::Jbw_TextBox(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h, int Fsize)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr;
-	P.Caption = Text;
-	P.x = x;
-	P.y = y;
-	P.w = w;
-	P.h = h;
-	P.Fsize = Fsize;
-	InitTbx(&P);
+	Jhandle = handles;
+	Text.assign(Text);
+	TbxX = x + 1; 
+	TbxY = y + 1; 
+	TbxW = w - 2; 
+	TbxH = h - 2;
+
+	Border = new Jbw_Frame(handles, x, y, w, h, false);
+	TxtSize = Fsize;
+	CreateTexture();
 }
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_TextBox::Jbw_TextBox(J_Properties* Prop)
-{
-	InitTbx(Prop);
-}
+//Jbw_TextBox::Jbw_TextBox(J_Properties* Prop)
+//{
+//	InitTbx(Prop);
+//}
 
 /*-----------------------------------------------------------------------------------------
 	DESTRUCTOR
@@ -34,35 +35,18 @@ Jbw_TextBox::~Jbw_TextBox() {
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: InitTbx
 ------------------------------------------------------------------------------------------*/
-void Jbw_TextBox::InitTbx(SDL_Renderer* Rdr, std::string Text, int x, int y, int w, int h, int Fsize)
+void Jbw_TextBox::InitTbx(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h, int Fsize)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr;
-	P.Caption.assign(Text);
-	P.x = x;
-	P.y = y;
-	P.w = w;
-	P.h = h;
-	P.Fsize = Fsize;
-	InitTbx(&P);
-}
-/*-----------------------------------------------------------------------------------------
-	FUNCTION: InitTbx
-------------------------------------------------------------------------------------------*/
-void Jbw_TextBox::InitTbx(J_Properties* Prop)
-{
-	Id = Prop->Id;
-	Tag.assign(Prop->Tag);
-	Jrdr = Prop->handles.JbwRdr;
-	Text.assign(Prop->Caption);
-	TbxX = Prop->x + 1; TbxY = Prop->y + 1; TbxW = Prop->w - 2; TbxH = Prop->h - 2;
-	Border.InitFrame(Prop);
-	Border.Fill = true;
-	Border.LineColor = J_C_Frame;
-	TxtSize = Prop->Fsize;
-	CreateTexture();
+	Jhandle = handles;
+	Text.assign(Text);
+	TbxX = x + 1;
+	TbxY = y + 1;
+	TbxW = w - 2;
+	TbxH = h - 2;
 
-	
+	Border = new Jbw_Frame(handles, x, y, w, h, false);
+	TxtSize = Fsize;
+	CreateTexture();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -170,15 +154,15 @@ bool Jbw_TextBox::SetTbx(std::string* Var, const char* Val)
 	}
 	//	BackColor
 	else if (Var->compare("BackColor") == 0) {
-		Border.FillColor.b = (int)strtod(Val, &Next);
-		Border.FillColor.g = (int)strtod(Next, &Next);
-		Border.FillColor.r = (int)strtod(Next, &Next);
+		Border->FillColor.b = (int)strtod(Val, &Next);
+		Border->FillColor.g = (int)strtod(Next, &Next);
+		Border->FillColor.r = (int)strtod(Next, &Next);
 		Flag = true;
 	}
 	else if (Var->compare("LineColor") == 0) {
-		Border.LineColor.b = (int)strtod(Val, &Next);
-		Border.LineColor.g = (int)strtod(Next, &Next);
-		Border.LineColor.r = (int)strtod(Next, &Next);
+		Border->LineColor.b = (int)strtod(Val, &Next);
+		Border->LineColor.g = (int)strtod(Next, &Next);
+		Border->LineColor.r = (int)strtod(Next, &Next);
 		Flag = true;
 	}
 	return Flag;
@@ -191,25 +175,25 @@ void Jbw_TextBox::RdrTbx(void)
 {
 	// If Tbxbox is vertical
 	if (Angle == 90 || Angle == -90) {
-		int Tmp = Border.FrameW;
-		Border.FrameW = Border.FrameH;
-		Border.FrameH = Tmp;
+		int Tmp = Border->FrameW;
+		Border->FrameW = Border->FrameH;
+		Border->FrameH = Tmp;
 	}
 
 	// Size and Set Frame for Rendering
 	if (ShowFrame == true) {
-		Border.RdrFrame(); // Render frame
+		Border->RdrFrame(); // Render frame
 	}
 
 	// Set Viewport area
-	SDL_Rect Viewport = { Border.FrameX, Border.FrameY, Border.FrameW, Border.FrameH };
-	SDL_RenderSetViewport(Jrdr, &Viewport);
+	SDL_Rect Viewport = { Border->FrameX, Border->FrameY, Border->FrameW, Border->FrameH };
+	SDL_RenderSetViewport(Jhandle->Rdr, &Viewport);
 
 	// Size and Set Text for Rendering
 	FitText();
-	SDL_RenderCopyEx(Jrdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
+	SDL_RenderCopyEx(Jhandle->Rdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
 
 	// Render to screen
-	SDL_RenderPresent(Jrdr);
+	SDL_RenderPresent(Jhandle->Rdr);
 }
 

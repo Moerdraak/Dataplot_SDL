@@ -13,7 +13,7 @@ public:
 	int	TbxH = 0;
 	
 	bool ShowFrame = false;
-	Jbw_Frame Border;
+	Jbw_Frame* Border;
 	J_Type Align = J_LEFT;
 	
 
@@ -22,17 +22,17 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_TextBox() {}; // 
-	Jbw_TextBox(SDL_Renderer* Rdr, std::string Text, int x, int y, int w, int h = 14, 
+	Jbw_TextBox(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h = 14,
 		int Fsize = 12);
-	Jbw_TextBox(J_Properties* Prop);
+//	Jbw_TextBox(J_Properties* Prop);
 	~Jbw_TextBox();
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitTbx(J_Properties* Prop);
-	void InitTbx(SDL_Renderer* Rdr, std::string Text, int x, int y, int w, int h = 14, 
+//	void InitTbx(J_Properties* Prop);
+	void InitTbx(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h = 14,
 		int Fsize = 12);
 	void FitText(void);
 	bool SetTbx(std::string* Var, const char* Val);

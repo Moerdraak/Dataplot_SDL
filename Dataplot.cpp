@@ -26,8 +26,8 @@ int main(int argc, char* argv[])
 	/*   INITIAL RENDER   */
 	//	ScreenArea;
 	// SORT OUT Dp or handles DAMMIT
-	SDL_SetRenderDrawColor(h->JbwRdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
-	SDL_RenderFillRect(h->JbwRdr, &h->GuiArea);
+	SDL_SetRenderDrawColor(h->Rdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
+	SDL_RenderFillRect(h->Rdr, &h->GuiArea);
 
 	// SDL_RenderPresent(Dp.J_Rdr);
 
@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
 	//Jbw_MsgBox Msg("TESTING TESTING", "Werk dit? \nDit werk!", J_YESNO, 100, 20);
 	//Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
 
-	Dp.CbxPtr[0].AddRow(&Dp.handles, "Cannon");
-	Dp.CbxPtr[0].AddRow(&Dp.handles, "Main Sight");
+	Dp.CbxPtr[0].AddRow( "Cannon");
+	Dp.CbxPtr[0].AddRow("Main Sight");
 	
 //	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
@@ -82,11 +82,11 @@ int main(int argc, char* argv[])
 Dataplot::~Dataplot() {
 
 	//Destroy Window and Renderer
-	SDL_DestroyRenderer(handles.JbwRdr);
+	SDL_DestroyRenderer(handles.Rdr);
 	SDL_DestroyWindow(handles.JbwGui);
 
 	handles.JbwGui = NULL;
-	handles.JbwRdr = NULL;
+	handles.Rdr = NULL;
 
 	//Quit SDL subsystems
 	SDL_Quit();
@@ -107,7 +107,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 		SDL_WINDOW_OPENGL);
 	
 	// Create renderer for User window https://wiki.libsdl.org/SDL_CreateRenderer
-	handles.JbwRdr = SDL_CreateRenderer(handles.JbwGui, -1, SDL_RENDERER_ACCELERATED);
+	handles.Rdr = SDL_CreateRenderer(handles.JbwGui, -1, SDL_RENDERER_ACCELERATED);
 
 	// Load the logo
 	int imgFlags = IMG_INIT_JPG; // Initialize JPG loading
@@ -118,45 +118,14 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 			//Create texture from surface pixels
 			Uint32 colorkey = SDL_MapRGB(loadedSurface->format, 255, 255, 255);
 			SDL_SetColorKey(loadedSurface, SDL_TRUE, colorkey);
-			LogoImage = SDL_CreateTextureFromSurface(handles.JbwRdr, loadedSurface);
+			LogoImage = SDL_CreateTextureFromSurface(handles.Rdr, loadedSurface);
 			SDL_FreeSurface(loadedSurface);
 		}
 		else {
-			LbxPtr[0].AddText(SDL_GetError());
+		//	LbxPtr[0].AddText(SDL_GetError());
 		}
 	}
 	IMG_Quit();
-	
-
-	/***   START Framework Change Xperiment   ***/
-	//void** TmpH = new void*[10];
-	//handles.Jbw_Obj = TmpH;
-
-	//Ding = new Jbw_EditBox(handles.JbwRdr, 400, 235, 328, 18, 12);
-
-	//TmpH[0] = static_cast<Jbw_EditBox*>(Ding);	
-	//Jbw_EditBox* New = static_cast<Jbw_EditBox*>(TmpH[0]);
-
-	//MsgMsg = new Jbw_ListBox(handles.JbwRdr, 350, 350, 700, 95, 11);
-	//handles.Jbw_Obj[1] = MsgMsg;
-
-	//Tst = new Jbw_Grid(handles.JbwRdr, "Kabouter", 360, 300, 18, 5);
-	//Tst->AddCol(&handles, "r", "Parameter", 180, J_EBX);
-	//Tst->AddCol(&handles, "r", "Size", 30, J_EBX);
-	//Tst->AddCol(&handles, "r", "Bit", 55, J_EBX);
-	/***   END Framework Change Xperiment   ***/
-
-	///////// TEXT BOX   ////////////////////
-	txtNew = new Jbw_TextBox(handles.JbwRdr, "Some Basic Text", 500, 400, 300, 15, 12);
-	txtNew->ShowFrame = true;
-	txtNew->Border.LineColor = J_C_LGrey;
-	txtNew->Border.FillColor = J_C_LGrey;
-	txtNew->Align = J_CENTRE;
-	txtNew->TxtColor = J_C_Black;
-	txtNew->CreateTexture();
-
-	cbxNew = new Jbw_ComboBox(handles.JbwRdr,  500, 355, 300, 18, 11, true);
-
 
 	/*  Dataplot Menu  */
 	Menu = new Jbw_Menu(&handles);
@@ -166,187 +135,114 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 
 
 	/*  DataPlot Heading */
-	Create(&handles, J_TXT, "txtDataPlotName", 128, 30, 0, 0, 24, "DataPlot");
-	Create(&handles, J_TXT, "txtVersion", 132, 55, 0, 0, 11, "Version: c1.0");
+	txtDataPlotName = new Jbw_Text(&handles, "DataPlot", 128, 30, 24);
+	txtVersion = new Jbw_Text(&handles, "Version: c1.0", 132, 55, 11);
 
 	/*  Project Detail */
-	Create(&handles, J_TXT, "txt1", 112, 120, 0, 0, 12, "Loaded Config:");
-	Create(&handles, J_TXT, "txtProject", 202, 120, 0, 0, 12, "Rooivalk");
-	Set("txtProject", "F_Bold", "1"); // make it Bold
+	txtConfig = new Jbw_Text(&handles, "Loaded Config:", 112, 120, 12);
+	txtProject = new Jbw_Text(&handles, "Rooivalk", 202, 120, 12);
+	txtProject->F_Bold = TTF_STYLE_BOLD;
+	txtProject->CreateTexture();
 
 	/*  Bitplot/Wordplot Heading */
-	Create(&handles, J_TXT, "txtBpWp", 360, 30, 0, 0, 18, "Bit plot");
+	txtBpWp = new Jbw_Text(&handles, "Bit plot", 360, 30, 18);
 
 	/*  Data Directory */
-	Create(&handles, J_TXT, "txtDataDir", 12, 140, 0, 0, 12, "Data Directory:");
-//	Create(&handles, J_EBX, "edDataDir", 12, 155, 328, 18, 11);
-	edDataDir = new Jbw_EditBox(handles.JbwRdr, 12, 155, 328, 18, 11);
-	edDataDir->Tag.assign("edDataDir");
-
-	Set("edDataDir",  "Align", "J_LEFT");
-//	Create(&handles, J_BTN, "btnDataDir", 339, 135, 14, 18, 12, ":");
-	btnDataDir = new Jbw_Button(handles.JbwRdr, 339, 155, 14, 18, ":", 12);
+	txtDataDir = new Jbw_Text(&handles, "Data Directory:", 12, 140, 12);
+	edDataDir = new Jbw_EditBox(&handles, 12, 155, 328, 18, 11);
+	btnDataDir = new Jbw_Button(&handles, 339, 155, 14, 18, ":", 12);
 
 	/*  File ID: */
-	Create(&handles, J_TXT, "txtFileId", 12, 175, 0, 0, 12, "File ID:");
-	Create(&handles, J_EBX, "edFileId", 12, 190, 40, 18, 11);
-	Set("edFileId", "Align", "J_LEFT");
+	txtFileId = new Jbw_Text(&handles, "File ID:", 12, 175, 12);
+	edFileId = new Jbw_EditBox(&handles, 12, 190, 40, 18, 11);
+//	Create(&handles, J_EBX, "edFileId", 12, 190, 40, 18, 11);
+//	Set("edFileId", "Align", "J_LEFT");
 
 	/*  DataSet Description */
-	Create(&handles, J_TXT, "txtDataSet", 12, 210, 0, 0, 12, "Dataset Description:");
-	Create(&handles, J_EBX, "edDataSet", 12, 225, 300, 18, 11);
-	Set("edDataSet", "Text", "Rooivalk Rocket Flight test at OTB (2019-02-03)",
-		 "Align", "J_LEFT");
+	txtDataSet = new Jbw_Text(&handles, "Dataset Description:", 12, 210, 12);
+	edDataSet = new Jbw_EditBox(&handles, 12, 225, 300, 18, 11);
+	edDataSet->Text.assign("Rooivalk Rocket Flight test at OTB (2019-02-03)");
+//	Create(&handles, J_EBX, "edDataSet", 12, 225, 300, 18, 11);
+//	Set("edDataSet", "Text", "Rooivalk Rocket Flight test at OTB (2019-02-03)",
+//		 "Align", "J_LEFT");
 
 	/*  Figure Combobox  */
-	Create(&handles, J_TXT, "txtFigure", 12, 340, 0, 0, 12, "Select Figure");
-	Create(&handles, J_CBX, "cbxFigure", 12, 355, 300, 18, 11);
-	
-	Set("cbxFigure", "Align", "J_LEFT");
+	txtFigure = new Jbw_Text(&handles, "Select Figure", 12, 340, 12);
+	cbxFigure = new Jbw_ComboBox(&handles, 12, 355, 300, 18, 11, false);
+//	Create(&handles, J_CBX, "cbxFigure", 12, 355, 300, 18, 11);
+//	Set("cbxFigure", "Align", "J_LEFT");
 
 	/*   Figure Type Button */
-	Create(&handles, J_TXT, "txtFigBtn", 170, 340, 0, 0, 12, "Bitplot           Wordplot");
+	txtFigBtn = new Jbw_Text(&handles, "Bitplot           Wordplot", 170, 340, 12);
+//	Create(&handles, J_TXT, "txtFigBtn", 170, 340, 0, 0, 12, "Bitplot           Wordplot");
 
 	/*  Title  */
-	Create(&handles, J_TXT, "txtTitle", 12, 375, 0, 0, 12, "Graph Title");
-	Create(&handles, J_EBX, "edTitle", 12, 390, 300, 18, 11);
-	Set("edTitle", "Align", "J_LEFT");
+	txtTitle = new Jbw_Text(&handles, "Graph Title", 12, 375, 12);
+	edTitle = new Jbw_EditBox(&handles, 12, 390, 300, 18, 11);
+//	Create(&handles, J_EBX, "edTitle", 12, 390, 300, 18, 11);
+//	Set("edTitle", "Align", "J_LEFT");
 
 	/*  Y Axes label */
-	Create(&handles, J_TXT, "ObjYaxLabel", 12, 410, 0, 0, 12, "Y-Axes Label");
-	Create(&handles, J_EBX, "edYaxLabel", 12, 425, 300, 18, 11);
-	Set("edYaxLabel", "Align", "J_LEFT");
+	txtYaxLabel = new Jbw_Text(&handles, "Y-Axes Label", 12, 410, 12);
+//	Create(&handles, J_TXT, "ObjYaxLabel", 12, 410, 0, 0, 12, "Y-Axes Label");
+	edYaxLabel = new Jbw_EditBox(&handles, 12, 425, 300, 18, 11);
+//	Create(&handles, J_EBX, "edYaxLabel", 12, 425, 300, 18, 11);
+//	Set("edYaxLabel", "Align", "J_LEFT");
 
 	/*  X Axes label */
-	Create(&handles, J_TXT, "ObjXaxLabel", 12, 445, 0, 0, 12, "X-Axes Label");
-	Create(&handles, J_EBX, "edXaxLabel", 12, 460, 300, 18, 11);
-	Set("edXaxLabel", "Align", "J_LEFT");
+	txtXaxLabel = new Jbw_Text(&handles, "X-Axes Label", 12, 445, 12);
+//	Create(&handles, J_TXT, "ObjXaxLabel", 12, 445, 0, 0, 12, "X-Axes Label");
+	edXaxLabel = new Jbw_EditBox(&handles, 12, 460, 300, 18, 11);
+//	Create(&handles, J_EBX, "edXaxLabel", 12, 460, 300, 18, 11);
+//	Set("edXaxLabel", "Align", "J_LEFT");
 
 	/*   Time On/Off Button */
-	Create(&handles, J_TXT, "txtOnOffBtn", 260, 445, 0, 0, 12, "Time");
+	txtOnOffBtn = new Jbw_Text(&handles, "Time", 260, 445, 12);
+//	Create(&handles, J_TXT, "txtOnOffBtn", 260, 445, 0, 0, 12, "Time");
 
 	/*   Messages   */
-	Create(&handles, J_TXT, "txtMessages", 12, 480, 0, 0, 12, "Messages");
-	Create(&handles, J_LBX, "lbxMessage", 12, 495, 1048, 95, 11);
-	Create(&handles, J_BTN, "btnClear", 1020, 475, 40, 18, 12, "Clear");
+	txtMessages = new Jbw_Text(&handles, "Messages", 12, 480, 12);
+	lbxMessage = new Jbw_ListBox(&handles, 12, 495, 1048, 95, 11);
+	btnClear = new Jbw_Button(&handles, 1020, 475, 40, 18, "Clear", 12);
+//	Create(&handles, J_TXT, "txtMessages", 12, 480, 0, 0, 12, "Messages");
+//	Create(&handles, J_LBX, "lbxMessage", 12, 495, 1048, 95, 11);
+//	Create(&handles, J_BTN, "btnClear", 1020, 475, 40, 18, 12, "Clear");
 
 	/* Plot Buttons  */
-	//	Create(&handles, J_BTN, "btnPlot", 300, 230, 40, 18, 12, "Plot");
-	btnPlot = new Jbw_Button(handles.JbwRdr, 350, 250, 40, 18, "Plot", 12);
-	Create(&handles, J_BTN, "btnPlotAll", 350, 270, 90, 18, 12, "Plot All Figures");
-	Create(&handles, J_BTN, "btnUp", 350, 290, 40, 18, 12, "Up");
-	Create(&handles, J_BTN, "btnDown", 350, 310, 40, 18, 12, "Down");
-	Create(&handles, J_BTN, "btnAdd", 350, 330, 70, 18, 12, "Add Bits");
+	btnPlot = new Jbw_Button(&handles, 350, 250, 40, 18, "Plot", 12);
+	btnPlotAll = new Jbw_Button(&handles, 350, 270, 90, 18, "Plot All Figures", 12);
+	btnUp = new Jbw_Button(&handles, 350, 290, 40, 18, "Up", 12);
+	btnDown = new Jbw_Button(&handles, 350, 310, 40, 18, "Down", 12);
+	btnAdd = new Jbw_Button(&handles, 350, 330, 60, 18, "Add Bits", 12);
 
 	/*  SETUP GRAPHICS TABLE AREA   */	
-//	grdFigure = new Jbw_Grid(360, 35, 0, 10, 18);
+	grdFigure = new Jbw_Grid(&handles, 360, 55, 10, 18);
 
-	Create(&handles, J_GRD, "grdFigure", 360, 55, 0, 10, 18);
-	GrdPtr->AddCol(&handles, "grdFigure", "Parameter", 180, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Size", 30, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Bit", 55, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Description", 120, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Line", 40, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Step", 40, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Filter", 40, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Parameter", 180, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Size", 30, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Bit", 55, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Description", 120, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Line", 40, J_CBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Step", 40, J_CBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Filter", 40, J_EBX);
 
 	// Logo Area
 	LogoArea.x = 3;
 	LogoArea.y = 20;
 	LogoArea.w = 100;
 	LogoArea.h = 100;
-	
-	// Update handles with all created Objects
-	handles.TxtPtr = TxtPtr;
-	handles.EbxPtr = EbxPtr;
-	handles.LbxPtr = LbxPtr;
-	handles.CbxPtr = CbxPtr;
-	handles.BtnPtr = BtnPtr;
-	handles.GrdPtr = GrdPtr;
 
-	handles.TxtCnt = &TxtCnt;
-	handles.EbxCnt = &EbxCnt;
-	handles.LbxCnt = &LbxCnt;
-	handles.CbxCnt = &CbxCnt;
-	handles.BtnCnt = &BtnCnt;
-	handles.GrdCnt = &GrdCnt;
 
-	handles.Buttons = new Jbw_Button*[10];
-	handles.Buttons[0] = btnDataDir;
-	handles.Buttons[1] = btnPlot;
-	
-	handles.Ebox = new Jbw_EditBox * [10];
-	handles.Ebox[0] = edDataDir;
+	handles.Jbw_Obj = new void* [3];
+	handles.Jbw_Obj[0] = static_cast<Jbw_Button*>(btnDataDir);
+	handles.Jbw_Obj[1] = static_cast<Jbw_Button*>(btnPlot);
+	handles.Jbw_Obj[2] = static_cast<Jbw_EditBox*>(edDataDir);
 
 	return &handles;
-}
-
-/*------------------------------------------------------------------------------------------
-   PERFORM ALL RENDERING TASKS
-------------------------------------------------------------------------------------------*/
-void Dataplot::TheLoop(void)
-{
-	while (SDL_WaitEvent(&handles.Event) != 0) {
-	//	Ding->RdrEbx();
-	//	Ding->EbxEvent(&handles);
-	//	MsgMsg->RdrLbx();
-
-	//	Tst->Event(&handles);
-	//	Tst->RdrGrd(&handles);
-		// User requests quit
-
-		edDataDir->EbxEvent(&handles);
-		cbxNew->CbxEvent(&handles);
-		Menu->MnuEvent(&handles);
-
-		if (handles.Event.type == SDL_QUIT)
-		{
-			break;
-		}
-
-
-		for (int I = 0; I < EbxCnt; I++) {
-			EbxPtr[I].EbxEvent(&handles);
-		}
-
-		if (btnDataDir->BtnEvent(&handles) == J_BTN_CLICK) {
-			btnDataDir_Click(&handles);
-		}
-
-		for (int I = 0; I < BtnCnt; I++) {		
-
-			if (BtnPtr[I].Tag.compare("btnClear") == 0) {
-				if (BtnPtr[I].BtnEvent(&handles) == J_BTN_CLICK) {
-					btnClear_Click(&handles);
-				}
-			}
-			else {
-				BtnPtr[I].BtnEvent(&handles);
-			}
-		}
-
-		for (int I = 0; I < CbxCnt; I++) {
-			CbxPtr[I].CbxEvent(&handles);
-		}
-
-		for (int I = 0; I < GrdCnt; I++) {
-			GrdPtr[I].Event(&handles);
-		}
-
-		for (int I = 0; I < LbxCnt; I++) {
-			LbxPtr[I].LbxEvent(&handles);
-		}
-
-		if (btnPlot->BtnEvent(&handles) == J_BTN_CLICK) {
-			btnPlot_Click(&handles);
-		}
-
-
-	}
 }
 
 /*------------------------------------------------------------------------------------------
@@ -355,77 +251,177 @@ void Dataplot::TheLoop(void)
 void Dataplot::UserRender(void)
 {
 	// Clear screen
-	SDL_SetRenderDrawColor(handles.JbwRdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a); 
-	SDL_RenderClear(handles.JbwRdr); 
+	SDL_SetRenderDrawColor(handles.Rdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
+	SDL_RenderClear(handles.Rdr);
 
 	// Rnder the Menu
 	Menu->MnuRdr(&handles);
 
+	/*  DataPlot Heading */
+	txtDataPlotName->RdrTxt();
+	txtVersion->RdrTxt();
+
+	/*  Project Detail */
+	txtConfig->RdrTxt();
+	txtProject->RdrTxt();
+
+	/*  Bitplot/Wordplot Heading */
+	txtBpWp->RdrTxt();
+
+	/*  Data Directory */
+	txtDataDir->RdrTxt();
 	edDataDir->RdrEbx();
+	btnDataDir->RdrBtn();
 
+	/*  File ID: */
+	txtFileId->RdrTxt();
+	edFileId->RdrEbx();
 
-	LbxPtr[0].AddText("Eeen");
-	LbxPtr[0].AddText("Tweee");
-	LbxPtr[0].AddText("Drieen");
-	LbxPtr[0].AddText("Vieeeeeeeeeer");
+	/*  DataSet Description  */
+	txtDataSet->RdrTxt();
+	edDataSet->RdrEbx();
+
+	/*  Figure Combobox  */
+	txtFigure->RdrTxt();
+	cbxFigure->RdrCbx(); 
+
+	/*  Graph Title  */
+	txtTitle->RdrTxt();
+	edTitle->RdrEbx();
+
+	/*  Y Axes label  */
+	txtYaxLabel->RdrTxt();
+	edYaxLabel->RdrEbx();
+
+	/*  X Axes label  */
+	txtXaxLabel->RdrTxt();
+	edXaxLabel->RdrEbx();
+
+	/*   Time On/Off Button   */
+	txtOnOffBtn->RdrTxt();
+
+	/*   Messages   */
+	txtMessages->RdrTxt();
+	lbxMessage->RdrLbx(); 
+	btnClear->RdrBtn();
+
+	/*  Plot Buttons  */
+	btnPlot->RdrBtn();
+	btnPlotAll->RdrBtn();
+	btnUp->RdrBtn();
+	btnDown->RdrBtn();
+	btnAdd->RdrBtn();
+
+	/*   Figure Type Button   */
+	txtFigBtn->RdrTxt();
+	
+	/*  Graph config grid   */
+	grdFigure->RdrGrd();
+
+	lbxMessage->AddText("Lyn Een, sy Index moet 0 wees");
+	lbxMessage->AddText("Lyn Twee, sy Index moet 1 wees");
+	lbxMessage->AddText("Lyn Drie, sy Index moet 2 wees");
+	lbxMessage->AddText("Lyn Vier, sy Index moet 3 wees");
 
 	edDataDir->Text.assign("data.txt");
 	edDataDir->CreateTexture();
 	edDataDir->RdrEbx();
 
-
-
-
-	//Ding->RdrEbx();
-	//Tst->RdrGrd(&handles);
-
-	txtNew->RdrTbx();
-	cbxNew->RdrCbx(&handles);
 	btnPlot->RdrBtn();
 
-	// Render Txt Objects	
-	for (int I = 0; I < TxtCnt; I++) {
-		TxtPtr[I].RdrTxt(); // ???!!!!! Write a Render call in ObjWork !!!!
-		SDL_RenderPresent(handles.JbwRdr);
-	}
-
-	// Render Edit Box  Objects	
-	for (int I = 0; I < EbxCnt; I++) {
-		EbxPtr[I].RdrEbx(); // ???!!!!! Write a Render call in ObjWork !!!!
-	}
-
-	// Render List Box  Objects	
-	for (int I = 0; I < LbxCnt; I++) {
-		LbxPtr[I].RdrLbx(&handles);
-	}
-	
-	// Render Combo Box  Objects	
-	for (int I = 0; I < CbxCnt; I++) {
-		CbxPtr[I].RdrCbx(&handles); 
-	}
-	
 	// Render Buttons  Objects	
 	btnDataDir->RdrBtn();
 	for (int I = 0; I < BtnCnt; I++) {
-			BtnPtr[I].RdrBtn(); 
-			SDL_RenderPresent(handles.JbwRdr);
+		BtnPtr[I].RdrBtn();
+		SDL_RenderPresent(handles.Rdr);
 	}
 
 	// Render Grid Objects
 	for (int I = 0; I < GrdCnt; I++) {
-		GrdPtr[I].RdrGrd(&handles); // ???!!!!! Write a Render call in ObjWork !!!!
+		GrdPtr[I].RdrGrd(); // ???!!!!! Write a Render call in ObjWork !!!!
 	}
 
-	SDL_RenderPresent(handles.JbwRdr);
+	SDL_RenderPresent(handles.Rdr);
 
 	/****    SET VIEWPORT TO LOGO AREA     ****/
-	SDL_RenderSetViewport(handles.JbwRdr, &LogoArea);
-	SDL_SetRenderDrawColor(handles.JbwRdr, 255, 255, 255, 255);
-	SDL_RenderCopy(handles.JbwRdr, LogoImage, NULL, NULL); // Clear Logo 
+	SDL_RenderSetViewport(handles.Rdr, &LogoArea);
+	SDL_SetRenderDrawColor(handles.Rdr, 255, 255, 255, 255);
+	SDL_RenderCopy(handles.Rdr, LogoImage, NULL, NULL); // Clear Logo 
 
 	/*      RENDER  USER SCREEN     */
-	SDL_RenderPresent(handles.JbwRdr);
+	SDL_RenderPresent(handles.Rdr);
 }
+
+/*------------------------------------------------------------------------------------------
+   PERFORM ALL RENDERING TASKS
+------------------------------------------------------------------------------------------*/
+void Dataplot::TheLoop(void)
+{
+	while (SDL_WaitEvent(&handles.Event) != 0) {
+
+		
+		// Quit program
+		if (handles.Event.type == SDL_QUIT)
+		{
+			break;
+		}
+
+		// Menu Events
+		Menu->MnuEvent(&handles);
+
+		/*  Data Directory */
+		edDataDir->EbxEvent(&handles);
+		btnDataDir->BtnEvent(&handles);
+
+		/*  File ID: */
+		edFileId->EbxEvent(&handles);
+
+		/*  DataSet Description */
+		edDataSet->EbxEvent(&handles);
+
+		/*  Figure Combobox  */
+		cbxFigure->CbxEvent(); 
+
+		/*  Graph Title  */
+		edTitle->EbxEvent(&handles);
+
+		/*  Y Axes label */
+		edYaxLabel->EbxEvent(&handles);
+
+		/*  X Axes label */
+		edXaxLabel->EbxEvent(&handles);
+
+		/*   Time On/Off Button */
+		
+
+		/*   Messages   */
+		lbxMessage->LbxEvent(&handles);
+		if (btnClear->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnClear_Click(&handles);
+		}
+
+		/*   Grid   */
+		grdFigure->GrdEvent(&handles);
+
+		if (btnPlot->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnPlot_Click(&handles);
+		}
+		if (btnPlotAll->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnPlotAll_Click(&handles);
+		}
+		if (btnUp->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnUp_Click(&handles);
+		}
+		if (btnDown->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnDown_Click(&handles);
+		}
+		if (btnAdd->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnAdd_Click(&handles);
+		}
+	}
+}
+
+
 
 /*------------------------------------------------------------------------------------------
   FUNCTION: BtnClear_Click
@@ -433,8 +429,6 @@ void Dataplot::UserRender(void)
 void Dataplot::btnClear_Click(Jbw_Handles* h)
 {
 	lbxClear("lbxMessage");
-//	MsgMsg->Clear();
-//	MsgMsg->RdrLbx();
 }
 
 /*------------------------------------------------------------------------------------------
@@ -455,7 +449,7 @@ void Dataplot::btnDataDir_Click(Jbw_Handles* h)
 ------------------------------------------------------------------------------------------*/
 void Dataplot::btnPlot_Click(Jbw_Handles* h)
 {
-	DpGraph* TmpGraph;
+	//DpGraph* TmpGraph;
 	DpGraph* Figure = new DpGraph(h);
 	Figure->Prev = NULL;
 
@@ -495,6 +489,14 @@ void Dataplot::btnAdd_Click(Jbw_Handles* h)
   FUNCTION: btnUp_Click
 ------------------------------------------------------------------------------------------*/
 void Dataplot::btnUp_Click(Jbw_Handles* h)
+{
+
+}
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: btnDown_Click
+------------------------------------------------------------------------------------------*/
+void Dataplot::btnDown_Click(Jbw_Handles* h)
 {
 
 }

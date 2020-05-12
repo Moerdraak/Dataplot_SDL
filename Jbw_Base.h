@@ -36,7 +36,6 @@ const SDL_Color J_C_msOver = { 210, 210, 210, 255 };
 const SDL_Color J_C_BtnDwn = { 150, 150, 150, 255 };
 
 
-
 /******************************************************************************************
 						 STRUCT holding Jbw Handles
 ******************************************************************************************/
@@ -51,55 +50,21 @@ class Jbw_Grid;
 struct Jbw_Handles {
 	SDL_Rect GuiArea = { 0, 0, 0, 0 };
 	SDL_Window* JbwGui = NULL;
-	SDL_Renderer* JbwRdr = NULL;
+	SDL_Renderer* Rdr = NULL;
 	SDL_Event Event;
-	Jbw_Text* TxtPtr;
-	Jbw_EditBox* EbxPtr = NULL;
-	Jbw_ListBox* LbxPtr = NULL;
-	Jbw_ComboBox* CbxPtr = NULL;
-	Jbw_Button* BtnPtr = NULL;
-	Jbw_Grid* GrdPtr = NULL;
-	
-	Jbw_Button** Buttons;
-	Jbw_EditBox** Ebox;
 
 	void** Jbw_Obj;
 
-	short int *TxtCnt = 0;
-	short int *EbxCnt = 0;
-	short int *LbxCnt = 0;
-	short int *CbxCnt = 0;
-	short int *BtnCnt = 0;
-	short int *GrdCnt = 0;
 };
 
 /******************************************************************************************
-								 STRUCT: J_Properties
-******************************************************************************************/
-struct J_Properties {
-	Jbw_Handles handles;
-	int x = 0;
-	int y = 0;
-	int w = 100;
-	int h = 15;
-	int Fsize = 12;
-	int NumCol = 0;
-	int NumRow = 0;
-	int Id = -1;
-	std::string Tag = "";
-	std::string Caption = "";
-	bool BoolVal = false;
-};
-
-/******************************************************************************************
-								 CLASS: Jbw_Text
+								 CLASS: Jbw_Base
 ******************************************************************************************/
 class Jbw_Base{
 public:	
 	short int Id = 0;
 	std::string Tag = "";
-	Jbw_Handles *h;
-	SDL_Renderer* Jrdr;
+	Jbw_Handles *Jhandle;
 
 	bool Visible = true;
 	bool Enabled = true;

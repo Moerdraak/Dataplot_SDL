@@ -3,9 +3,9 @@
 /*---------------------------------------------------------------
 FUNCTION:
 ---------------------------------------------------------------*/
-Jbw_Polygon::Jbw_Polygon(SDL_Renderer* PRdr)
+Jbw_Polygon::Jbw_Polygon(Jbw_Handles* handles)
 {
-	Jrdr = PRdr;
+    Jhandle = handles;
 }
 
 /*---------------------------------------------------------------
@@ -33,6 +33,6 @@ FUNCTION:
 ---------------------------------------------------------------*/
 void Jbw_Polygon::PolyRdr(void)
 {
-    SDL_SetRenderDrawColor(Jrdr, LineColor.r, LineColor.g, LineColor.b, LineColor.a);
-    SDL_RenderDrawLines(Jrdr, PolyLine, NumPoints);
+    SDL_SetRenderDrawColor(Jhandle->Rdr, LineColor.r, LineColor.g, LineColor.b, LineColor.a);
+    SDL_RenderDrawLines(Jhandle->Rdr, PolyLine, NumPoints);
 }

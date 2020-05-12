@@ -1,17 +1,16 @@
 #include "Jbw_Menu.h"
 
 /*-----------------------------------------------------------------------------------------
-	CONSTRUCTOR
+	CONSTRUCTOR Jbw_Menu
 ------------------------------------------------------------------------------------------*/
 Jbw_Menu::Jbw_Menu(Jbw_Handles* handles)
 {
-	h = handles;
-	Jrdr = h->JbwRdr; // Moet dit fix in Base class
+	Jhandle = handles;
 	// Create Frame at the top of the screen
 	FrameX = 0;
 	FrameY = 0; // Hide Top line of Frame
 	FrameH = 18;
-	FrameW = h->GuiArea.w;
+	FrameW = Jhandle->GuiArea.w;
 	LineColor = J_C_White;
 	FillColor = J_C_White;
 	Fill = true;
@@ -19,14 +18,14 @@ Jbw_Menu::Jbw_Menu(Jbw_Handles* handles)
 }
 
 /*-----------------------------------------------------------------------------------------
-	DESTRUCTOR
+	DESTRUCTOR ~Jbw_Menu
 ------------------------------------------------------------------------------------------*/
 Jbw_Menu::~Jbw_Menu()
 {
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: Create
+	FUNCTION: MenuAdd
 ------------------------------------------------------------------------------------------*/
 void Jbw_Menu::MenuAdd(std::string NewText, int w)
 {
@@ -40,7 +39,7 @@ void Jbw_Menu::MenuAdd(std::string NewText, int w)
 	}
 	MainMenu = TmpMainMenu;
 
-	MainMenu[MnuCnt].Jrdr = h->JbwRdr;
+	MainMenu[MnuCnt].Jhandle = Jhandle;
 	MainMenu[MnuCnt].TbxX = TotalWidth + 1;
 	MainMenu[MnuCnt].TbxY = 1;
 	MainMenu[MnuCnt].TbxW = w-2;
@@ -49,16 +48,15 @@ void Jbw_Menu::MenuAdd(std::string NewText, int w)
 	MainMenu[MnuCnt].Align = J_CENTRE;
 	MainMenu[MnuCnt].Add(NewText);
 
-	MainMenu[MnuCnt].Border.Jrdr = h->JbwRdr;
-	MainMenu[MnuCnt].Border.FrameX = TotalWidth;
-	MainMenu[MnuCnt].Border.FrameY = 0;
-	MainMenu[MnuCnt].Border.FrameW = w;
-	MainMenu[MnuCnt].Border.FrameH = 18;
-	MainMenu[MnuCnt].Border.CreatePts();
-
-	MainMenu[MnuCnt].Border.Fill = true;
-	MainMenu[MnuCnt].Border.LineColor = J_C_White;
-	MainMenu[MnuCnt].Border.FillColor = J_C_White;	
+	// Build a nice border
+	MainMenu[MnuCnt].Border = new Jbw_Frame(Jhandle, TotalWidth, 0, w, 18, true);
+	MainMenu[MnuCnt].Border->FrameX = TotalWidth;
+	MainMenu[MnuCnt].Border->FrameY = 0;
+	MainMenu[MnuCnt].Border->FrameW = w;
+	MainMenu[MnuCnt].Border->FrameH = 18;
+	MainMenu[MnuCnt].Border->CreatePts();
+	MainMenu[MnuCnt].Border->LineColor = J_C_White;
+	MainMenu[MnuCnt].Border->FillColor = J_C_White;	
 	MainMenu[MnuCnt].BtnColor = J_C_White;
 	MainMenu[MnuCnt].BtnBorderColor = J_C_White;
 	MainMenu[MnuCnt].HoverColor = J_C_msOver;
@@ -70,7 +68,7 @@ void Jbw_Menu::MenuAdd(std::string NewText, int w)
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: RdrCbx
+	FUNCTION: MnuRdr
 ------------------------------------------------------------------------------------------*/
 void Jbw_Menu::MnuRdr(Jbw_Handles* h)
 {
@@ -81,7 +79,7 @@ void Jbw_Menu::MnuRdr(Jbw_Handles* h)
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: CbxEvent
+	FUNCTION: MnuEvent
 ------------------------------------------------------------------------------------------*/
 void Jbw_Menu::MnuEvent(Jbw_Handles* h)
 {

@@ -14,16 +14,14 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_EditBox() {}; // 
-	Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h=14, int Fsize = 12);
-	Jbw_EditBox(J_Properties *Prop);
+	Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h=14, int Fsize = 12);
 	~Jbw_EditBox();
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS 
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitEbx(J_Properties *Prop);
-	void InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h = 14, int Fsize = 12);
+	void InitEbx(Jbw_Handles* handles, int x, int y, int w, int h = 14, int Fsize = 12);
 	bool SetEbx(std::string  *Var, const char* Val);
 	void RdrEbx(void);
 	void EbxEvent(Jbw_Handles* h);

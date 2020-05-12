@@ -44,17 +44,73 @@ public:
 	/*******************************************************
 	               Gui Specific Objects
 	*******************************************************/
+	
 	Jbw_Menu* Menu;
+	
+	/*  DataPlot Heading */
+	Jbw_Text* txtDataPlotName;
+	Jbw_Text* txtVersion;
+	
+	/*  Project Detail */
+	Jbw_Text* txtConfig;
+	Jbw_Text* txtProject;
+	
+	/*  Bitplot/Wordplot Heading */
+	Jbw_Text* txtBpWp;
 
+	/*  Data Directory */
+	Jbw_Text* txtDataDir;
 	Jbw_EditBox* edDataDir;
-	Jbw_ListBox* MsgMsg;
-	Jbw_Grid* Tst;
-
-	Jbw_Grid* grdFigure;
-	Jbw_ComboBox* cbxNew;
-	Jbw_TextBox* txtNew;
 	Jbw_Button* btnDataDir;
+
+	/*  File ID: */
+	Jbw_Text* txtFileId;
+	Jbw_EditBox* edFileId;
+
+	/*  DataSet Description */
+	Jbw_Text* txtDataSet;
+	Jbw_EditBox* edDataSet;
+	
+	/*  Figure Combobox  */
+	Jbw_Text* txtFigure;
+	Jbw_ComboBox* cbxFigure;
+
+	/*  Graph Title  */
+	Jbw_Text* txtTitle;
+	Jbw_EditBox* edTitle;
+
+	/*  Y Axes label */
+	Jbw_Text* txtYaxLabel;
+	Jbw_EditBox* edYaxLabel;
+
+	/*  X Axes label */
+	Jbw_Text* txtXaxLabel;
+	Jbw_EditBox* edXaxLabel;
+
+	/*   Time On/Off Button */
+	Jbw_Text* txtOnOffBtn;
+
+	/*   Messages   */
+	Jbw_Text* txtMessages;
+	Jbw_ListBox* lbxMessage;
+	Jbw_Button* btnClear;
+
+	/* Plot Buttons  */
 	Jbw_Button* btnPlot;
+	Jbw_Button* btnPlotAll;
+	Jbw_Button* btnUp;
+	Jbw_Button* btnDown;
+	Jbw_Button* btnAdd;
+
+	/*   Figure Type Button */
+	Jbw_Text* txtFigBtn;
+
+	
+	Jbw_ListBox* MsgMsg;
+	Jbw_Grid* grdFigure;
+
+	
+
 	
 	/*******************************************************
 			   Gui Objects Callbacks

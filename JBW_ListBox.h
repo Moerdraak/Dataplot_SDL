@@ -30,18 +30,16 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_ListBox() {};
-	Jbw_ListBox(J_Properties* Prop);
-	Jbw_ListBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize);
+	Jbw_ListBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize);
 	~Jbw_ListBox();
 
 /*-----------------------------------------------------------------------------------------
 		FUNCTION DECLARATIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitLbx(J_Properties* Prop);
 	void AddText(std::string NewTxt);
 	void DelText(int Row);
 	void Clear(void);
-	void RdrLbx(Jbw_Handles* h);
+	void RdrLbx();
 	void LbxEvent(Jbw_Handles *h);
 };

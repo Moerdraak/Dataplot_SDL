@@ -10,7 +10,7 @@ public:
 	SDL_Color Border = { 0, 0, 0, 255 };
 	SDL_Color Fill = { 0, 0, 0, 255 };
 
-	Jbw_Circle(SDL_Renderer* Rdr, int x, int y, int Radius);
+	Jbw_Circle(Jbw_Handles* handles, int x, int y, int Radius);
 
 	void CircleOpen();
 	void CircleFill();

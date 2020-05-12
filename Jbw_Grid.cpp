@@ -4,15 +4,13 @@
 /*-----------------------------------------------------------------------------------------
 CONSTRUCTOR: 
 ------------------------------------------------------------------------------------------*/
-Jbw_Grid::Jbw_Grid(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumCol, int NumRow)
+Jbw_Grid::Jbw_Grid(Jbw_Handles* handles, int x, int y, int NumRow, int RowH)
 {
-	Tag.assign(GridName);
-	Jrdr = Rdr;
-
+	Jhandle = handles;
 	GridX = x;
 	GridY = y;
 	RowCnt = NumRow;
-	RowHeight = NumCol; // bit of Bullshit here using the FontSize variable for row Height
+	RowHeight = RowH; // bit of Bullshit here using the FontSize variable for row Height
 
 	// Frame
 	FrameX = GridX;
@@ -37,76 +35,28 @@ Jbw_Grid::~Jbw_Grid()
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: InitGrd
-------------------------------------------------------------------------------------------*/
-bool Jbw_Grid::InitGrd(SDL_Renderer* Rdr, std::string GridName, int x, int y, int NumRow) 
-{
-	J_Properties Prop;
-	Prop.handles.JbwRdr = Rdr;
-	Prop.Tag.assign(GridName);
-	Prop.x = x;
-	Prop.y = y;
-	Prop.NumRow = NumRow;
-	
-	return InitGrd(&Prop);
-}
-/*-----------------------------------------------------------------------------------------
-	FUNCTION: InitGrd
-------------------------------------------------------------------------------------------*/
-bool Jbw_Grid::InitGrd(J_Properties * Prop) 
-{
-	Id = Prop->Id;
-	Tag.assign(Prop->Tag);
-	Jrdr = Prop->handles.JbwRdr;
-
-	GridX = Prop->x;
-	GridY = Prop->y;
-	RowCnt = Prop->NumRow;
-	RowHeight = Prop->Fsize; // bit of Bullshit here using the FontSize variable for row Height
-	
-	// Frame
-	FrameX = GridX;
-	FrameY = GridY;
-
-	return true;
-}
-
-/*-----------------------------------------------------------------------------------------
 FUNCTION: 
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName, int Width, J_Type Type)
 {
-	J_Properties Prop;
-
-	Prop.handles = *handles;
-	Prop.x = GridX;
-	Prop.y = GridY;
-	Prop.w = Width;
-	Prop.h = RowHeight;
-	
-	Prop.x = GridX + TotalW;
-	TotalW += Width - 1;
-	
-	// Create Header
+	// Add Header for the collumn
 	Jbw_EditBox *TmpHeader = new Jbw_EditBox[ColCnt + 1];
 	if (ColCnt > 0) {
 		for (int I = 0; I < ColCnt; I++) {
-			TmpHeader[I] = Header[I];
+			TmpHeader[I] = Header[I]; // Copy previous headers
 		}
 		delete[] Header;	
 	}
 	Header = TmpHeader;
 
-	Header[ColCnt].InitEbx(&Prop);
+	Header[ColCnt].InitEbx(handles, GridX + TotalW, GridY, Width, RowHeight, 12);
 	Header[ColCnt].Text.assign(ColName);
-	Header[ColCnt].TxtSize = 12;
 	Header[ColCnt].F_Bold = false;
 	Header[ColCnt].Align = J_CENTRE;
-	Header[ColCnt].Border.FillColor = J_C_msOver;
+	Header[ColCnt].Border->FillColor = J_C_msOver;
 
-	Jbw_EditBox* Eb = NULL; // Element[Row][Col]
-	Jbw_ComboBox* Cb = NULL;
 
+	// Keep record of the Collumn Type
 	J_Type* TmpColType = new J_Type[ColCnt + 1];
 
 	if (ColCnt == 0) {
@@ -121,26 +71,25 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 	}
 	ColType[ColCnt] = Type;
 
+	// Now create the rows for each collumn
+	Jbw_EditBox* Eb = NULL; // Element[Col][Row]
+	Jbw_ComboBox* Cb = NULL;
+
 	void** TmpElement = new void* [ColCnt + 1]; // New memory space
 
 	if (Type == J_EBX) {
 		TmpElement[ColCnt] = static_cast<Jbw_EditBox*>(new Jbw_EditBox[RowCnt]);
 		Eb = static_cast<Jbw_EditBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
-			Prop.y += Prop.h - 1;
-			Prop.w = Width;
-			Eb[I].InitEbx(&Prop);
+			Eb[I].InitEbx(handles, GridX + TotalW, GridY + I * (RowHeight - 1), Width, RowHeight);
 		}
 	} 
 	else { // Type == J_CBX
 		TmpElement[ColCnt] = static_cast<Jbw_ComboBox*>(new Jbw_ComboBox[RowCnt]);
 		Cb = static_cast<Jbw_ComboBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
-			Prop.y += Prop.h - 1;
-			Prop.w = Width;
-			Prop.BoolVal = true;
-			Cb[I].InitCbx(&Prop);
-			Cb[I].CbxEdit.Enabled = false;
+			Cb[I].InitCbx(handles, GridX + TotalW, GridY + I * (RowHeight - 1), Width, RowHeight, true);
+			Cb[I].CbxEdit->Enabled = false;
 		}
 	}
 	
@@ -152,6 +101,8 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 	}
 
 	Element = TmpElement;
+
+	TotalW += Width - 1;
 	ColCnt++;
 }
 
@@ -227,7 +178,7 @@ FUNCTION:
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetCellBackColor(int Row, int Col, SDL_Color Color)
 {
-	Ebox[Row][Col].Border.FillColor = Color;
+	Ebox[Row][Col].Border->FillColor = Color;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -298,12 +249,12 @@ void Jbw_Grid::SetColWidth(int Col, int w)
 
 		for (int I = 0; I < RowCnt; I++) {
 			Ebox[I][Col].TbxW = w - 2;
-			Ebox[I][Col].Border.FrameW = w;
+			Ebox[I][Col].Border->FrameW = w;
 		}
 		for (int I = Col + 1; I < ColCnt; I++) {
 			for (int J = 0; J < RowCnt; J++) {
 					Ebox[J][I].TbxH += Wdiff - 1;
-					Ebox[J][I].Border.FrameX += Wdiff - 1;
+					Ebox[J][I].Border->FrameX += Wdiff - 1;
 			}
 		}
 	}
@@ -323,8 +274,8 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 			for (int J = 0; J < ColCnt; J++) {
 				Ebox[I][J].TbxH = h;
 				Ebox[I][J].TbxY = Ys;
-				Ebox[I][J].Border.FrameH = h + 1;
-				Ebox[I][J].Border.FrameY = Ys;
+				Ebox[I][J].Border->FrameH = h + 1;
+				Ebox[I][J].Border->FrameY = Ys;
 			}
 			Ys += h + 1 ;
 		}
@@ -336,12 +287,12 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 
 		for (int I = 0; I < ColCnt; I++) {
 			Ebox[Row][I].TbxH = h - 2;
-			Ebox[Row][I].Border.FrameH = h;
+			Ebox[Row][I].Border->FrameH = h;
 		}
 		for (int I = Row + 1; I < RowCnt; I++) {
 			for (int J = 0; J < ColCnt; J++) {
 				Ebox[I][J].TbxY += Hdiff;
-				Ebox[I][J].Border.FrameY += Hdiff;
+				Ebox[I][J].Border->FrameY += Hdiff;
 			}
 		}
 	}
@@ -351,7 +302,7 @@ void Jbw_Grid::SetRowHeight(int Row, int h)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: Render Grid
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::RdrGrd(Jbw_Handles* h)
+void Jbw_Grid::RdrGrd(void)
 {
 	Jbw_EditBox* Eb = NULL; // [Col][Row]
 	Jbw_ComboBox* Cb = NULL;
@@ -366,7 +317,7 @@ void Jbw_Grid::RdrGrd(Jbw_Handles* h)
 		else {
 			Cb = static_cast<Jbw_ComboBox*>(Element[I]);
 			for (int J = 0; J < RowCnt; J++) {
-				Cb[J].RdrCbx(h);
+				Cb[J].RdrCbx();
 			}
 		}
 	}
@@ -381,7 +332,7 @@ void Jbw_Grid::RdrGrd(Jbw_Handles* h)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: Event
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::Event(Jbw_Handles* Handles)
+void Jbw_Grid::GrdEvent(Jbw_Handles* Handles)
 {
 	for (int I = 0; I < ColCnt; I++) {
 		if (ColType[I] == J_EBX) {
@@ -393,7 +344,7 @@ void Jbw_Grid::Event(Jbw_Handles* Handles)
 		else {
 			Jbw_ComboBox* Cb = static_cast<Jbw_ComboBox*>(Element[I]);
 			for (int J = 0; J < RowCnt; J++) {
-				Cb[J].CbxEvent(Handles);
+				Cb[J].CbxEvent();
 			}
 		}
 	}

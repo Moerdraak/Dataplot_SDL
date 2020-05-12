@@ -34,14 +34,14 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_Text() {};
-	Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
+	Jbw_Text(Jbw_Handles* handles, std::string NewText, int x, int y, int Fsize = 12, int TxtAngle = 0);
 	~Jbw_Text();
 
 /*-----------------------------------------------------------------------------------------
 		FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitTxt(J_Properties* Prop);
+//	void InitTxt(J_Properties* Prop);
 	void InitTxt(SDL_Renderer* TRdr, std::string NewText, int x, int y, int Fsize = 12);
 	bool SetTxt(std::string  *Var, const char* Val);
 	void Add(std::string XtraText);
