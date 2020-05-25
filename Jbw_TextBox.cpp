@@ -3,10 +3,10 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_TextBox::Jbw_TextBox(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h, int Fsize)
+Jbw_TextBox::Jbw_TextBox(Jbw_Handles* handles, std::string TxtString, int x, int y, int w, int h, int Fsize)
 {
 	Jhandle = handles;
-	Text.assign(Text);
+	Text.assign(TxtString);
 	TbxX = x + 1; 
 	TbxY = y + 1; 
 	TbxW = w - 2; 
@@ -16,14 +16,6 @@ Jbw_TextBox::Jbw_TextBox(Jbw_Handles* handles, std::string Text, int x, int y, i
 	TxtSize = Fsize;
 	CreateTexture();
 }
-
-/*-----------------------------------------------------------------------------------------
-	CONSTRUCTOR
-------------------------------------------------------------------------------------------*/
-//Jbw_TextBox::Jbw_TextBox(J_Properties* Prop)
-//{
-//	InitTbx(Prop);
-//}
 
 /*-----------------------------------------------------------------------------------------
 	DESTRUCTOR

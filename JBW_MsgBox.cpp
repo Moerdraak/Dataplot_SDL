@@ -66,7 +66,8 @@ void Jbw_MsgBox::Close(void)
 	delete btnAck; btnAck = NULL;
 	delete Header; Header = NULL;
 
-	SDL_DestroyWindow(Jhandle->JbwGui); Jhandle->JbwGui = NULL;
+
+SDL_DestroyWindow(Jhandle->JbwGui); Jhandle->JbwGui = NULL;
 	SDL_DestroyRenderer(Jhandle->Rdr); Jhandle->Rdr = NULL;
 	SDL_DestroyTexture(txtImage); txtImage = NULL;
 	TTF_CloseFont(Font); Font = NULL;

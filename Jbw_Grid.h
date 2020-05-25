@@ -18,8 +18,8 @@ public:
 
 	J_Type* ColType = NULL;
 
-	Jbw_EditBox** Ebox = NULL; // DELETE
-	Jbw_ComboBox** Cbox = NULL; // DELETE
+//	Jbw_EditBox** Ebox = NULL; // DELETE
+//	Jbw_ComboBox** Cbox = NULL; // DELETE
 
 	Jbw_EditBox* Header = NULL;
 	void** Element = NULL;
@@ -41,19 +41,22 @@ public:
 	/*-----------------------------------------------*/
 	void AddCol(Jbw_Handles* handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
 	void AddRow(int Num = 1);
-	void SetVal(int Row, int Col, int Val);
-	void SetVal(int Row, int Col, std::string Val);
+	void Set(int Col, int Row, double Val);
+	void AddCbxList(std::string ColName, std::vector<std::string> List);
+	//void AddCbxList(std::string ColName, std::string* List, int Num);
+
+	void SetVal(int Col, int Row, std::string Val);
 	void GrdSet(std::string  *Var, const char* Val);
-	void SetCellTxtSize(int Row, int Col, int TxtSize);
-	void SetCellFontType(int Row, int Col, int TxtSize);
-	void SetCellTxtColor(int Row, int Col, SDL_Color Color);
-	void SetCellBackColor(int Row, int Col, SDL_Color Color);
+	void SetCellTxtSize(int Col, int Row, int TxtSize);
+	void SetCellFontType(int Col, int Row, int TxtSize);
+	void SetCellTxtColor(int Col, int Row, SDL_Color Color);
+	void SetCellBackColor(int Col, int Row, SDL_Color Color);
 	void SetColWidth(int Col, int w);
 	void SetRowHeight(int Row, int h);
 	void RowTxtSize(int Row, int FontSize);
-	void TxtSize(int Row, int Col, int FontSize);
-	double GetVal(int Row, int Col);
-	std::string GetTxt(int Row, int Col);
+	void TxtSize(int Col, int Row, int FontSize);
+//	double GetVal(int Col, int Row);
+	std::string GetTxt(int Col, int Row);
 	void GrdEvent(Jbw_Handles *Handles);
 	void RdrGrd(void);
 };

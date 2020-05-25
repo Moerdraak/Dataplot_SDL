@@ -20,42 +20,13 @@ Jbw_Text::Jbw_Text(Jbw_Handles* handles, std::string NewText, int x, int y, int 
 Jbw_Text::~Jbw_Text()
 {
 //	SDL_DestroyTexture(txtImage);// Copy all current TxtPtrs		
-								// DANGER DANGER If you delete txtImage like you should with Destructor
+								// If you delete txtImage like you should with Destructor
 								// This does not copy well - Write a copy constructor to ensure new 
 								// Memory space is created for stuff inside TxtPtr 
 								// THIS WILL become important when I start fixing all my memory leaks.
 	Font = NULL;
 	txtImage = NULL;
 }
-
-/*---------------------------------------------------------------
-	FUNCTION: Initialise Text
----------------------------------------------------------------*/
-//void Jbw_Text::InitTxt(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize)
-//{
-//	J_Properties Prop;
-//	Prop.handles.Rdr = Rdr;
-//	Prop.Caption.assign(NewText);
-//	Prop.x = x;
-//	Prop.y = y;
-//	Prop.Fsize = Fsize;
-//	InitTxt(&Prop);
-//}
-
-/*---------------------------------------------------------------
-//FUNCTION: Initialise Text
-//---------------------------------------------------------------*/
-//void Jbw_Text::InitTxt(J_Properties* Prop) 
-//{
-//	Id = Prop->Id;
-//	Tag.assign(Prop->Tag);
-//	Jrdr = Prop->handles.Rdr;
-//	Text.assign(Prop->Caption);
-//	TxtX = Prop->x;
-//	TxtY = Prop->y;
-//	TxtSize = Prop->Fsize;
-//	CreateTexture();
-//}
 
 /*---------------------------------------------------------------
 FUNCTION: Create Texture

@@ -10,7 +10,7 @@ class Jbw_ListBox : public Jbw_Frame {
 		VARIABLES
 ------------------------------------------------------------------------------------------*/
 public:
-	int Cnt = 0;
+	
 	Jbw_TextBox* TxtList = NULL;
 	Jbw_Frame* SliderBox = NULL;
 	Jbw_Frame* Slider = NULL;
@@ -18,12 +18,16 @@ public:
 	Jbw_Button* SldrBtnDwn = NULL;
 
 	bool TxtRendered = false;
+	int Cnt = 0;
+	int TxtBoxH = 0;
 	int FontSize = 0;
 	int Lines = 0;
 	int FromLine = 0;
 	int ToLine = 0;
 	int Index = -1;
-
+	
+	//int msBtnDwnPosX = -1;
+	int msBtnDwnPosY = -1;
 
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS / DESTRUCTORS
@@ -38,8 +42,17 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	void AddText(std::string NewTxt);
+	void ResizeListBox(int x, int y, int w, int h);
 	void DelText(int Row);
 	void Clear(void);
-	void RdrLbx();
-	void LbxEvent(Jbw_Handles *h);
+	void RdrLbx(void);
+	void Close(void);
+	void FitLines(bool ChangeCnt);
+
+
+	J_Type LbxEvent(Jbw_Handles* h);
+	J_Type ListEvent(Jbw_Handles* h, int msX, int msY);
+	J_Type SliderEvent(Jbw_Handles* h, int msX, int msY);
+	void BtnUpEvent(Jbw_Handles* h);
+	void BtnDwnEvent(Jbw_Handles* h);
 };

@@ -26,9 +26,9 @@ void Jbw_ComboBox::InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int
 	Jhandle = handles;
 	GridBtn = IsGridBtn;
 	ComboX = x; // Needed for the CbxList during Rendering
-	ComboY = y; // Needed for the CbxList during Rendering
-	ComboW = w; // Needed for the CbxList during Rendering
-	ComboH = h; // Needed for the CbxList during Rendering
+	ComboY = y; 
+	ComboW = w; 
+	ComboH = h; 
 
 	// Initialize Editbox 
 	if (GridBtn == true) {
@@ -41,6 +41,10 @@ void Jbw_ComboBox::InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int
 	// Initialize Button
 	CbxBtn = new Jbw_Button(handles, x + w - 15, y, 15, h, "^");
 	CbxBtn->Flip = SDL_FLIP_VERTICAL;
+
+	// Initalise List Box
+	lsthandles = new Jbw_Handles;
+	CbxList = new Jbw_ListBox(lsthandles, 0, 0, ComboW, 80, 11);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -48,16 +52,16 @@ void Jbw_ComboBox::InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int
 ------------------------------------------------------------------------------------------*/
 void Jbw_ComboBox::AddRow(std::string NewText)
 {
-	std::string* TmpLbxTxt = new std::string[LbxCnt + 1];
+	CbxList->AddText(NewText);
+}
 
-	if (LbxCnt > 0) {
-		for (int I = 0; I < LbxCnt; I++) {
-			TmpLbxTxt[I] = LbxTxt[I];
-		}
-		delete[] LbxTxt;
-	}
-	LbxTxt = TmpLbxTxt;
-	LbxTxt[LbxCnt++].assign(NewText);
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: CloseList
+------------------------------------------------------------------------------------------*/
+void Jbw_ComboBox::CloseList(void)
+{
+	SDL_DestroyWindow(lsthandles->JbwGui);
+	SDL_DestroyRenderer(lsthandles->Rdr);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -67,28 +71,27 @@ void Jbw_ComboBox::RdrCbx()
 {	
 	// Rendering the Listbox
 	if (CbxListVis == true) {
-
-		lsthandles = new Jbw_Handles;
-
 		// Get Main window current position
 		int GuiX = 0, GuiY = 0;
 		SDL_GetWindowPosition(Jhandle->JbwGui, &GuiX, &GuiY);
 
+		// Listbox Height 
+		int Lheight = 0;
+		if (CbxList->Cnt <= 10){											
+			Lheight = 6 + CbxList->Cnt * 15;// Add 6 for top and bottom spacing	For now textbox height is fixed at 15
+		}
+		else {
+			Lheight = 6 + 10 * 15;
+		}
+
 		// Create Listbox Window
 		lsthandles->JbwGui = SDL_CreateWindow("CbxList", GuiX + ComboX, GuiY + ComboY + ComboH - 1,
-			ComboW, 80, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
+			ComboW, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
 			SDL_WINDOW_ALWAYS_ON_TOP);
 
 		// Create Listbox Renderer
 		lsthandles->Rdr = SDL_CreateRenderer(lsthandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
 
-		// Create List Box
-
-		CbxList = new Jbw_ListBox(lsthandles, 0, 0, ComboW, 80, 11);
-
-		for (int I = 0; I < LbxCnt; I++) {
-			CbxList->AddText(LbxTxt[I]);
-		}
 		SDL_RenderPresent(lsthandles->Rdr);
 
 		CbxList->RdrLbx();
@@ -96,23 +99,19 @@ void Jbw_ComboBox::RdrCbx()
 		SDL_RenderPresent(lsthandles->Rdr);
 
 		// Draw border around window
-		Jbw_Frame Border(lsthandles, 0, 0, CbxList->FrameW + 1, CbxList->FrameH, false);
+		Jbw_Frame Border(lsthandles, 0, 0, CbxList->FrameW + 1, Lheight, false);
 		Border.LineColor = J_C_Frame;
 		Border.RdrFrame();
 
 		SDL_RenderPresent(lsthandles->Rdr);
-		
-	//	Jhandle->LbxPtr[0].AddText("Opening List");
-	//	Jhandle->LbxPtr[0].RdrLbx(Jhandle);
 	}
 	else if (lsthandles != NULL){
 		SDL_DestroyRenderer(lsthandles->Rdr);
 		SDL_DestroyWindow(lsthandles->JbwGui);
-		CbxList->Clear();
 	}
-	CbxEdit->RdrEbx();
-	CbxBtn->RdrBtn();
-
+	
+	CbxBtn->RdrBtn(); // Render the Button
+	CbxEdit->RdrEbx(); // Render the Editbox 
 	SDL_RenderPresent(Jhandle->Rdr); // Render to screen
 }
 
@@ -152,18 +151,18 @@ void Jbw_ComboBox::CbxEvent()
 	else {		
 		if (CbxBtn->BtnEvent(Jhandle) == J_BTN_CLICK && CbxListVis == false) {
 			CbxListVis = true;
-	//		Jhandle->LbxPtr[0].AddText("Yo Yo Yo!");
 			RdrCbx();
 		}
 	}
 
 	// Listbox Events
-	if (lsthandles != NULL) {
-		CbxList->RdrLbx();
+	if (CbxListVis == true && lsthandles != NULL) {
+		if (CbxList->LbxEvent(Jhandle) == J_BTN_CLICK) {
+			CbxEdit->Text.assign(CbxList->TxtList[CbxList->Index].Text);
+			CbxEdit->CreateTexture();
+			CbxEdit->RdrEbx();
+			CbxListVis = false;
+			RdrCbx();
+		}
 	}
 }
-
-
-
-
-

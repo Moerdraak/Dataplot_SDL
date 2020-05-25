@@ -19,12 +19,12 @@ public:
 
 	// These Pointers to keep track of all the Objects 
 	// by the Base Object
-	Jbw_Text* TxtPtr = NULL;
-	Jbw_EditBox* EbxPtr = NULL;
-	Jbw_ListBox* LbxPtr = NULL;
-	Jbw_ComboBox* CbxPtr = NULL;
-	Jbw_Button* BtnPtr = NULL;
-	Jbw_Grid* GrdPtr = NULL;
+//	Jbw_Text* TxtPtr = NULL;
+//	Jbw_EditBox* EbxPtr = NULL;
+//	Jbw_ListBox* LbxPtr = NULL;
+//	Jbw_ComboBox* CbxPtr = NULL;
+//	Jbw_Button* BtnPtr = NULL;
+//	Jbw_Grid* GrdPtr = NULL;
 	
 	SDL_Point FlashingI[2] = { {500, 500},{ 500, 550} };
 
@@ -97,6 +97,6 @@ public:
 	template<class TmplObj>
 	TmplObj FreeSub(TmplObj Obj, TmplObj TmpObj, short int *Size, std::string Tag);
 
-	bool isTag(int Type, int Id, std::string Tag); 
+//	bool isTag(int Type, int Id, std::string Tag); 
 };
 

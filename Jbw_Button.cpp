@@ -23,41 +23,12 @@ Jbw_Button::Jbw_Button(Jbw_Handles* handles, int x, int y, int w, int h,
 }
 
 /*-----------------------------------------------------------------------------------------
-	CONSTRUCTOR
-------------------------------------------------------------------------------------------*/
-//Jbw_Button::Jbw_Button(J_Properties* Prop)
-//{
-//	InitEbx(Prop);
-//}
-
-/*-----------------------------------------------------------------------------------------
 	DESTRUCTOR
 ------------------------------------------------------------------------------------------*/
 Jbw_Button::~Jbw_Button() 
 {
 
 }
-
-/*-----------------------------------------------------------------------------------------
-	FUNCTION: InitEbx
-------------------------------------------------------------------------------------------*/
-//void Jbw_Button::InitBtn(J_Properties* Prop)
-//{
-//	Id = Prop->Id;
-//	Tag.assign(Prop->Tag);
-//	Jrdr = Prop->handles.Rdr;
-//	Text.assign(Prop->Caption);
-//	Align = J_CENTRE;
-//	TbxX = Prop->x + 1; TbxY = Prop->y + 1; TbxW = Prop->w - 2; TbxH = Prop->h - 2;
-////	Border.InitFrame(Prop);
-////	Border.Fill = true;
-////	Border.LineColor = J_C_Frame;
-////	Border.FillColor = J_C_BtnGrey;
-//	TxtSize = Prop->Fsize;
-//	CreateTexture();
-//}
-//
-
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: RdrBtn

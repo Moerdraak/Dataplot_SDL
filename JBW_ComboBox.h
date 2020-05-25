@@ -17,10 +17,10 @@ public:
 	Jbw_Button* CbxBtn = NULL; // dropdown button
 	Jbw_ListBox* CbxList = NULL;
 	Jbw_Handles* lsthandles = NULL;
-	bool GridBtn = false;
+	bool GridBtn = false; // When true it will hide the Combobox dropdown button until msOver.
 	bool CbxListVis = false;
 	int LbxCnt = 0;
-	std::string* LbxTxt = NULL;
+
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -39,5 +39,6 @@ public:
 	void AddRow(std::string NewText);
 	void RdrCbx(void);
 	void CbxEvent(void);
+	void CloseList(void);
 };
 

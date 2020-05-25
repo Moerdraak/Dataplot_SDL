@@ -91,8 +91,9 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 		Cb = static_cast<Jbw_ComboBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
 			Cb[I].InitCbx(handles, GridX + TotalW, GridY + (I + 1) * (RowHeight - 1), 
-				Width, RowHeight, true);
-			Cb[I].CbxEdit->Enabled = false;
+				Width, RowHeight, 12, true);
+			Cb[I].CbxEdit->Enabled = false; // Typically user can't change just select.
+
 		}
 	}
 	
@@ -155,47 +156,58 @@ void Jbw_Grid::GrdSet(std::string  *Var, const char* Val)
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetCellTxtSize(int Row, int Col, int TxtSize)
+void Jbw_Grid::SetCellTxtSize(int Col, int Row, int TxtSize)
 {
-	Ebox[Row][Col].TxtSize = TxtSize;
+	//Ebox[Col][Row].TxtSize = TxtSize;
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetCellFontType(int Row, int Col, int TxtSize)
+void Jbw_Grid::SetCellFontType(int Col, int Row, int TxtSize)
 {
-	Ebox[Row][Col].TxtSize = TxtSize;
+	//Ebox[Col][Row].TxtSize = TxtSize;
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetCellTxtColor(int Row, int Col, SDL_Color Color)
+void Jbw_Grid::SetCellTxtColor(int Col, int Row, SDL_Color Color)
 {
-	Ebox[Row][Col].TxtColor = Color;
+	//Ebox[Col][Row].TxtColor = Color;
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetCellBackColor(int Row, int Col, SDL_Color Color)
+void Jbw_Grid::SetCellBackColor(int Col, int Row, SDL_Color Color)
 {
-	Ebox[Row][Col].Border->FillColor = Color;
+	//Ebox[Col][Row].Border->FillColor = Color;
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetVal(int Row, int Col, int Val)
+void Jbw_Grid::Set(int Col, int Row, double Val)
 {
-
+	if (ColType[Col] == J_EBX) { // Edit Box
+		Jbw_EditBox* Eb = static_cast<Jbw_EditBox*>(Element[Col]);
+		Eb[Row].Text.assign(std::to_string(Val));
+		Eb[Row].CreateTexture();
+		Eb[Row].RdrEbx();
+	}
+	else { // Combo Box
+		Jbw_ComboBox* Cb = static_cast<Jbw_ComboBox*>(Element[Col]);
+		Cb[Row].CbxEdit->Text.assign(std::to_string(Val));
+		Cb[Row].CbxEdit->CreateTexture();
+		Cb[Row].CbxEdit->RdrEbx();
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetVal(int Row, int Col, std::string Val)
+void Jbw_Grid::SetVal(int Col, int Row, std::string Val)
 {
 	int I = NULL;
 
@@ -204,17 +216,27 @@ void Jbw_Grid::SetVal(int Row, int Col, std::string Val)
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
-double Jbw_Grid::GetVal(int Row, int Col )
-{
-	return Ebox[Row][Col].Value;
-}
+//double Jbw_Grid::GetVal(int Col, int Row)
+//{
+	//return Ebox[Col][Row].Value;
+//}
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION: GetTxt
 ------------------------------------------------------------------------------------------*/
-std::string Jbw_Grid::GetTxt(int Row, int Col)
+std::string Jbw_Grid::GetTxt(int Col, int Row)
 {
-	return Ebox[Row][Col].Text;
+	std::string Answer = "";
+
+	if (ColType[Col] == J_EBX) {
+		Jbw_EditBox* Eb = static_cast<Jbw_EditBox*>(Element[Col]);
+		Answer.assign(Eb[Row].Text);
+	}
+	else{
+		Jbw_ComboBox* Cb = static_cast<Jbw_ComboBox*>(Element[Col]);
+		Answer.assign(Cb[Row].CbxEdit->Text);
+	}
+	return Answer;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -223,17 +245,17 @@ FUNCTION: RowTxtSize
 void Jbw_Grid::RowTxtSize(int Row, int FontSize)
 {
 	for (int I = 0; I < ColCnt; I++) {
-		Ebox[Row][I].TxtSize = FontSize;
+		//Ebox[Row][I].TxtSize = FontSize;
 	}
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION: RowTxtSize
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::TxtSize(int Row, int Col, int FontSize)
+void Jbw_Grid::TxtSize(int Col, int Row, int FontSize)
 {
 	for (int I = 0; I < ColCnt; I++) {
-		Ebox[Row][I].TxtSize = FontSize;
+		//Ebox[Row][I].TxtSize = FontSize;
 	}
 }
 
@@ -242,26 +264,26 @@ FUNCTION: SetColWidth
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetColWidth(int Col, int w)
 {
-	int Wdiff = w - Ebox[0][Col].TbxW;
+	//int Wdiff = w - Ebox[0][Col].TbxW;
 
-	if (Col == -1){ //Set all Column's the same
+	//if (Col == -1){ //Set all Column's the same
 
-	}
-	else { // Set Specific Column width
-		FrameW += Wdiff - 1; // Set outside Frame with
+	//}
+	//else { // Set Specific Column width
+	//	FrameW += Wdiff - 1; // Set outside Frame with
 
-		for (int I = 0; I < RowCnt; I++) {
-			Ebox[I][Col].TbxW = w - 2;
-			Ebox[I][Col].Border->FrameW = w;
-		}
-		for (int I = Col + 1; I < ColCnt; I++) {
-			for (int J = 0; J < RowCnt; J++) {
-					Ebox[J][I].TbxH += Wdiff - 1;
-					Ebox[J][I].Border->FrameX += Wdiff - 1;
-			}
-		}
-	}
-	CreatePts(); // Set Outside Grid frame
+	//	for (int I = 0; I < RowCnt; I++) {
+	//		Ebox[I][Col].TbxW = w - 2;
+	//		Ebox[I][Col].Border->FrameW = w;
+	//	}
+	//	for (int I = Col + 1; I < ColCnt; I++) {
+	//		for (int J = 0; J < RowCnt; J++) {
+	//				Ebox[J][I].TbxH += Wdiff - 1;
+	//				Ebox[J][I].Border->FrameX += Wdiff - 1;
+	//		}
+	//	}
+	//}
+	//CreatePts(); // Set Outside Grid frame
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -269,37 +291,59 @@ FUNCTION: SetRowHeight
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetRowHeight(int Row, int h)
 {
-	int Ys = Ebox[0][0].TbxY;
+	//int Ys = Ebox[0][0].TbxY;
 
-	if (Row == -1) { //Set all Row's the same
-		for (int I = 0; I < RowCnt; I++) {
+	//if (Row == -1) { //Set all Row's the same
+	//	for (int I = 0; I < RowCnt; I++) {
 
-			for (int J = 0; J < ColCnt; J++) {
-				Ebox[I][J].TbxH = h;
-				Ebox[I][J].TbxY = Ys;
-				Ebox[I][J].Border->FrameH = h + 1;
-				Ebox[I][J].Border->FrameY = Ys;
+	//		for (int J = 0; J < ColCnt; J++) {
+	//			Ebox[I][J].TbxH = h;
+	//			Ebox[I][J].TbxY = Ys;
+	//			Ebox[I][J].Border->FrameH = h + 1;
+	//			Ebox[I][J].Border->FrameY = Ys;
+	//		}
+	//		Ys += h + 1 ;
+	//	}
+	//	FrameH = (RowCnt) * h + RowCnt  ;
+	//}
+	//else { // Set Specific Column width
+	//	int Hdiff = h - Ebox[Row][0].TbxH - 2;
+	//	FrameH += Hdiff + 1; // Set outside Frame Height
+
+	//	for (int I = 0; I < ColCnt; I++) {
+	//		Ebox[Row][I].TbxH = h - 2;
+	//		Ebox[Row][I].Border->FrameH = h;
+	//	}
+	//	for (int I = Row + 1; I < RowCnt; I++) {
+	//		for (int J = 0; J < ColCnt; J++) {
+	//			Ebox[I][J].TbxY += Hdiff;
+	//			Ebox[I][J].Border->FrameY += Hdiff;
+	//		}
+	//	}
+	//}
+	//CreatePts();
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION: AddCbxList
+------------------------------------------------------------------------------------------*/
+void Jbw_Grid::AddCbxList(std::string ColName, std::vector<std::string> List)
+{
+	for (int I = 0; I < ColCnt; I++) {
+		if (Header[I].Text.compare(ColName) == 0) { // Find correct collumn
+			if (ColType[I] == J_EBX) {
+				// ERROR
 			}
-			Ys += h + 1 ;
-		}
-		FrameH = (RowCnt) * h + RowCnt  ;
-	}
-	else { // Set Specific Column width
-		int Hdiff = h - Ebox[Row][0].TbxH - 2;
-		FrameH += Hdiff + 1; // Set outside Frame Height
-
-		for (int I = 0; I < ColCnt; I++) {
-			Ebox[Row][I].TbxH = h - 2;
-			Ebox[Row][I].Border->FrameH = h;
-		}
-		for (int I = Row + 1; I < RowCnt; I++) {
-			for (int J = 0; J < ColCnt; J++) {
-				Ebox[I][J].TbxY += Hdiff;
-				Ebox[I][J].Border->FrameY += Hdiff;
+			else{
+				Jbw_ComboBox* Cb = static_cast<Jbw_ComboBox*>(Element[I]);
+				for (int J = 0; J < RowCnt; J++) {
+					for (int K = 0; K < size(List); K++) {
+						Cb[J].AddRow(List[K]);
+					}
+				}
 			}
 		}
 	}
-	CreatePts();
 }
 
 /*-----------------------------------------------------------------------------------------

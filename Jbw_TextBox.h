@@ -21,16 +21,14 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_TextBox() {}; // 
-	Jbw_TextBox(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h = 14,
+	Jbw_TextBox(Jbw_Handles* handles, std::string TxtString, int x, int y, int w, int h = 14,
 		int Fsize = 12);
-//	Jbw_TextBox(J_Properties* Prop);
 	~Jbw_TextBox();
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-//	void InitTbx(J_Properties* Prop);
 	void InitTbx(Jbw_Handles* handles, std::string Text, int x, int y, int w, int h = 14,
 		int Fsize = 12);
 	void FitText(void);

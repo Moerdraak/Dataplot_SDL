@@ -23,51 +23,39 @@ int main(int argc, char* argv[])
 	Dataplot Dp; 
 	Jbw_Handles *h = Dp.JbwCreateLayout(); // SORT OUT Dp or handles DAMMIT
 
-	/*   INITIAL RENDER   */
-	//	ScreenArea;
-	// SORT OUT Dp or handles DAMMIT
-	SDL_SetRenderDrawColor(h->Rdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
-	SDL_RenderFillRect(h->Rdr, &h->GuiArea);
-
-	// SDL_RenderPresent(Dp.J_Rdr);
-
-	//Main loop flag
-	bool quit = false;
-	bool flag = true;
-
-	//Event handler
-//	SDL_Event e;
-
-	//While application is running
-	//Handle events on Interrupt
-	int* Params = new int;
-
 	/******************************/
 	/*   SDL TIMER STUFFS   */
 	//Uint32 delay = (330 / 10) * 10; // To round it down to the nearest 10 ms 
 	//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 	/******************************/
-	
-	//Jbw_MsgBox Msg("TESTING TESTING", "Werk dit? \nDit werk!", J_YESNO, 100, 20);
-	//Jbw_MsgBox Msg1("TESTING TESTING", "Werk dit? Dit werk! Werk dit? Dit werk!", J_OK, 500, 20);
 
-	Dp.CbxPtr[0].AddRow( "Cannon");
-	Dp.CbxPtr[0].AddRow("Main Sight");
-	
+	Jbw_TextBox Tmp(h, "The Lazy Quick Brown Fox jump over the fence", 400, 400, 300, 16, 11);
+	Tmp.ShowFrame = true;
+	Tmp.TxtColor = J_C_White;
+	Tmp.CreateTexture();
+	Tmp.RdrTbx();
+
+	Dp.cbxFigure->AddRow("Main Sight");
+	Dp.cbxFigure->AddRow("Cannon testing");
+	Dp.cbxFigure->AddRow("Seeker vibration"); 
+	Dp.cbxFigure->AddRow("4. Free Turbine speed");
+	Dp.cbxFigure->AddRow("5. Free Turbine speed");
+	Dp.cbxFigure->AddRow("6. Free Turbine speed");
+	Dp.cbxFigure->AddRow("7. Free Turbine speed");
+	Dp.cbxFigure->AddRow("8. Free Turbine speed");
+	Dp.cbxFigure->AddRow("9. Free Turbine speed");
+	Dp.cbxFigure->AddRow("10. Free Turbine speed");
+	Dp.cbxFigure->AddRow("11. Free Turbine speed");
+	Dp.cbxFigure->AddRow("12. Free Turbine speed");
+	Dp.cbxFigure->AddRow("13. Free Turbine speed");
+	Dp.cbxFigure->AddRow("14. Free Turbine speed");
+	Dp.cbxFigure->AddRow("15. Free Turbine speed");
+	Dp.cbxFigure->AddRow("16. Free Turbine speed");
+
 //	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
 	Dp.UserRender();
-
-	int Rendercnt = 0;
-	std::string RndrCnttxt;
-//	while (1) {
-//		if (SDL_PollEvent(&e)) {
-
 	Dp.TheLoop();
-
-
-	//Free resources and close SDL
-	//close();
 
 	return 0;
 }
@@ -133,7 +121,6 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	Menu->MenuAdd("Tools", 50);
 	Menu->MenuAdd("Help", 40);
 
-
 	/*  DataPlot Heading */
 	txtDataPlotName = new Jbw_Text(&handles, "DataPlot", 128, 30, 24);
 	txtVersion = new Jbw_Text(&handles, "Version: c1.0", 132, 55, 11);
@@ -155,58 +142,39 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*  File ID: */
 	txtFileId = new Jbw_Text(&handles, "File ID:", 12, 175, 12);
 	edFileId = new Jbw_EditBox(&handles, 12, 190, 40, 18, 11);
-//	Create(&handles, J_EBX, "edFileId", 12, 190, 40, 18, 11);
-//	Set("edFileId", "Align", "J_LEFT");
 
 	/*  DataSet Description */
 	txtDataSet = new Jbw_Text(&handles, "Dataset Description:", 12, 210, 12);
 	edDataSet = new Jbw_EditBox(&handles, 12, 225, 300, 18, 11);
 	edDataSet->Text.assign("Rooivalk Rocket Flight test at OTB (2019-02-03)");
-//	Create(&handles, J_EBX, "edDataSet", 12, 225, 300, 18, 11);
-//	Set("edDataSet", "Text", "Rooivalk Rocket Flight test at OTB (2019-02-03)",
-//		 "Align", "J_LEFT");
 
 	/*  Figure Combobox  */
 	txtFigure = new Jbw_Text(&handles, "Select Figure", 12, 340, 12);
 	cbxFigure = new Jbw_ComboBox(&handles, 12, 355, 300, 18, 11, false);
-//	Create(&handles, J_CBX, "cbxFigure", 12, 355, 300, 18, 11);
-//	Set("cbxFigure", "Align", "J_LEFT");
 
 	/*   Figure Type Button */
 	txtFigBtn = new Jbw_Text(&handles, "Bitplot           Wordplot", 170, 340, 12);
-//	Create(&handles, J_TXT, "txtFigBtn", 170, 340, 0, 0, 12, "Bitplot           Wordplot");
 
 	/*  Title  */
 	txtTitle = new Jbw_Text(&handles, "Graph Title", 12, 375, 12);
 	edTitle = new Jbw_EditBox(&handles, 12, 390, 300, 18, 11);
-//	Create(&handles, J_EBX, "edTitle", 12, 390, 300, 18, 11);
-//	Set("edTitle", "Align", "J_LEFT");
 
 	/*  Y Axes label */
 	txtYaxLabel = new Jbw_Text(&handles, "Y-Axes Label", 12, 410, 12);
-//	Create(&handles, J_TXT, "ObjYaxLabel", 12, 410, 0, 0, 12, "Y-Axes Label");
 	edYaxLabel = new Jbw_EditBox(&handles, 12, 425, 300, 18, 11);
-//	Create(&handles, J_EBX, "edYaxLabel", 12, 425, 300, 18, 11);
-//	Set("edYaxLabel", "Align", "J_LEFT");
 
 	/*  X Axes label */
 	txtXaxLabel = new Jbw_Text(&handles, "X-Axes Label", 12, 445, 12);
-//	Create(&handles, J_TXT, "ObjXaxLabel", 12, 445, 0, 0, 12, "X-Axes Label");
 	edXaxLabel = new Jbw_EditBox(&handles, 12, 460, 300, 18, 11);
-//	Create(&handles, J_EBX, "edXaxLabel", 12, 460, 300, 18, 11);
-//	Set("edXaxLabel", "Align", "J_LEFT");
+
 
 	/*   Time On/Off Button */
 	txtOnOffBtn = new Jbw_Text(&handles, "Time", 260, 445, 12);
-//	Create(&handles, J_TXT, "txtOnOffBtn", 260, 445, 0, 0, 12, "Time");
 
 	/*   Messages   */
 	txtMessages = new Jbw_Text(&handles, "Messages", 12, 480, 12);
 	lbxMessage = new Jbw_ListBox(&handles, 12, 495, 1048, 95, 11);
 	btnClear = new Jbw_Button(&handles, 1020, 475, 40, 18, "Clear", 12);
-//	Create(&handles, J_TXT, "txtMessages", 12, 480, 0, 0, 12, "Messages");
-//	Create(&handles, J_LBX, "lbxMessage", 12, 495, 1048, 95, 11);
-//	Create(&handles, J_BTN, "btnClear", 1020, 475, 40, 18, 12, "Clear");
 
 	/* Plot Buttons  */
 	btnPlot = new Jbw_Button(&handles, 350, 250, 40, 18, "Plot", 12);
@@ -224,10 +192,18 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	grdFigure->AddCol(&handles, "grdFigure", "Description", 120, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
-	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);
+	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);	
+		std::vector<std::string> Colors = { "Black", "Blue", "Green", "Red", "Magenta", "Cyan" };
+		grdFigure->AddCbxList("Colour", Colors);
 	grdFigure->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
+		std::vector<std::string> Symbols = { "*", "+", "x", "d", "s", "o" };
+		grdFigure->AddCbxList("Symb.", Symbols);
 	grdFigure->AddCol(&handles, "grdFigure", "Line", 40, J_CBX);
+		std::vector<std::string> Lin = { "-", ":", ".", " "};
+		grdFigure->AddCbxList("Line", Lin);
 	grdFigure->AddCol(&handles, "grdFigure", "Step", 40, J_CBX);
+		std::vector<std::string> Step = { "OFF", "ON" };
+		grdFigure->AddCbxList("Step", Step);
 	grdFigure->AddCol(&handles, "grdFigure", "Filter", 40, J_EBX);
 
 	// Logo Area
@@ -237,10 +213,11 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	LogoArea.h = 100;
 
 
-	handles.Jbw_Obj = new void* [3];
+	handles.Jbw_Obj = new void* [4];
 	handles.Jbw_Obj[0] = static_cast<Jbw_Button*>(btnDataDir);
 	handles.Jbw_Obj[1] = static_cast<Jbw_Button*>(btnPlot);
 	handles.Jbw_Obj[2] = static_cast<Jbw_EditBox*>(edDataDir);
+	handles.Jbw_Obj[3] = static_cast<Jbw_EditBox*>(edFileId);
 
 	return &handles;
 }
@@ -318,29 +295,31 @@ void Dataplot::UserRender(void)
 	/*  Graph config grid   */
 	grdFigure->RdrGrd();
 
+
+
+	// !!!!   TEMP STUFF  !!!!
 	lbxMessage->AddText("Lyn Een, sy Index moet 0 wees");
 	lbxMessage->AddText("Lyn Twee, sy Index moet 1 wees");
 	lbxMessage->AddText("Lyn Drie, sy Index moet 2 wees");
 	lbxMessage->AddText("Lyn Vier, sy Index moet 3 wees");
+	lbxMessage->AddText("Lyn Vyf, sy Index moet 4 wees");
+	lbxMessage->AddText("Lyn Ses, sy Index moet 5 wees");
+	lbxMessage->AddText("Lyn Sewe, sy Index moet 6 wees");
+	lbxMessage->AddText("Lyn Agt, sy Index moet 7 wees");
+	lbxMessage->AddText("Lyn Nege, sy Index moet 8 wees");
+	lbxMessage->AddText("Lyn Tien, sy Index moet 9 wees");
+	lbxMessage->AddText("Lyn Elf, sy Index moet 10 wees");
+	lbxMessage->AddText("Lyn Twaalf, sy Index moet 11 wees");
+	lbxMessage->AddText("Lyn Dertien, sy Index moet 12 wees");
+	lbxMessage->AddText("Lyn Veertien, sy Index moet 13 wees");
+	lbxMessage->AddText("Lyn Vyftien, sy Index moet 14 wees");
 	lbxMessage->RdrLbx();
 
 	edDataDir->Text.assign("data.txt");
 	edDataDir->CreateTexture();
 	edDataDir->RdrEbx();
 
-	btnPlot->RdrBtn();
 
-	// Render Buttons  Objects	
-	btnDataDir->RdrBtn();
-	for (int I = 0; I < BtnCnt; I++) {
-		BtnPtr[I].RdrBtn();
-		SDL_RenderPresent(handles.Rdr);
-	}
-
-	// Render Grid Objects
-	for (int I = 0; I < GrdCnt; I++) {
-		GrdPtr[I].RdrGrd(); // ???!!!!! Write a Render call in ObjWork !!!!
-	}
 
 	SDL_RenderPresent(handles.Rdr);
 
@@ -359,7 +338,6 @@ void Dataplot::UserRender(void)
 void Dataplot::TheLoop(void)
 {
 	while (SDL_WaitEvent(&handles.Event) != 0) {
-
 		
 		// Quit program
 		if (handles.Event.type == SDL_QUIT)
@@ -372,7 +350,9 @@ void Dataplot::TheLoop(void)
 
 		/*  Data Directory */
 		edDataDir->EbxEvent(&handles);
-		btnDataDir->BtnEvent(&handles);
+		if (btnDataDir->BtnEvent(&handles) == J_BTN_CLICK) {
+			btnDataDir_Click(&handles);
+		}
 
 		/*  File ID: */
 		edFileId->EbxEvent(&handles);
@@ -396,7 +376,10 @@ void Dataplot::TheLoop(void)
 		
 
 		/*   Messages   */
-		lbxMessage->LbxEvent(&handles);
+		if(lbxMessage->LbxEvent(&handles) == J_BTN_CLICK) {
+			grdFigure->Set(2, 3, lbxMessage->Index);
+		}
+
 		if (btnClear->BtnEvent(&handles) == J_BTN_CLICK) {
 			btnClear_Click(&handles);
 		}
@@ -427,7 +410,8 @@ void Dataplot::TheLoop(void)
 ------------------------------------------------------------------------------------------*/
 void Dataplot::btnClear_Click(Jbw_Handles* h)
 {
-	lbxClear("lbxMessage");
+	lbxMessage->Clear();
+	lbxMessage->RdrLbx();
 }
 
 /*------------------------------------------------------------------------------------------
