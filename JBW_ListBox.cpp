@@ -68,6 +68,8 @@ void Jbw_ListBox::ResizeListBox(int x, int y, int w, int h)
 
 	SldrBtnDwn->TbxX = FrameX + FrameW - 15;
 	SldrBtnDwn->TbxY = FrameY + FrameH - 15;
+
+	FitLines(true);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -75,7 +77,6 @@ void Jbw_ListBox::ResizeListBox(int x, int y, int w, int h)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::AddText(std::string NewTxt)
 {
-
 	// Create pointer with more memory
 	Jbw_TextBox* NList = new Jbw_TextBox[Cnt + 1];
 
@@ -120,7 +121,7 @@ void Jbw_ListBox::Close(void)
 void Jbw_ListBox::FitLines(bool ChangeCnt)
 {
 	// Get number of lines that will fit into the ListBox display
-	Lines = (int)floor(FrameH / (TxtBoxH + 4));
+	Lines = (int)floor((FrameH - 20)/TxtBoxH);
 	
 	// Set Slider size
 	Slider->FrameH = SliderBox->FrameH - (Cnt - Lines - 1) * TxtBoxH / 5; // Divide by 5 gives a nice slider size

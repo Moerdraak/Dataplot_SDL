@@ -174,6 +174,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*   Messages   */
 	txtMessages = new Jbw_Text(&handles, "Messages", 12, 480, 12);
 	lbxMessage = new Jbw_ListBox(&handles, 12, 495, 1048, 95, 11);
+//	lbxMessage = new Jbw_ListBox(&handles, 400, 400, 400, 153, 11);
 	btnClear = new Jbw_Button(&handles, 1020, 475, 40, 18, "Clear", 12);
 
 	/* Plot Buttons  */
@@ -193,7 +194,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	grdFigure->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);	
-		std::vector<std::string> Colors = { "Black", "Blue", "Green", "Red", "Magenta", "Cyan" };
+		std::vector<std::string> Colors = { "Black", "Blue", "Green", "Red", "Magenta", "Cyan", "111111", "123", "111222", "erg", "wfg", "wef" };
 		grdFigure->AddCbxList("Colour", Colors);
 	grdFigure->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
 		std::vector<std::string> Symbols = { "*", "+", "x", "d", "s", "o" };

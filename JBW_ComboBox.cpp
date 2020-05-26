@@ -44,7 +44,7 @@ void Jbw_ComboBox::InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int
 
 	// Initalise List Box
 	lsthandles = new Jbw_Handles;
-	CbxList = new Jbw_ListBox(lsthandles, 0, 0, ComboW, 80, 11);
+	CbxList = new Jbw_ListBox(lsthandles, 0, 0, ComboW, 20, 11);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -81,8 +81,9 @@ void Jbw_ComboBox::RdrCbx()
 			Lheight = 6 + CbxList->Cnt * 15;// Add 6 for top and bottom spacing	For now textbox height is fixed at 15
 		}
 		else {
-			Lheight = 6 + 10 * 15;
+			Lheight = 6 + 10 * 15; // Limit of List box size
 		}
+		CbxList->ResizeListBox(0, 0 , ComboW, Lheight);
 
 		// Create Listbox Window
 		lsthandles->JbwGui = SDL_CreateWindow("CbxList", GuiX + ComboX, GuiY + ComboY + ComboH - 1,
