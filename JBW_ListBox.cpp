@@ -121,12 +121,20 @@ void Jbw_ListBox::FitLines(bool ChangeCnt)
 {
 	// Get number of lines that will fit into the ListBox display
 	Lines = (int)floor(FrameH / (TxtBoxH + 4));
+	
+	// Set Slider size
+	Slider->FrameH = SliderBox->FrameH - (Cnt - Lines - 1) * TxtBoxH / 5; // Divide by 5 gives a nice slider size
+	if (Slider->FrameH < 4) {
+		Slider->FrameH = 4; // Minimum size of slider
+	} 
 
-	if (Cnt > Lines) {
+	if (Cnt > Lines + 1) {
 		if (ChangeCnt == true) { // lines were added or deleted
 			FromLine = Cnt - Lines - 1;
 			ToLine = FromLine + Lines + 1;
 		}
+		// Number of mouse movement points per line of Text
+		PointsPerline = (SliderBox->FrameH - Slider->FrameH) / (Cnt - Lines - 1);
 	}
 	else {
 		FromLine = 0;
@@ -150,11 +158,7 @@ void Jbw_ListBox::RdrLbx()
 		SliderBox->RdrFrame(); // Render  Slider Frame
 		SldrBtnUp->RdrBtn(); // Render Up button
 		SldrBtnDwn->RdrBtn(); // Render Down button
-		
-		Slider->FrameH = SliderBox->FrameH - (Cnt - Lines - 1) * TxtBoxH / 5; // Divide by 5 gives a nice slider size
-		if (Slider->FrameH < 4) {
-			Slider->FrameH = 4; // Minimum size of slider
-		} 
+		// Set the Slider Y position
 		Slider->FrameY = SliderBox->FrameY + FromLine * (SliderBox->FrameH - Slider->FrameH) / (Cnt - Lines - 1);
 		Slider->CreatePts();
 		Slider->RdrFrame(); // Render Slider
@@ -189,22 +193,21 @@ J_Type Jbw_ListBox::LbxEvent(Jbw_Handles* h)
 
 	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN
 		|| h->Event.type == SDL_MOUSEBUTTONUP) {
-		
+
 		// Get mouse position
 		int msX, msY;
 		SDL_GetMouseState(&msX, &msY);
 
 		Answer = ListEvent(h, msX, msY); // Events happening inside List Box area
-		if (Answer != J_NULL) {
-			return Answer;
+
+		// Only Render the Slider stuff if there are more text lines than the Txtbox can show
+		if (Cnt > Lines + 1) { 
+			SliderEvent(h, msX, msY); // Mouse Events happening on Slider
+			BtnUpEvent(h); // Mouse Events happening on Up button
+			BtnDwnEvent(h); // Mouse Events happening on Down button
 		}
-		Answer = SliderEvent(h, msX, msY); // Mouse Events happening on Slider
-		if (Answer != J_NULL) {
-			return Answer;
-		}
-		BtnUpEvent(h); // Mouse Events happening on Up button
-		BtnDwnEvent(h); // Mouse Events happening on Down button
 	}
+	return Answer;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -263,9 +266,14 @@ J_Type Jbw_ListBox::ListEvent(Jbw_Handles* h, int msX, int msY)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER LIST
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
+void Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
 {
-	J_Type Answer = J_NULL;
+	// If the mouse button is up the slider can't be active
+	if (h->Event.type == SDL_MOUSEBUTTONUP) {		
+		SliderActive = false;
+		return;
+	}
+
 	// Mouse pointer inside Slider 
 	if (msX > Slider->FrameX && msX < Slider->FrameX + Slider->FrameW 
 		&& msY > Slider->FrameY && msY < Slider->FrameY + Slider->FrameH) {
@@ -273,26 +281,42 @@ J_Type Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
 		Slider->LineColor = J_C_Black;
 		Slider->RdrFrame();
 
-		// Mouse button Click
+		// If you left click on the Slider button it becomes Active for dragging
 		if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
-			msBtnDwnPosY = msY;
-		}
-		if (h->Event.type == SDL_MOUSEBUTTONUP) {
-			msBtnDwnPosY = -1;
-		}
-		if (msBtnDwnPosY != -1) {
-			Jbw_EditBox* Tmp = static_cast<Jbw_EditBox*>(h->Jbw_Obj[3]);
-			Tmp->New(std::to_string(msBtnDwnPosY - msY));
-			Tmp->RdrEbx();
-			FromLine += msBtnDwnPosY - msY;
-			RdrLbx();
-		}
+			msPrevPosY = msY;
+			SliderActive = true;
+		}	
 	}
 	else {
 		Slider->LineColor = J_C_Frame;
 		Slider->RdrFrame();
 	}
-	return Answer;
+	
+	// Move slider up and down while Mousebutton down
+	if (SliderActive == true) {
+		if (msPrevPosY - msY > PointsPerline) {
+			if (FromLine > 0) {
+				FromLine--;
+				ToLine--;
+				msPrevPosY = msY;
+			}
+			else { // If you pull mouse past top of sliderbox
+				FromLine = 0;		
+			}
+			RdrLbx();
+		}	
+		else if (msY - msPrevPosY > PointsPerline) {
+			if (FromLine < Cnt - Lines - 1) {
+				FromLine++;
+				ToLine++;
+				msPrevPosY = msY;	
+			}
+			else {  // If you pull mouse past bottom of sliderbox
+				FromLine = Cnt - Lines - 1;
+			}
+			RdrLbx();
+		}
+	}
 }
 
 /*-----------------------------------------------------------------------------------------

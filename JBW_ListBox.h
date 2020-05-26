@@ -27,8 +27,9 @@ public:
 	int Index = -1;
 	
 	//int msBtnDwnPosX = -1;
-	int msBtnDwnPosY = -1;
-
+	int msPrevPosY = 0;
+	bool SliderActive = false;
+	int PointsPerline = 0;
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS / DESTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -49,10 +50,16 @@ public:
 	void Close(void);
 	void FitLines(bool ChangeCnt);
 
-
-	J_Type LbxEvent(Jbw_Handles* h);
+/*-----------------------------------------------------------------------------------------
+		EVENT FUNCTIONS
+------------------------------------------------------------------------------------------*/
+private:
 	J_Type ListEvent(Jbw_Handles* h, int msX, int msY);
-	J_Type SliderEvent(Jbw_Handles* h, int msX, int msY);
+	void SliderEvent(Jbw_Handles* h, int msX, int msY);
 	void BtnUpEvent(Jbw_Handles* h);
 	void BtnDwnEvent(Jbw_Handles* h);
+
+public:
+	J_Type LbxEvent(Jbw_Handles* h);
+
 };
