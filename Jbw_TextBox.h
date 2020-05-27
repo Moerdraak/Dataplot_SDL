@@ -12,7 +12,8 @@ public:
 	int TbxW = 0;
 	int	TbxH = 0;
 	
-	bool ShowFrame = false;
+	bool FrameOn = false;
+	bool FillOn = false;
 	Jbw_Frame* Border;
 	J_Type Align = J_LEFT;
 	
@@ -33,5 +34,7 @@ public:
 		int Fsize = 12);
 	void FitText(void);
 	bool SetTbx(std::string* Var, const char* Val);
+	void BackColor(SDL_Color Color);
+	void BorderColor(SDL_Color Color);
 	void RdrTbx(void);
 };

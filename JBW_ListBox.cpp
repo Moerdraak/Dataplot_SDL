@@ -1,4 +1,4 @@
-#include "JBW_ListBox.h"
+#include "Jbw_ListBox.h"
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
@@ -68,6 +68,7 @@ void Jbw_ListBox::ResizeListBox(int x, int y, int w, int h)
 
 	SldrBtnDwn->TbxX = FrameX + FrameW - 15;
 	SldrBtnDwn->TbxY = FrameY + FrameH - 15;
+	SldrBtnDwn->Border->FrameY = SldrBtnDwn->TbxY;
 
 	FitLines(true);
 }
@@ -86,7 +87,6 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 
 	NList[Cnt].InitTbx(Jhandle, NewTxt, FrameX + 3, FrameY + 3, FrameW - 5, TxtBoxH);
 	NList[Cnt].Add(NewTxt);
-	NList[Cnt].Border->Fill = true;
 	if (Cnt > 0) {
 		delete[] TxtList;
 	}
@@ -175,9 +175,10 @@ void Jbw_ListBox::RdrLbx()
 			TxtList[I].Border->FrameW = TxtWidth;
 			TxtList[I].Border->FrameY = FrameY + 1 + (I - FromLine) * TxtBoxH;
 			TxtList[I].Border->CreatePts();
-			TxtList[I].ShowFrame = true;
-			TxtList[I].Border->LineColor = J_C_White;
-			TxtList[I].Border->FillColor = J_C_White;
+			TxtList[I].FrameOn = true;
+			TxtList[I].FillOn = true;
+			TxtList[I].Border->LineColor = J_WHITE;
+			TxtList[I].Border->FillColor = J_WHITE;
 			TxtList[I].CreateTexture();
 			TxtList[I].RdrTbx();			
 		}
@@ -247,10 +248,10 @@ J_Type Jbw_ListBox::ListEvent(Jbw_Handles* h, int msX, int msY)
 						if (TxtList[I].DoRender == true)
 						{
 							TxtList[I].DoRender = false;
-							TxtList[I].Border->FillColor = J_C_White;
+							TxtList[I].Border->FillColor = J_WHITE;
 							if (Index == I) {
 								for (int J = FromLine; J < ToLine; J++) {
-									TxtList[J].Border->LineColor = J_C_White;
+									TxtList[J].Border->LineColor = J_WHITE;
 									TxtList[J].RdrTbx();
 								}
 								TxtList[I].Border->LineColor = J_C_BtnGrey;
@@ -279,7 +280,7 @@ void Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
 	if (msX > Slider->FrameX && msX < Slider->FrameX + Slider->FrameW 
 		&& msY > Slider->FrameY && msY < Slider->FrameY + Slider->FrameH) {
 		Slider->msOver = true;
-		Slider->LineColor = J_C_Black;
+		Slider->LineColor = J_BLACK;
 		Slider->RdrFrame();
 
 		// If you left click on the Slider button it becomes Active for dragging

@@ -21,7 +21,6 @@ public:
 		//CallBack Pointers
 	};
 
-
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -37,7 +36,7 @@ public:
 	void MenuAdd(std::string NewText, int w);
 	void MenuAddSub(std::string NewText);
 	void MnuRdr(Jbw_Handles* h);
-	void MnuEvent(Jbw_Handles* handles);
+	int MnuEvent(Jbw_Handles* handles);
 };
 
 

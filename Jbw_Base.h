@@ -26,16 +26,34 @@ enum J_Type : const short int {
 	J_BTN_CLICK// Callback events
 };
 
+const SDL_Color J_WHITE = { 255, 255, 255, 255 };
+const SDL_Color J_BLACK = { 0, 0, 0, 255 };
+const SDL_Color J_GREY = { 128, 128, 128, 255 };
+const SDL_Color J_SILVER = { 192, 192, 192, 255 };
+
+const SDL_Color J_RED = { 255, 0, 0, 255 };
+const SDL_Color J_LIME = { 0, 255, 0, 255 };
+const SDL_Color J_BLUE = { 0, 0, 255, 255 };
+
+const SDL_Color J_CYAN = { 0, 255, 255, 255 };
+const SDL_Color J_MAGENTA = { 255, 0, 255, 255 };
+const SDL_Color J_YELLOW = { 255, 255, 0, 255 };
+
+const SDL_Color J_MAROON = { 128, 0, 0, 255 };
+const SDL_Color J_GREEN = { 0, 128, 0, 255 };
+const SDL_Color J_NAVY = { 0, 0, 128, 255 };
+
+const SDL_Color J_TEAL = { 0, 128, 128, 255 };
+const SDL_Color J_OLIVE = { 128, 128, 0, 255 };
+const SDL_Color J_PURPLE = { 128, 0, 128, 255 };
+
 const SDL_Color J_C_Window = { 230, 230, 230, 255 };
 const SDL_Color J_C_Frame = { 150, 150, 150, 255 };
-const SDL_Color J_C_White = { 255, 255, 255, 255 };
-const SDL_Color J_C_Black = { 0, 0, 0, 255 };
 const SDL_Color J_C_BtnGrey = { 220, 220, 220, 255 };
 const SDL_Color J_C_Grey = { 240, 240, 240, 255 };
 const SDL_Color J_C_LGrey = { 245, 245, 245, 255 };
 const SDL_Color J_C_msOver = { 210, 210, 210, 255 };
 const SDL_Color J_C_BtnDwn = { 150, 150, 150, 255 };
-
 
 /******************************************************************************************
 						 STRUCT holding Jbw Handles
@@ -53,7 +71,6 @@ struct Jbw_Handles {
 	SDL_Window* JbwGui = NULL;
 	SDL_Renderer* Rdr = NULL;
 	SDL_Event Event;
-
 	void** Jbw_Obj;
 
 };
@@ -72,6 +89,7 @@ public:
 	bool Focus = false;
 	bool msOver = false;
 	bool DoRender = false;
+	bool OnChange = false;
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS / DESTRUCTORS

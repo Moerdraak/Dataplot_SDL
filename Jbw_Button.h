@@ -6,7 +6,7 @@ public:
 	SDL_Color BtnColor = J_C_BtnGrey;
 	SDL_Color BtnBorderColor = J_C_Frame;
 	SDL_Color HoverColor = J_C_msOver;
-	SDL_Color HoverBorderColor = J_C_Black;
+	SDL_Color HoverBorderColor = J_BLACK;
 	SDL_Color ClickColor = J_C_BtnDwn;
 
 /*-----------------------------------------------------------------------------------------

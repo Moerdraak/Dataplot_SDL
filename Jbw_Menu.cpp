@@ -11,8 +11,8 @@ Jbw_Menu::Jbw_Menu(Jbw_Handles* handles)
 	FrameY = 0; // Hide Top line of Frame
 	FrameH = 18;
 	FrameW = Jhandle->GuiArea.w;
-	LineColor = J_C_White;
-	FillColor = J_C_White;
+	LineColor = J_WHITE;
+	FillColor = J_WHITE;
 	Fill = true;
 	CreatePts(); // Create the frame points from above info
 }
@@ -55,10 +55,10 @@ void Jbw_Menu::MenuAdd(std::string NewText, int w)
 	MainMenu[MnuCnt].Border->FrameW = w;
 	MainMenu[MnuCnt].Border->FrameH = 18;
 	MainMenu[MnuCnt].Border->CreatePts();
-	MainMenu[MnuCnt].Border->LineColor = J_C_White;
-	MainMenu[MnuCnt].Border->FillColor = J_C_White;	
-	MainMenu[MnuCnt].BtnColor = J_C_White;
-	MainMenu[MnuCnt].BtnBorderColor = J_C_White;
+	MainMenu[MnuCnt].Border->LineColor = J_WHITE;
+	MainMenu[MnuCnt].Border->FillColor = J_WHITE;	
+	MainMenu[MnuCnt].BtnColor = J_WHITE;
+	MainMenu[MnuCnt].BtnBorderColor = J_WHITE;
 	MainMenu[MnuCnt].HoverColor = J_C_msOver;
 	MainMenu[MnuCnt].HoverBorderColor = J_C_Frame;
 	MainMenu[MnuCnt].ClickColor = J_C_BtnDwn;
@@ -81,12 +81,22 @@ void Jbw_Menu::MnuRdr(Jbw_Handles* h)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: MnuEvent
 ------------------------------------------------------------------------------------------*/
-void Jbw_Menu::MnuEvent(Jbw_Handles* h)
+int Jbw_Menu::MnuEvent(Jbw_Handles* h)
 {
-	for (int I = 0; I < MnuCnt; I++) {
-		MainMenu[I].BtnEvent(h);
+	int Answer = -1;
+
+	// Check if Window is active
+	if ((SDL_GetWindowFlags(h->JbwGui) & SDL_WINDOW_MOUSE_FOCUS) != SDL_WINDOW_MOUSE_FOCUS) {
+		return Answer;
 	}
 
+	for (int I = 0; I < MnuCnt; I++) {
+		if (MainMenu[I].BtnEvent(h) == J_BTN_CLICK) {
+			Answer = I;
+		}
+	}
+	
+	return Answer;
 }
 
 

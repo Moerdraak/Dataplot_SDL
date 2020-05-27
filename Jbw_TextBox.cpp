@@ -110,6 +110,22 @@ void Jbw_TextBox::FitText(void)
 }
 
 /*-----------------------------------------------------------------------------------------
+FUNCTION: BackColor
+------------------------------------------------------------------------------------------*/
+void Jbw_TextBox::BackColor(SDL_Color Color)
+{
+	Border->FillColor = Color;
+}
+
+/*-----------------------------------------------------------------------------------------
+FUNCTION: BorderColor
+------------------------------------------------------------------------------------------*/
+void Jbw_TextBox::BorderColor(SDL_Color Color)
+{
+	Border->LineColor = Color;
+}
+
+/*-----------------------------------------------------------------------------------------
 FUNCTION: Set
 ------------------------------------------------------------------------------------------*/
 bool Jbw_TextBox::SetTbx(std::string* Var, const char* Val)
@@ -172,8 +188,15 @@ void Jbw_TextBox::RdrTbx(void)
 		Border->FrameH = Tmp;
 	}
 
+	// Check current To Fill or Not Too Fill the Border
+	if (FillOn == true) {
+		Border->Fill = true; // Fill frame with BackColor
+	}
+	else {
+		Border->Fill = false;
+	}
 	// Size and Set Frame for Rendering
-	if (ShowFrame == true) {
+	if (FrameOn == true) {
 		Border->RdrFrame(); // Render frame
 	}
 

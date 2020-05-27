@@ -6,44 +6,7 @@
 
 Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x, int y, int w, int h)
 {
-	//Jhandle = new Jbw_Handles;
 
-	//Window_w = w;
-	//Window_h = h;
-	//MbxType = OkYesNo;
-
-	//Font = TTF_OpenFont("fonts/arial.ttf", 12);
-	//TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
-
-	//// Get Window Size
-	//Parser(Title, false);
-	//Parser(Msg, false);
-
-	//// Create User Window
-	//Jhandle->JbwGui = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
-	//	| SDL_WINDOW_BORDERLESS);
-
-	//// Create renderer for User window
-	//Jhandle->Rdr = SDL_CreateRenderer(Jhandle->JbwGui, -1, SDL_RENDERER_ACCELERATED);
-
-	//// Create Border
-	////FrameW = Window_w;
-	////FrameH = Window_h;
-
-	//// Create Header
-	////J_Properties Prop;
-	////Prop.handles.Rdr = Jrdr;
-	////Prop.w = Window_w;
-	////Prop.h = 18;
-	//Header = new Jbw_EditBox(Jhandle, x, y, Window_w, 18);
-	//Header->Text.assign(Title);
-
-	//RenderBox();
-
-	//// Set Viewport for Message	
-	//SDL_Rect Window = { 0, 0, Window_w, Window_h };
-	//SDL_RenderSetViewport(Jhandle->Rdr, &Window);
-	//Parser(Msg, true);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -66,8 +29,7 @@ void Jbw_MsgBox::Close(void)
 	delete btnAck; btnAck = NULL;
 	delete Header; Header = NULL;
 
-
-SDL_DestroyWindow(Jhandle->JbwGui); Jhandle->JbwGui = NULL;
+	SDL_DestroyWindow(Jhandle->JbwGui); Jhandle->JbwGui = NULL;
 	SDL_DestroyRenderer(Jhandle->Rdr); Jhandle->Rdr = NULL;
 	SDL_DestroyTexture(txtImage); txtImage = NULL;
 	TTF_CloseFont(Font); Font = NULL;

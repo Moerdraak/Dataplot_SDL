@@ -38,7 +38,7 @@ public:
 		bool IsGridBtn = false);
 	void AddRow(std::string NewText);
 	void RdrCbx(void);
-	void CbxEvent(void);
+	J_Type CbxEvent(void);
 	void CloseList(void);
 };
 

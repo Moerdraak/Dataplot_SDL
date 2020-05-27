@@ -42,7 +42,8 @@ bool Jbw_EditBox::SetEbx(std::string* Var, const char* Val)
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::RdrEbx(void)
 {
-	ShowFrame = true;
+	FrameOn = true;
+	FillOn = true;
 	RdrTbx();
 }
 
@@ -79,12 +80,8 @@ void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 			//	BackColor = { 255, 255, 255, 255 };
 				break;
 			}
-			
 
-			
-
-
-			Border->LineColor = J_C_Black;
+			Border->LineColor = J_BLACK;
 			if (DoRender == false) {
 				DoRender = true;
 				RdrEbx();
@@ -109,16 +106,18 @@ void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
 	if (Focus == true && Enabled == true) {
 		if (h->Event.type == SDL_TEXTINPUT){
 			Add(h->Event.text.text);
+			OnChange = true;
 		}
 		else if (h->Event.type == SDL_KEYDOWN){
 			if (h->Event.key.keysym.sym == SDLK_BACKSPACE) {
 				BackSpace();
+				OnChange = true;
 			}
 			else if (h->Event.key.keysym.sym == SDLK_DELETE) {
-
+				OnChange = true;
 			}
 		}
-		Border->LineColor = J_C_Black;
+		Border->LineColor = J_BLACK;
 		RdrEbx();
 	}
 

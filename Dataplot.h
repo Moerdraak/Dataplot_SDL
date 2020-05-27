@@ -124,4 +124,6 @@ public:
 	void btnUp_Click(Jbw_Handles* h);
 	void btnDown_Click(Jbw_Handles* h);
 
+	void grdFigure_OnChange(Jbw_Handles* h, Jbw_Grid::grdEvent GridEvent);
+
 };

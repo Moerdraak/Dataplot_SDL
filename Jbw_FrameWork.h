@@ -55,20 +55,6 @@ public:
 	void lbxClear(std::string Tag);
 
 /*-----------------------------------------------------------------------------------------
-	CREATE FUNCTIONS
-------------------------------------------------------------------------------------------*/
-public:
-//	bool Create(Jbw_Handles* handles, int ObjType, std::string Tag,
-//		int Xpos, int Ypos, int WidthOrNumCol, int HeightOrNumRowCnt,
-//		int FontSize = 12, std::string Caption = "");
-//	bool CreateTxt(J_Properties* Prop);
-////	bool CreateEbx(J_Properties* Prop);
-//	bool CreateLbx(J_Properties* Prop);
-////	bool CreateCbx(J_Properties* Prop);
-//	bool CreateBtn(J_Properties* Prop);
-//	bool CreateGrd(J_Properties* Prop);
-
-/*-----------------------------------------------------------------------------------------
 	GET / SET FUNCTIONS          
 ------------------------------------------------------------------------------------------*/
 	std::string GetS(Jbw_Handles* h, std::string Obj, std::string Property);
@@ -87,7 +73,6 @@ public:
 		std::string Prop5 = "NULL", const char* Val5 = "");
 
 	bool GrdAdd(std::string Obj, int RowCol, int Number = 1, std::string ColName = "", int Objtype = J_TXT);
-
 
 /*-----------------------------------------------------------------------------------------
 		FREE FUNCTIONS

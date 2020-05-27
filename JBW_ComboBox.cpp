@@ -1,4 +1,4 @@
-#include "JBW_ComboBox.h"
+#include "Jbw_ComboBox.h"
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
@@ -119,8 +119,10 @@ void Jbw_ComboBox::RdrCbx()
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: CbxEvent
 ------------------------------------------------------------------------------------------*/
-void Jbw_ComboBox::CbxEvent()
+J_Type Jbw_ComboBox::CbxEvent()
 {
+	J_Type Answer = J_NULL;
+
 	bool Inside = false;
 	bool Flag = false;
 
@@ -134,12 +136,18 @@ void Jbw_ComboBox::CbxEvent()
 	}
 
 	// EditBox Events
-	CbxEdit->EbxEvent(Jhandle);
+	//CbxEdit->EbxEvent(Jhandle);
+	//if (CbxEdit->OnChange == true) { // The Text inside the Editbox changed
+	//	OnChange = true;
+	//}
 
 	if (GridBtn == true) {
 		if (CbxBtn->BtnEvent(Jhandle) == J_BTN_CLICK && CbxListVis == false) {
 			CbxListVis = true;
 			RdrCbx();
+			Jhandle->Event.user.type = 1; // OnChange Event
+			SDL_PushEvent(&Jhandle->Event);
+			Answer = J_BTN_CLICK;
 		}
 
 		if (CbxBtn->msOver == true || CbxEdit->msOver == true) {
@@ -164,6 +172,8 @@ void Jbw_ComboBox::CbxEvent()
 			CbxEdit->RdrEbx();
 			CbxListVis = false;
 			RdrCbx();
+			OnChange = true;
 		}
 	}
+	return Answer;
 }

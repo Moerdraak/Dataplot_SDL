@@ -12,6 +12,8 @@ Uint32 koos(Uint32 interval, void* param) {
 	return SDL_AddTimer(5000, &koos, param);
 }
 
+void SetColTxtBox(Jbw_TextBox* ColName, SDL_Color Color, SDL_Color TxtColor);
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////                             MAIN                                      ///////////////////
@@ -29,11 +31,15 @@ int main(int argc, char* argv[])
 	//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 	/******************************/
 
-	Jbw_TextBox Tmp(h, "The Lazy Quick Brown Fox jump over the fence", 400, 400, 300, 16, 11);
-	Tmp.ShowFrame = true;
-	Tmp.TxtColor = J_C_White;
-	Tmp.CreateTexture();
-	Tmp.RdrTbx();
+	//Jbw_TextBox Tmp(h, "The Lazy Quick Brown Fox jump over the fence", 400, 400, 300, 16, 11);
+	//Tmp.FrameOn = true;
+	//Tmp.TxtColor = J_WHITE;
+	//Tmp.CreateTexture();
+	//Tmp.RdrTbx();
+
+	
+
+	
 
 	Dp.cbxFigure->AddRow("Main Sight");
 	Dp.cbxFigure->AddRow("Cannon testing");
@@ -54,7 +60,83 @@ int main(int argc, char* argv[])
 
 //	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
+
 	Dp.UserRender();
+
+	Jbw_TextBox White(h, "White", 500, 300, 100, 18, 12); SetColTxtBox(&White, J_WHITE, J_BLACK);
+	Jbw_TextBox Black(h, "Black", 500, 320, 100, 18, 12); SetColTxtBox(&Black, J_BLACK, J_WHITE);
+	Jbw_TextBox Grey(h, "Grey", 500, 340, 100, 18, 12); SetColTxtBox(&Grey, J_GREY, J_BLACK);
+	Jbw_TextBox Silver(h, "Silver", 500, 360, 100, 18, 12); SetColTxtBox(&Silver, J_SILVER, J_WHITE);
+
+	Jbw_TextBox Red(h, "Red", 610, 300, 100, 18, 12); SetColTxtBox(&Red, J_RED, J_BLACK);
+	Jbw_TextBox Lime(h, "Lime", 610, 320, 100, 18, 12); SetColTxtBox(&Lime, J_LIME, J_BLACK);
+	Jbw_TextBox Blue(h, "Blue", 610, 340, 100, 18, 12); SetColTxtBox(&Blue, J_BLUE, J_WHITE);
+
+	Jbw_TextBox Cyan(h, "Cyan", 720, 300, 100, 18, 12); SetColTxtBox(&Cyan, J_CYAN, J_BLACK);
+	Jbw_TextBox Magenta(h, "Magenta", 720, 320, 100, 18, 12); SetColTxtBox(&Magenta, J_MAGENTA, J_BLACK);
+	Jbw_TextBox Yellow(h, "Yellow", 720, 340, 100, 18, 12); SetColTxtBox(&Yellow, J_YELLOW, J_BLACK);
+
+	Jbw_TextBox Maroon(h, "Maroon", 830, 300, 100, 18, 12); SetColTxtBox(&Maroon, J_MAROON, J_WHITE);
+	Jbw_TextBox Green(h, "Green", 830, 320, 100, 18, 12); SetColTxtBox(&Green, J_GREEN, J_BLACK);
+	Jbw_TextBox Navy(h, "Navy", 830, 340, 100, 18, 12); SetColTxtBox(&Navy, J_NAVY, J_WHITE);
+
+	Jbw_TextBox Teal(h, "Teal", 940, 300, 100, 18, 12); SetColTxtBox(&Teal, J_TEAL, J_BLACK);
+	Jbw_TextBox Olive(h, "Olive", 940, 320, 100, 18, 12); SetColTxtBox(&Olive, J_OLIVE, J_BLACK);
+	Jbw_TextBox Purple(h, "Purple", 940, 340, 100, 18, 12); SetColTxtBox(&Purple, J_PURPLE, J_WHITE);
+
+
+
+
+	std::ifstream DataFile;
+	DataFile.open("Rooivalk.cfg");
+
+	if (!DataFile)
+	{
+		Dp.MsgBox("FILE ERROR", "No such File", J_OK, 100, 100);
+	}
+
+	std::string Param, Description, Colour, Symbol, Line, Step;
+	int Size, Bit, Offset, Factor, Filter;
+
+	char* s = new char[200];
+	int RowNum = 0;
+	while (!DataFile.eof()) {
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 0, RowNum); // Parameter
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 1, RowNum); // Size
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 2, RowNum); // Bit
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 3, RowNum); // Description
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 4, RowNum); // Offset
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 5, RowNum); // Factor
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 6, RowNum); // Colour
+		Jbw_Grid::grdEvent GridEvent;
+		GridEvent.Col = 6;
+		GridEvent.Row = RowNum;
+		Dp.grdFigure_OnChange(h, GridEvent);
+		//Dp.grdFigure->SetCellTxtColor(J_RED, 6, RowNum);
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 7, RowNum); // Symbol
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 8, RowNum); // Line
+		DataFile.getline(s, 200, 2);
+		Dp.grdFigure->SetCellText(s, 9, RowNum); // Step
+		DataFile.getline(s, 200, 10);
+		Dp.grdFigure->SetCellText(s, 10, RowNum); // Filter
+		RowNum++;
+	}
+	delete[] s;
+
+
+
+
+
+	SDL_RenderPresent(h->Rdr);
 	Dp.TheLoop();
 
 	return 0;
@@ -63,6 +145,20 @@ int main(int argc, char* argv[])
 ////////////                         END MAIN                                      ///////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*-----------------------------------------------------------------------------------------
+	TEMP TWAK
+------------------------------------------------------------------------------------------*/
+void SetColTxtBox(Jbw_TextBox* ColName, SDL_Color Color, SDL_Color TxtColor)
+{
+	ColName->BackColor(Color); 
+	ColName->FrameOn = true; 
+	ColName->FillOn = true;
+	ColName->Align = J_CENTRE;
+	ColName->TxtColor = TxtColor;
+	ColName->CreateTexture();
+	ColName->RdrTbx();
+}
 
 /*-----------------------------------------------------------------------------------------
 	DESTRUCTOR
@@ -194,25 +290,31 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	grdFigure->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);	
-		std::vector<std::string> Colors = { "Black", "Blue", "Green", "Red", "Magenta", "Cyan", "111111", "123", "111222", "erg", "wfg", "wef" };
+		std::vector<std::string> Colors = { "Black", "Red", "Lime", "Blue", "Magenta", 
+			"Cyan", "Yellow", "Maroon", "Green", "Navy", "Teal", "Olive", "Purple", "Grey" };
 		grdFigure->AddCbxList("Colour", Colors);
+		
 	grdFigure->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
-		std::vector<std::string> Symbols = { "*", "+", "x", "d", "s", "o" };
+		std::vector<std::string> Symbols = { "*", "+", "x", "d", "s", "o", "NO" };
 		grdFigure->AddCbxList("Symb.", Symbols);
 	grdFigure->AddCol(&handles, "grdFigure", "Line", 40, J_CBX);
-		std::vector<std::string> Lin = { "-", ":", ".", " "};
+		std::vector<std::string> Lin = { "-", ":", ".", "NO"};
 		grdFigure->AddCbxList("Line", Lin);
 	grdFigure->AddCol(&handles, "grdFigure", "Step", 40, J_CBX);
 		std::vector<std::string> Step = { "OFF", "ON" };
 		grdFigure->AddCbxList("Step", Step);
 	grdFigure->AddCol(&handles, "grdFigure", "Filter", 40, J_EBX);
+	
+	grdFigure->SetCellTxtAlign(J_CENTRE, 6, -1); // Symbol must display Centre
+	grdFigure->SetCellTxtAlign(J_CENTRE, 7, -1 ); // Symbol must display Centre
+	grdFigure->SetCellTxtAlign(J_CENTRE, 8, -1); // Line must display Centre
+	grdFigure->SetCellTxtAlign(J_CENTRE, 9, -1); // Step must display Centre
 
 	// Logo Area
 	LogoArea.x = 3;
 	LogoArea.y = 20;
 	LogoArea.w = 100;
 	LogoArea.h = 100;
-
 
 	handles.Jbw_Obj = new void* [4];
 	handles.Jbw_Obj[0] = static_cast<Jbw_Button*>(btnDataDir);
@@ -347,7 +449,17 @@ void Dataplot::TheLoop(void)
 		}
 
 		// Menu Events
-		Menu->MnuEvent(&handles);
+		switch (Menu->MnuEvent(&handles)) {
+		case 0:
+
+			break;
+		case 1:
+			
+			break;
+		case 2:
+			
+			break;
+		}
 
 		/*  Data Directory */
 		edDataDir->EbxEvent(&handles);
@@ -387,6 +499,16 @@ void Dataplot::TheLoop(void)
 
 		/*   Grid   */
 		grdFigure->GrdEvent(&handles);
+	
+		if (grdFigure->OnChange == true) {
+			grdFigure->OnChange = false;
+			grdFigure_OnChange(&handles, grdFigure->GridEvent);
+		}
+		
+		if (handles.Event.user.type == 1) {
+			int sdfg = 0;
+		}
+
 
 		if (btnPlot->BtnEvent(&handles) == J_BTN_CLICK) {
 			btnPlot_Click(&handles);
@@ -482,4 +604,56 @@ void Dataplot::btnUp_Click(Jbw_Handles* h)
 void Dataplot::btnDown_Click(Jbw_Handles* h)
 {
 
+}
+
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: grdFigure_OnChange
+------------------------------------------------------------------------------------------*/
+void Dataplot::grdFigure_OnChange(Jbw_Handles* h, Jbw_Grid::grdEvent GridEvent)
+{
+	switch (grdFigure->GetIndex(GridEvent.Col, GridEvent.Row)) {
+	case 0: // Black
+		grdFigure->SetCellTxtColor(J_BLACK, GridEvent.Col, GridEvent.Row);
+		break;
+	case 1: // Red
+		grdFigure->SetCellTxtColor(J_RED, GridEvent.Col, GridEvent.Row);
+		break;
+	case 2: // Lime
+		grdFigure->SetCellTxtColor(J_LIME, GridEvent.Col, GridEvent.Row);
+		break;
+	case 3: // Blue
+		grdFigure->SetCellTxtColor(J_BLUE, GridEvent.Col, GridEvent.Row);
+		break;
+	case 4: // Magenta
+		grdFigure->SetCellTxtColor(J_MAGENTA, GridEvent.Col, GridEvent.Row);
+		break;
+	case 5: // Cyan
+		grdFigure->SetCellTxtColor(J_CYAN, GridEvent.Col, GridEvent.Row);
+		break;
+	case 6: // Yellow
+		grdFigure->SetCellTxtColor(J_YELLOW, GridEvent.Col, GridEvent.Row);
+		break;
+	case 7: // Maroon
+		grdFigure->SetCellTxtColor(J_MAROON, GridEvent.Col, GridEvent.Row);
+		break;
+	case 8: // Green
+		grdFigure->SetCellTxtColor(J_GREEN, GridEvent.Col, GridEvent.Row);
+		break;
+	case 9: // Navy
+		grdFigure->SetCellTxtColor(J_NAVY, GridEvent.Col, GridEvent.Row);
+		break;
+	case 10: // Teal
+		grdFigure->SetCellTxtColor(J_TEAL, GridEvent.Col, GridEvent.Row);
+		break;
+	case 11: // Olive
+		grdFigure->SetCellTxtColor(J_OLIVE, GridEvent.Col, GridEvent.Row);
+		break;
+	case 12: // Purple
+		grdFigure->SetCellTxtColor(J_PURPLE, GridEvent.Col, GridEvent.Row);
+		break;
+	case 13: // Grey
+		grdFigure->SetCellTxtColor(J_GREY, GridEvent.Col, GridEvent.Row);
+		break;
+	}
 }

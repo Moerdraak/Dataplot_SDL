@@ -4,13 +4,11 @@
 #include "Jbw_Text.h"
 #include "Jbw_Button.h"
 
-
 class Jbw_ListBox : public Jbw_Frame {
 /*-----------------------------------------------------------------------------------------
 		VARIABLES
 ------------------------------------------------------------------------------------------*/
 public:
-	
 	Jbw_TextBox* TxtList = NULL;
 	Jbw_Frame* SliderBox = NULL;
 	Jbw_Frame* Slider = NULL;
