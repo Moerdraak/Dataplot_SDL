@@ -33,7 +33,7 @@ DpGraph::DpGraph(Jbw_Handles* h) {
 	ghandles->JbwGui = SDL_CreateWindow("Data Plot", 500, 300, G_SCREEN_W, G_SCREEN_H, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
 	// Create renderer for Graph window
-	ghandles->Rdr = SDL_CreateRenderer(GraphWindow, -1, SDL_RENDERER_ACCELERATED);
+	ghandles->Rdr = SDL_CreateRenderer(ghandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
 	// Initialize True Type Fonts
 	TTF_Init();
 
@@ -227,19 +227,19 @@ void DpGraph::GraphRender(int Config)
 	//	SDL_RenderPresent(GRender);
 
 		/****    SET VIEWPORT TO GRAPH AREA     ****/
-	SDL_RenderSetViewport(GRender, &vp_Graph);
-	SDL_SetRenderDrawColor(GRender, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderFillRect(GRender, &GraphArea); // Clear Graph
+	SDL_RenderSetViewport(ghandles->Rdr, &vp_Graph);
+	SDL_SetRenderDrawColor(ghandles->Rdr, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderFillRect(ghandles->Rdr, &GraphArea); // Clear Graph
 
 	// Draw X & Y Ticks
 	SDL_SetRenderDrawColor(ghandles->Rdr, 0, 0, 0, 255);
 
-	SDL_RenderDrawLine(GRender, 0, 0, 0, GRAPH_H);
+	SDL_RenderDrawLine(ghandles->Rdr, 0, 0, 0, GRAPH_H);
 	for (int I = 0; I < 10; I++) {
 		SDL_RenderDrawLine(ghandles->Rdr, 0, I * (int)round(GRAPH_H / 10), 5, I * (int)round(GRAPH_H / 10));
 	}
 
-	SDL_RenderDrawLine(GRender, 0, GRAPH_H - 1, GRAPH_W, GRAPH_H - 1);
+	SDL_RenderDrawLine(ghandles->Rdr, 0, GRAPH_H - 1, GRAPH_W, GRAPH_H - 1);
 	for (int I = 0; I < 10; I++) {
 		SDL_RenderDrawLine(ghandles->Rdr, I * (int)round(GRAPH_W / 10), GRAPH_H - 1, I * (int)round(GRAPH_W / 10), GRAPH_H - 6);
 	}

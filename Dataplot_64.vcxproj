@@ -35,6 +35,7 @@
     <ClCompile Include="Jbw_Menu.cpp" />
     <ClCompile Include="Jbw_MsgBox.cpp" />
     <ClCompile Include="Jbw_Polygon.cpp" />
+    <ClCompile Include="Jbw_Slider.cpp" />
     <ClCompile Include="Jbw_Text.cpp" />
     <ClCompile Include="Jbw_TextBox.cpp" />
   </ItemGroup>
@@ -54,6 +55,7 @@
     <ClInclude Include="Jbw_Menu.h" />
     <ClInclude Include="Jbw_MsgBox.h" />
     <ClInclude Include="Jbw_Polygon.h" />
+    <ClInclude Include="Jbw_Slider.h" />
     <ClInclude Include="Jbw_Text.h" />
     <ClInclude Include="Jbw_TextBox.h" />
   </ItemGroup>

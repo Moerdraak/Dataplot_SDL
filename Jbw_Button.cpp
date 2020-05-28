@@ -42,52 +42,52 @@ void Jbw_Button::RdrBtn(void)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: BtnEvent
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
+J_Type Jbw_Button::BtnEvent(SDL_Event* Event)
 {
 	J_Type EventType = J_NULL;
 	//If mouse event happened
-	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || 
-		h->Event.type == SDL_MOUSEBUTTONUP) {
+	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN ||
+		Event->type == SDL_MOUSEBUTTONUP) {
 		// Get mouse position
-		int x, y;
-		SDL_GetMouseState(&x, &y);
+		int msX, msY;
+		SDL_GetMouseState(&msX, &msY);
 
-		// Mouse pointer inside Edit box
-		if (x > TbxX && x < TbxX + TbxW && y > TbxY && y < TbxY + TbxH)
+		// Mouse pointer over button
+		if (msX > TbxX && msX < TbxX + TbxW && msY > TbxY && msY < TbxY + TbxH)
 		{
-			msOver = true;
-			switch (h->Event.type)
+			if (msOver == false) {
+				msOver = true;
+				DoRender = true;
+			}
+			
+			switch (Event->type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
 				Border->FillColor = ClickColor;
-				RdrBtn();
+				DoRender = true;
 				EventType = J_BTN_CLICK;
-				//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 				break;
 
 			case SDL_MOUSEBUTTONUP:
 				Border->FillColor = HoverColor;
-				RdrBtn();
+				DoRender = true;
 				break;
 			}		
-
 			Border->FillColor = HoverColor;
 			Border->LineColor = HoverBorderColor;
-			;
-			if (DoRender == false) {
-				DoRender = true;
-				RdrBtn();
-			}
 		}
 		else {
-			msOver = false;
+			if (msOver == true) {
+				msOver = false;
+				DoRender = true;
+			}
 			Border->LineColor = BtnBorderColor;
 			Border->FillColor = BtnColor;
-			
-			if (DoRender == true ) {
-				DoRender = false;
-				RdrBtn();
-			}
+		}
+
+		if (DoRender == true) {
+			DoRender = false;
+			RdrBtn();
 		}
 	}
 	return EventType;

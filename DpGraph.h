@@ -27,7 +27,7 @@ public:
 	// BASE OBJECTS
 	SDL_Window* GraphWindow = NULL; // The window we'll be rendering to DOESN'T BELONG HERE MUST BE CREATED ON THE FLY
 	SDL_Surface* wSurf = NULL; // The surface contained by the window
-	SDL_Renderer* GRender = NULL; // The User window renderer
+	SDL_Renderer* GRender = NULL; // 
 
 	// RECTANGLE OBJECTS
 	SDL_Rect vp_Graph;

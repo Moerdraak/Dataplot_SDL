@@ -2,8 +2,9 @@
 #include "Jbw_Base.h"
 #include "Jbw_Editbox.h"
 #include "Jbw_ComboBox.h"
+#include "Jbw_Slider.h"
 
-class Jbw_Grid : public Jbw_Frame {
+class Jbw_Grid : public Jbw_Base {
 private:
 	enum GridProp{ BACK_COLOR, TXT_COLOR, TXT_ALIGN, TXT_SIZE, TXT_BOLD, TXT_ITALIC};
 	struct GridVal {
@@ -23,13 +24,24 @@ public:
 		J_Type Type = J_NULL;
 	} GridEvent;
 
-	int GridX = 0;
-	int GridY = 0;
+	Jbw_Handles grdHandles;
+	Jbw_Slider* Slider = NULL;
+	
+
+	bool ShowSlider = false;
+
+	int GridX;
+	int GridY;
+	int GridW;
+	int GridH;
 
 	short int RowCnt = 0;
 	short int ColCnt = 0;
 	short int RowHeight = 0;
 	short int TotalW = 0;
+
+
+
 
 	J_Type* ColType = NULL;
 
@@ -45,7 +57,7 @@ public:
 	/*          Constructors / Destructors           */
 	/*-----------------------------------------------*/
 	Jbw_Grid() {};
-	Jbw_Grid(Jbw_Handles* handles, int x, int y, int NumCol, int NumRowCnt);
+	Jbw_Grid(Jbw_Handles* handles, int x, int y, int w, int h);
 	~Jbw_Grid();
 
 	/*************************************************/
@@ -81,7 +93,8 @@ public:
 	void TxtSize(int Col, int Row, int FontSize);
 	int GetIndex(int Col, int Row);
 	std::string GetTxt(int Col, int Row);
-	grdEvent GrdEvent(Jbw_Handles *Handles);
 	void RdrGrd(void);
+	
+	grdEvent GrdEvent(SDL_Event* Event);
 };
 

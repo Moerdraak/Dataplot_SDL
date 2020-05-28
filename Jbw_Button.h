@@ -25,7 +25,7 @@ public:
 //	void InitBtn(J_Properties* Prop);
 
 	void RdrBtn(void);
-	J_Type BtnEvent(Jbw_Handles* h);
+	J_Type BtnEvent(SDL_Event* Event);
 	
 
 };

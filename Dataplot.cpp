@@ -60,8 +60,10 @@ int main(int argc, char* argv[])
 
 //	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
-
+	Dp.LoadConfigFile("Rooivalk.cfg");
 	Dp.UserRender();
+
+	
 
 	Jbw_TextBox White(h, "White", 500, 300, 100, 18, 12); SetColTxtBox(&White, J_WHITE, J_BLACK);
 	Jbw_TextBox Black(h, "Black", 500, 320, 100, 18, 12); SetColTxtBox(&Black, J_BLACK, J_WHITE);
@@ -84,59 +86,15 @@ int main(int argc, char* argv[])
 	Jbw_TextBox Olive(h, "Olive", 940, 320, 100, 18, 12); SetColTxtBox(&Olive, J_OLIVE, J_BLACK);
 	Jbw_TextBox Purple(h, "Purple", 940, 340, 100, 18, 12); SetColTxtBox(&Purple, J_PURPLE, J_WHITE);
 
-
-
-
-	std::ifstream DataFile;
-	DataFile.open("Rooivalk.cfg");
-
-	if (!DataFile)
-	{
-		Dp.MsgBox("FILE ERROR", "No such File", J_OK, 100, 100);
-	}
-
-	std::string Param, Description, Colour, Symbol, Line, Step;
-	int Size, Bit, Offset, Factor, Filter;
-
-	char* s = new char[200];
-	int RowNum = 0;
-	while (!DataFile.eof()) {
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 0, RowNum); // Parameter
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 1, RowNum); // Size
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 2, RowNum); // Bit
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 3, RowNum); // Description
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 4, RowNum); // Offset
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 5, RowNum); // Factor
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 6, RowNum); // Colour
-		Jbw_Grid::grdEvent GridEvent;
-		GridEvent.Col = 6;
-		GridEvent.Row = RowNum;
-		Dp.grdFigure_OnChange(h, GridEvent);
-		//Dp.grdFigure->SetCellTxtColor(J_RED, 6, RowNum);
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 7, RowNum); // Symbol
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 8, RowNum); // Line
-		DataFile.getline(s, 200, 2);
-		Dp.grdFigure->SetCellText(s, 9, RowNum); // Step
-		DataFile.getline(s, 200, 10);
-		Dp.grdFigure->SetCellText(s, 10, RowNum); // Filter
-		RowNum++;
-	}
-	delete[] s;
-
-
-
-
-
 	SDL_RenderPresent(h->Rdr);
+
+	/*   BEGIN Twak    */
+	Dp.edDataSet->Text.assign("Rooivalk Rocket Flight test at OTB (2019-02-03)");
+	Dp.edDataSet->CreateTexture();
+	Dp.edDataSet->RdrEbx();
+	/*   END Twak  */
+
+
 	Dp.TheLoop();
 
 	return 0;
@@ -242,7 +200,6 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*  DataSet Description */
 	txtDataSet = new Jbw_Text(&handles, "Dataset Description:", 12, 210, 12);
 	edDataSet = new Jbw_EditBox(&handles, 12, 225, 300, 18, 11);
-	edDataSet->Text.assign("Rooivalk Rocket Flight test at OTB (2019-02-03)");
 
 	/*  Figure Combobox  */
 	txtFigure = new Jbw_Text(&handles, "Select Figure", 12, 340, 12);
@@ -274,14 +231,16 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	btnClear = new Jbw_Button(&handles, 1020, 475, 40, 18, "Clear", 12);
 
 	/* Plot Buttons  */
-	btnPlot = new Jbw_Button(&handles, 350, 250, 40, 18, "Plot", 12);
-	btnPlotAll = new Jbw_Button(&handles, 350, 270, 90, 18, "Plot All Figures", 12);
-	btnUp = new Jbw_Button(&handles, 350, 290, 40, 18, "Up", 12);
-	btnDown = new Jbw_Button(&handles, 350, 310, 40, 18, "Down", 12);
-	btnAdd = new Jbw_Button(&handles, 350, 330, 60, 18, "Add Bits", 12);
+	btnPlot = new Jbw_Button(&handles, 920, 30, 40, 18, "Plot", 12);
+	btnPlotAll = new Jbw_Button(&handles, 970, 30, 90, 18, "Plot All Figures", 12);
+	btnUp = new Jbw_Button(&handles, 700, 30, 40, 18, "Up", 12);
+	btnDown = new Jbw_Button(&handles, 750, 30, 40, 18, "Down", 12);
+	btnAdd = new Jbw_Button(&handles, 800, 30, 60, 18, "Add Bits", 12);
 
 	/*  SETUP GRAPHICS TABLE AREA   */	
-	grdFigure = new Jbw_Grid(&handles, 360, 55, 10, 18);
+	grdFigure = new Jbw_Grid(&handles, 360, 55, 695, 180);
+	grdFigure->RowHeight = 17;
+	grdFigure->TxtSize(-1, -1, 15);
 
 	grdFigure->AddCol(&handles, "grdFigure", "Parameter", 180, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Size", 30, J_EBX);
@@ -321,6 +280,10 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	handles.Jbw_Obj[1] = static_cast<Jbw_Button*>(btnPlot);
 	handles.Jbw_Obj[2] = static_cast<Jbw_EditBox*>(edDataDir);
 	handles.Jbw_Obj[3] = static_cast<Jbw_EditBox*>(edFileId);
+
+
+	/********** PLAY AREA ********/	
+	Slider = new Jbw_Slider(&handles, 1050, 300, 15, 100, 15);
 
 	return &handles;
 }
@@ -424,6 +387,10 @@ void Dataplot::UserRender(void)
 
 
 
+	/********** PLAY AREA ********/
+	Slider->RdrSldr();
+
+
 	SDL_RenderPresent(handles.Rdr);
 
 	/****    SET VIEWPORT TO LOGO AREA     ****/
@@ -462,47 +429,47 @@ void Dataplot::TheLoop(void)
 		}
 
 		/*  Data Directory */
-		edDataDir->EbxEvent(&handles);
-		if (btnDataDir->BtnEvent(&handles) == J_BTN_CLICK) {
+		edDataDir->EbxEvent(&handles.Event);
+		if (btnDataDir->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnDataDir_Click(&handles);
 		}
 
 		/*  File ID: */
-		edFileId->EbxEvent(&handles);
+		edFileId->EbxEvent(&handles.Event);
 
 		/*  DataSet Description */
-		edDataSet->EbxEvent(&handles);
+		edDataSet->EbxEvent(&handles.Event);
 
 		/*  Figure Combobox  */
-		cbxFigure->CbxEvent(); 
+		cbxFigure->CbxEvent(&handles.Event);
 
 		/*  Graph Title  */
-		edTitle->EbxEvent(&handles);
+		edTitle->EbxEvent(&handles.Event);
 
 		/*  Y Axes label */
-		edYaxLabel->EbxEvent(&handles);
+		edYaxLabel->EbxEvent(&handles.Event);
 
 		/*  X Axes label */
-		edXaxLabel->EbxEvent(&handles);
+		edXaxLabel->EbxEvent(&handles.Event);
 
 		/*   Time On/Off Button */
 		
 
 		/*   Messages   */
-		if(lbxMessage->LbxEvent(&handles) == J_BTN_CLICK) {
+		if(lbxMessage->LbxEvent(&handles.Event) == J_BTN_CLICK) {
 			grdFigure->Set(2, 3, lbxMessage->Index);
 		}
 
-		if (btnClear->BtnEvent(&handles) == J_BTN_CLICK) {
-			btnClear_Click(&handles);
+		if (btnClear->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+			btnClear_Click();
 		}
 
 		/*   Grid   */
-		grdFigure->GrdEvent(&handles);
+		grdFigure->GrdEvent(&handles.Event);
 	
 		if (grdFigure->OnChange == true) {
 			grdFigure->OnChange = false;
-			grdFigure_OnChange(&handles, grdFigure->GridEvent);
+			grdFigure_OnChange(grdFigure->GridEvent);
 		}
 		
 		if (handles.Event.user.type == 1) {
@@ -510,28 +477,32 @@ void Dataplot::TheLoop(void)
 		}
 
 
-		if (btnPlot->BtnEvent(&handles) == J_BTN_CLICK) {
+		if (btnPlot->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnPlot_Click(&handles);
 		}
-		if (btnPlotAll->BtnEvent(&handles) == J_BTN_CLICK) {
+		if (btnPlotAll->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnPlotAll_Click(&handles);
 		}
-		if (btnUp->BtnEvent(&handles) == J_BTN_CLICK) {
+		if (btnUp->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnUp_Click(&handles);
 		}
-		if (btnDown->BtnEvent(&handles) == J_BTN_CLICK) {
+		if (btnDown->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnDown_Click(&handles);
 		}
-		if (btnAdd->BtnEvent(&handles) == J_BTN_CLICK) {
+		if (btnAdd->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnAdd_Click(&handles);
 		}
+
+
+		/********** PLAY AREA ********/
+		Slider->SldrEvent(&handles.Event);
 	}
 }
 
 /*------------------------------------------------------------------------------------------
   FUNCTION: BtnClear_Click
 ------------------------------------------------------------------------------------------*/
-void Dataplot::btnClear_Click(Jbw_Handles* h)
+void Dataplot::btnClear_Click(void)
 {
 	lbxMessage->Clear();
 	lbxMessage->RdrLbx();
@@ -610,50 +581,114 @@ void Dataplot::btnDown_Click(Jbw_Handles* h)
 /*------------------------------------------------------------------------------------------
   FUNCTION: grdFigure_OnChange
 ------------------------------------------------------------------------------------------*/
-void Dataplot::grdFigure_OnChange(Jbw_Handles* h, Jbw_Grid::grdEvent GridEvent)
+void Dataplot::grdFigure_OnChange(Jbw_Grid::grdEvent GridEvent)
 {
-	switch (grdFigure->GetIndex(GridEvent.Col, GridEvent.Row)) {
+	if (GridEvent.Col == 6) { // color Collumn
+		GridCellColorChange(GridEvent.Col, GridEvent.Row, grdFigure->GetIndex(GridEvent.Col, GridEvent.Row));
+		grdFigure->RdrGrd();
+	}
+
+	if (GridEvent.Col == 8) { // color Collumn
+		GridCellColorChange(GridEvent.Col, GridEvent.Row, grdFigure->GetIndex(6, GridEvent.Row));
+		grdFigure->RdrGrd();
+	}
+}
+/*------------------------------------------------------------------------------------------
+FUNCTION: grdFigure_OnChange
+------------------------------------------------------------------------------------------*/
+	void Dataplot::GridCellColorChange(int Col, int Row, int Index)
+	{
+	switch (Index) {
 	case 0: // Black
-		grdFigure->SetCellTxtColor(J_BLACK, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_BLACK, Col, Row);
 		break;
 	case 1: // Red
-		grdFigure->SetCellTxtColor(J_RED, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_RED, Col, Row);
 		break;
 	case 2: // Lime
-		grdFigure->SetCellTxtColor(J_LIME, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_LIME, Col, Row);
 		break;
 	case 3: // Blue
-		grdFigure->SetCellTxtColor(J_BLUE, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_BLUE, Col, Row);
 		break;
 	case 4: // Magenta
-		grdFigure->SetCellTxtColor(J_MAGENTA, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_MAGENTA, Col, Row);
 		break;
 	case 5: // Cyan
-		grdFigure->SetCellTxtColor(J_CYAN, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_CYAN, Col, Row);
 		break;
 	case 6: // Yellow
-		grdFigure->SetCellTxtColor(J_YELLOW, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_YELLOW, Col, Row);
 		break;
 	case 7: // Maroon
-		grdFigure->SetCellTxtColor(J_MAROON, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_MAROON, Col, Row);
 		break;
 	case 8: // Green
-		grdFigure->SetCellTxtColor(J_GREEN, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_GREEN, Col, Row);
 		break;
 	case 9: // Navy
-		grdFigure->SetCellTxtColor(J_NAVY, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_NAVY, Col, Row);
 		break;
 	case 10: // Teal
-		grdFigure->SetCellTxtColor(J_TEAL, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_TEAL, Col, Row);
 		break;
 	case 11: // Olive
-		grdFigure->SetCellTxtColor(J_OLIVE, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_OLIVE, Col, Row);
 		break;
 	case 12: // Purple
-		grdFigure->SetCellTxtColor(J_PURPLE, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_PURPLE, Col, Row);
 		break;
 	case 13: // Grey
-		grdFigure->SetCellTxtColor(J_GREY, GridEvent.Col, GridEvent.Row);
+		grdFigure->SetCellTxtColor(J_GREY, Col, Row);
 		break;
 	}
+
+}
+
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: LoadConfigFile
+------------------------------------------------------------------------------------------*/
+void Dataplot::LoadConfigFile(std::string FileName)
+{
+	std::ifstream DataFile;
+	DataFile.open(FileName);
+
+	if (!DataFile)
+	{
+		MsgBox("FILE ERROR", "No such File", J_OK, 100, 100);
+	}
+
+	char* s = new char[200];
+	int RowNum = 0;
+	while (!DataFile.eof()) {
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 0, RowNum); // Parameter
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 1, RowNum); // Size
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 2, RowNum); // Bit
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 3, RowNum); // Description
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 4, RowNum); // Offset
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 5, RowNum); // Factor
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 6, RowNum); // Colour
+		GridCellColorChange(6, RowNum, grdFigure->GetIndex(6, RowNum)); // Also Change the Color of the font
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 7, RowNum); // Symbol
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 8, RowNum); // Line
+		GridCellColorChange(8, RowNum, grdFigure->GetIndex(6, RowNum)); // Also Change the Color of the font
+		DataFile.getline(s, 200, 2);
+		grdFigure->SetCellText(s, 9, RowNum); // Step
+		DataFile.getline(s, 200, 10);
+		grdFigure->SetCellText(s, 10, RowNum); // Filter
+		RowNum++;
+	}
+	delete[] s;
+
+
 }

@@ -119,46 +119,40 @@ void Jbw_ComboBox::RdrCbx()
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: CbxEvent
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ComboBox::CbxEvent()
+J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 {
 	J_Type Answer = J_NULL;
 
 	bool Inside = false;
 	bool Flag = false;
 
-	if (Jhandle->Event.type == SDL_WINDOWEVENT && CbxListVis == true) {
-		if (Jhandle->Event.window.event == SDL_WINDOWEVENT_FOCUS_LOST &&
-			strcmp(SDL_GetWindowTitle(SDL_GetWindowFromID(Jhandle->Event.window.windowID)),
+	if (Event->type == SDL_WINDOWEVENT && CbxListVis == true) {
+		if (Event->window.event == SDL_WINDOWEVENT_FOCUS_LOST &&
+			strcmp(SDL_GetWindowTitle(SDL_GetWindowFromID(Event->window.windowID)),
 				"CbxList") == 0) {
 			CbxListVis = false;
 			RdrCbx();
 		}
 	}
 
-	// EditBox Events
-	//CbxEdit->EbxEvent(Jhandle);
-	//if (CbxEdit->OnChange == true) { // The Text inside the Editbox changed
-	//	OnChange = true;
-	//}
+	CbxBtn->EbxEvent(Event);
+	CbxEdit->EbxEvent(Event);
 
 	if (GridBtn == true) {
-		if (CbxBtn->BtnEvent(Jhandle) == J_BTN_CLICK && CbxListVis == false) {
+		if (CbxBtn->BtnEvent(Event) == J_BTN_CLICK && CbxListVis == false) {
 			CbxListVis = true;
 			RdrCbx();
-			Jhandle->Event.user.type = 1; // OnChange Event
-			SDL_PushEvent(&Jhandle->Event);
+			Event->user.type = 1; // OnChange Event
+			SDL_PushEvent(Event);
 			Answer = J_BTN_CLICK;
 		}
 
 		if (CbxBtn->msOver == true || CbxEdit->msOver == true) {
 			CbxBtn->RdrBtn();
 		}
-		else {
-			CbxEdit->RdrEbx();
-		}
 	}
 	else {		
-		if (CbxBtn->BtnEvent(Jhandle) == J_BTN_CLICK && CbxListVis == false) {
+		if (CbxBtn->BtnEvent(Event) == J_BTN_CLICK && CbxListVis == false) {
 			CbxListVis = true;
 			RdrCbx();
 		}
@@ -166,14 +160,19 @@ J_Type Jbw_ComboBox::CbxEvent()
 
 	// Listbox Events
 	if (CbxListVis == true && lsthandles != NULL) {
-		if (CbxList->LbxEvent(Jhandle) == J_BTN_CLICK) {
+		if (CbxList->LbxEvent(Event) == J_BTN_CLICK) {
 			CbxEdit->Text.assign(CbxList->TxtList[CbxList->Index].Text);
 			CbxEdit->CreateTexture();
-			CbxEdit->RdrEbx();
+			CbxEdit->DoRender = true;
 			CbxListVis = false;
 			RdrCbx();
 			OnChange = true;
 		}
+	}
+
+	if (CbxEdit->DoRender == true) {
+		CbxEdit->DoRender = false;
+		CbxEdit->RdrEbx();
 	}
 	return Answer;
 }

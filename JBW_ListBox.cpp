@@ -189,24 +189,24 @@ void Jbw_ListBox::RdrLbx()
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER MAIN
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ListBox::LbxEvent(Jbw_Handles* h)
+J_Type Jbw_ListBox::LbxEvent(SDL_Event* Event)
 {
 	J_Type Answer = J_NULL;
 
-	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN
-		|| h->Event.type == SDL_MOUSEBUTTONUP) {
+	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN
+		|| Event->type == SDL_MOUSEBUTTONUP) {
 
 		// Get mouse position
 		int msX, msY;
 		SDL_GetMouseState(&msX, &msY);
 
-		Answer = ListEvent(h, msX, msY); // Events happening inside List Box area
+		Answer = ListEvent(Event, msX, msY); // Events happening inside List Box area
 
 		// Only Render the Slider stuff if there are more text lines than the Txtbox can show
 		if (Cnt > Lines + 1) { 
-			SliderEvent(h, msX, msY); // Mouse Events happening on Slider
-			BtnUpEvent(h); // Mouse Events happening on Up button
-			BtnDwnEvent(h); // Mouse Events happening on Down button
+			SliderEvent(Event, msX, msY); // Mouse Events happening on Slider
+			BtnUpEvent(Event); // Mouse Events happening on Up button
+			BtnDwnEvent(Event); // Mouse Events happening on Down button
 		}
 	}
 	return Answer;
@@ -215,7 +215,7 @@ J_Type Jbw_ListBox::LbxEvent(Jbw_Handles* h)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER LIST
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ListBox::ListEvent(Jbw_Handles* h, int msX, int msY)
+J_Type Jbw_ListBox::ListEvent(SDL_Event* Event, int msX, int msY)
 {
 	J_Type Answer = J_NULL;
 
@@ -227,8 +227,8 @@ J_Type Jbw_ListBox::ListEvent(Jbw_Handles* h, int msX, int msY)
 				{
 					if (msX > TxtList[I].TbxX
 						&& msX < TxtList[I].TbxX + TxtList[I].TbxW
-						&& msY > TxtList[I].TbxY + 6
-						&& msY < TxtList[I].TbxY + 7 + TxtList[I].TbxH)
+						&& msY > TxtList[I].TbxY 
+						&& msY < TxtList[I].TbxY + 3 + TxtList[I].TbxH)
 					{
 						TxtList[I].msOver = true;
 						if (TxtList[I].DoRender == false) {
@@ -237,7 +237,7 @@ J_Type Jbw_ListBox::ListEvent(Jbw_Handles* h, int msX, int msY)
 							TxtList[I].RdrTbx();
 						}
 						// Mouse button Click
-						if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
+						if (Event->type == SDL_MOUSEBUTTONDOWN) {
 							Index = I;
 							Answer = J_BTN_CLICK;
 						}
@@ -268,10 +268,10 @@ J_Type Jbw_ListBox::ListEvent(Jbw_Handles* h, int msX, int msY)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER LIST
 ------------------------------------------------------------------------------------------*/
-void Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
+void Jbw_ListBox::SliderEvent(SDL_Event* Event, int msX, int msY)
 {
 	// If the mouse button is up the slider can't be active
-	if (h->Event.type == SDL_MOUSEBUTTONUP) {		
+	if (Event->type == SDL_MOUSEBUTTONUP) {		
 		SliderActive = false;
 		return;
 	}
@@ -284,7 +284,7 @@ void Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
 		Slider->RdrFrame();
 
 		// If you left click on the Slider button it becomes Active for dragging
-		if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
+		if (Event->type == SDL_MOUSEBUTTONDOWN) {
 			msPrevPosY = msY;
 			SliderActive = true;
 		}	
@@ -324,9 +324,9 @@ void Jbw_ListBox::SliderEvent(Jbw_Handles* h, int msX, int msY)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER LIST
 ------------------------------------------------------------------------------------------*/
-void Jbw_ListBox::BtnUpEvent(Jbw_Handles* h)
+void Jbw_ListBox::BtnUpEvent(SDL_Event* Event)
 {
-	if (SldrBtnUp->BtnEvent(h) == J_BTN_CLICK) {
+	if (SldrBtnUp->BtnEvent(Event) == J_BTN_CLICK) {
 		if (FromLine > 0) {
 			FromLine--;
 			ToLine--;
@@ -338,9 +338,9 @@ void Jbw_ListBox::BtnUpEvent(Jbw_Handles* h)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER LIST
 ------------------------------------------------------------------------------------------*/
-void Jbw_ListBox::BtnDwnEvent(Jbw_Handles* h)
+void Jbw_ListBox::BtnDwnEvent(SDL_Event* Event)
 {
-	if (SldrBtnDwn->BtnEvent(h) == J_BTN_CLICK) {
+	if (SldrBtnDwn->BtnEvent(Event) == J_BTN_CLICK) {
 		if (ToLine < Cnt) {
 			FromLine++;
 			ToLine++;

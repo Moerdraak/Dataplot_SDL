@@ -164,12 +164,12 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	while (SDL_WaitEvent(&Jhandle->Event) != 0) {
 
 		// Check When Buttons are Clicked
-		if (btnAck->BtnEvent(Jhandle) == J_BTN_CLICK) {
+		if (btnAck->BtnEvent(&Jhandle->Event) == J_BTN_CLICK) {
 			Answer = J_YES;
 			break;
 		}
 		if (btnNo != NULL) {
-			if (btnNo->BtnEvent(Jhandle) == J_BTN_CLICK) {
+			if (btnNo->BtnEvent(&Jhandle->Event) == J_BTN_CLICK) {
 				Answer = J_NO;
 				break;
 			}

@@ -18,12 +18,12 @@ enum class J : const short int {
 };
 
 enum J_Type : const short int {
-	J_NULL,
+	J_NULL, J_TRUE, J_FALSE,
 	J_TXT, J_EBX, J_LBX, J_CBX, J_BTN,  J_GRD, J_LEN, // ObjWork
 	J_LEFT, J_CENTRE, J_RIGHT, // TxtBox
 	J_OK, J_YES, J_NO, J_YESNO, // MsgBox
 	J_CLICK, 
-	J_BTN_CLICK// Callback events
+	J_BTN_CLICK, J_UP, J_DOWN// Callback events
 };
 
 const SDL_Color J_WHITE = { 255, 255, 255, 255 };
@@ -65,6 +65,7 @@ class Jbw_ListBox;
 class Jbw_ComboBox;
 class Jbw_Button;
 class Jbw_Grid;
+class Jbw_Slider;
 
 struct Jbw_Handles {
 	SDL_Rect GuiArea = { 0, 0, 0, 0 };

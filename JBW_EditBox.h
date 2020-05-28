@@ -24,7 +24,7 @@ public:
 	void InitEbx(Jbw_Handles* handles, int x, int y, int w, int h = 14, int Fsize = 12);
 	bool SetEbx(std::string  *Var, const char* Val);
 	void RdrEbx(void);
-	void EbxEvent(Jbw_Handles* h);
+	void EbxEvent(SDL_Event* Event);
 	std::string EboxGetS(std::string Property);
 
 	Uint32 static Flashy(Uint32 interval, void* param);

@@ -8,6 +8,7 @@
 #include "Jbw_FrameWork.h"
 #include "Jbw_Circle.h"
 #include "Jbw_Menu.h"
+#include "Jbw_Slider.h"
 #include <array>
 
 /****************************************************************************************/
@@ -28,7 +29,6 @@ class Dataplot : public Jbw_FrameWork {
 private:
 
 public:
-	
 	SDL_Rect LogoArea;
 	SDL_Surface* wSurf = NULL; // The surface contained by the window
 	SDL_Texture* LogoImage = NULL; //Current displayed texture
@@ -110,13 +110,19 @@ public:
 	Jbw_ListBox* MsgMsg;
 	Jbw_Grid* grdFigure;
 
-	
+	/********** PLAY AREA ********/
+	Jbw_Slider* Slider;
 
 	
 	/*******************************************************
+			   Gui Menu Callbacks
+	*******************************************************/
+	void LoadConfigFile(std::string FileName);
+
+	/*******************************************************
 			   Gui Objects Callbacks
 	*******************************************************/
-	void btnClear_Click(Jbw_Handles* h);
+	void btnClear_Click(void);
 	void btnDataDir_Click(Jbw_Handles* h);
 	void btnPlot_Click(Jbw_Handles* h);
 	void btnPlotAll_Click(Jbw_Handles* h);
@@ -124,6 +130,8 @@ public:
 	void btnUp_Click(Jbw_Handles* h);
 	void btnDown_Click(Jbw_Handles* h);
 
-	void grdFigure_OnChange(Jbw_Handles* h, Jbw_Grid::grdEvent GridEvent);
+	void grdFigure_OnChange(Jbw_Grid::grdEvent GridEvent);
+	void GridCellColorChange(int Col, int Row, int Index);
+
 
 };

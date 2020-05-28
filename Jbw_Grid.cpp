@@ -4,17 +4,18 @@
 /*-----------------------------------------------------------------------------------------
 CONSTRUCTOR: 
 ------------------------------------------------------------------------------------------*/
-Jbw_Grid::Jbw_Grid(Jbw_Handles* handles, int x, int y, int NumRow, int RowH)
+Jbw_Grid::Jbw_Grid(Jbw_Handles* handles, int x, int y, int w, int h)
 {
-	Jhandle = handles;
 	GridX = x;
 	GridY = y;
-	RowCnt = NumRow;
-	RowHeight = RowH; // bit of Bullshit here using the FontSize variable for row Height
+	GridW = w;
+	GridH = h;
 
-	// Frame
-	FrameX = GridX;
-	FrameY = GridY;
+	Jhandle = handles;
+	RowHeight = 15; // Nice general value
+
+	// Determine amount of rows that will fit in
+	RowCnt = floor(h / RowHeight);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -29,7 +30,7 @@ Jbw_Grid::~Jbw_Grid()
 
 	for (int I = 0; I < ColCnt; I++) {
 		a = static_cast<Jbw_EditBox*>(Element[I]);
-//		delete a;
+		delete a;
 	}
 	delete[] Element;
 }
@@ -101,8 +102,15 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 	}
 
 	Element = TmpElement;
-
 	TotalW += Width - 1;
+	GridW = TotalW;
+
+	// Fixing Slider 
+	if (Slider != NULL) { // Might be heavy, consider only changing x position ...
+		delete Slider;
+	}
+	Slider = new Jbw_Slider(handles, GridX + TotalW, GridY, 14, RowCnt * RowHeight + 5);
+
 	ColCnt++;
 }
 
@@ -353,7 +361,6 @@ void Jbw_Grid::Set(int Col, int Row, double Val)
 	}
 }
 
-
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
 ------------------------------------------------------------------------------------------*/
@@ -469,33 +476,48 @@ void Jbw_Grid::RdrGrd(void)
 		Header[I].RdrEbx();
 	}
 
-	RdrFrame();
+	Slider->RdrSldr();
 }
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION: GrdEvent
 ------------------------------------------------------------------------------------------*/
-Jbw_Grid::grdEvent Jbw_Grid::GrdEvent(Jbw_Handles* Handles)
+Jbw_Grid::grdEvent Jbw_Grid::GrdEvent(SDL_Event* Event)
 {
-	grdEvent Event;
+	grdEvent Ev;
+
+	// Test if mouse is inside Grid Window
+	if (Event->window.event == SDL_WINDOWEVENT_ENTER && 
+		Event->window.windowID == SDL_GetWindowID(grdHandles.JbwGui)){
+		msOver = true;
+		return Ev; 
+	}
+	else if (Event->window.event == SDL_WINDOWEVENT_LEAVE &&
+		Event->window.windowID == SDL_GetWindowID(grdHandles.JbwGui)) {
+		msOver = false;
+		return Ev; 
+	}
+	if (Event->type == SDL_MOUSEMOTION && msOver == false) { 
+	//	return Ev; // Don't bother any further
+	}
+
 	for (int I = 0; I < ColCnt; I++) {
 		if (ColType[I] == J_EBX) {
 			Ebox = static_cast<Jbw_EditBox*>(Element[I]);
 			for (int J = 0; J < RowCnt; J++) {
-				Ebox[J].EbxEvent(Handles);
+				Ebox[J].EbxEvent(Event);
 				if (Ebox[J].OnChange == true) {
 					Ebox[J].OnChange = false; // Has now been handled
 					OnChange = true;
-					Event.Col = I;
-					Event.Row = J;
+					GridEvent.Col = I;
+					GridEvent.Row = J;
 				}
 			}
 		}
 		else {
 			Cbox = static_cast<Jbw_ComboBox*>(Element[I]);
 			for (int J = 0; J < RowCnt; J++) {
-				Cbox[J].CbxEvent();
-
+				Cbox[J].CbxEvent(Event);
 				if (Cbox[J].OnChange == true) {
 					Cbox[J].OnChange = false; // Has now been handled
 					OnChange = true;
@@ -505,5 +527,6 @@ Jbw_Grid::grdEvent Jbw_Grid::GrdEvent(Jbw_Handles* Handles)
 			}
 		}
 	}
-	return Event;
+	Slider->SldrEvent(Event);
+	return Ev;
 }

@@ -50,98 +50,79 @@ void Jbw_EditBox::RdrEbx(void)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
+void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 {
 	bool Flag = false;
 	//If mouse event happened
-	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || h->Event.type == SDL_MOUSEBUTTONUP){
+	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN || Event->type == SDL_MOUSEBUTTONUP){
 		// Get mouse position
-		int x, y;
-		SDL_GetMouseState(&x, &y);
+		int msX, msY;
+		SDL_GetMouseState(&msX, &msY);
 
 		// Mouse pointer inside Edit box
-		if (x > TbxX && x < TbxX + TbxW && y > TbxY && y < TbxY + TbxH)
+		if (msX > TbxX && msX < TbxX + TbxW && msY > TbxY && msY < TbxY + TbxH)
 		{
-			msOver = true;
+			if (msOver == false) {
+				msOver = true;
+				Border->LineColor = J_BLACK;
+				DoRender = true;
+			}
 
-			switch (h->Event.type)
+			switch (Event->type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
-				if (h->Event.button.button == 1) {
+				if (Event->button.button == 1) {
 					Focus = true;
 				}
-				else if (h->Event.button.button == 3) {
+				else if (Event->button.button == 3) {
 				Add(SDL_GetClipboardText());
-				RdrEbx();
 				}
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-			//	BackColor = { 255, 255, 255, 255 };
 				break;
-			}
-
-			Border->LineColor = J_BLACK;
-			if (DoRender == false) {
-				DoRender = true;
-				RdrEbx();
 			}
 		}
 		else {
-			msOver = false;
-			if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
-				Focus = false;
+			if (msOver == true) {
+				msOver = false;
 				Border->LineColor = J_C_Frame;
-				RdrEbx();
+				DoRender = true;
 			}
 
-			Border->LineColor = J_C_Frame;
-			if (DoRender == true) {
-				DoRender = false;
-				RdrEbx();
+			if (Event->type == SDL_MOUSEBUTTONDOWN) {
+				Focus = false;
+				Border->LineColor = J_C_Frame;
 			}
 		}
 	}
 
 	if (Focus == true && Enabled == true) {
-		if (h->Event.type == SDL_TEXTINPUT){
-			Add(h->Event.text.text);
+		if (Event->type == SDL_TEXTINPUT){
+			Add(Event->text.text);
 			OnChange = true;
+			DoRender = true;
 		}
-		else if (h->Event.type == SDL_KEYDOWN){
-			if (h->Event.key.keysym.sym == SDLK_BACKSPACE) {
+		else if (Event->type == SDL_KEYDOWN){
+			if (Event->key.keysym.sym == SDLK_BACKSPACE) {
 				BackSpace();
 				OnChange = true;
+				DoRender = true;
 			}
-			else if (h->Event.key.keysym.sym == SDLK_DELETE) {
+			else if (Event->key.keysym.sym == SDLK_DELETE) {
 				OnChange = true;
+				DoRender = true;
 			}
 		}
 		Border->LineColor = J_BLACK;
-		RdrEbx();
 	}
 
+	if (DoRender == true) {
+		DoRender = false;
+		RdrEbx();
+	}
 	
 	return;
-
-	//if (0) {
-	//	if (h->Event.type == SDL_USEREVENT) {
-	//		h->Event.user.data1;
-	//		my_function();
-	//		//	Uint32* AAA{ static_cast<Uint32*>(e->user.data1) };
-	//		//	void (*A) (void*) = e->type.user.data2;
-	//		//	*A();
-
-
-	//	}
-	//}
-
-	//Uint32 delay = (330 / 10) * 10; // To round it down to the nearest 10 ms 
-//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
-//	Uint32 delay = (3300 / 10) * 10; // To round it down to the nearest 10 ms 
-
-//	SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, Trdr);
-
 }
 
 /*-----------------------------------------------------------------------------------------

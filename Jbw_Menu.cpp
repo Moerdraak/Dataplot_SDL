@@ -91,7 +91,7 @@ int Jbw_Menu::MnuEvent(Jbw_Handles* h)
 	}
 
 	for (int I = 0; I < MnuCnt; I++) {
-		if (MainMenu[I].BtnEvent(h) == J_BTN_CLICK) {
+		if (MainMenu[I].BtnEvent(&h->Event) == J_BTN_CLICK) {
 			Answer = I;
 		}
 	}
