@@ -7,32 +7,32 @@ Jbw_ListBox::Jbw_ListBox(Jbw_Handles* handles, int x, int y, int w, int h, int F
 {
 	Jhandle = handles;
 
-	FrameX = x;
-	FrameY = y;
-	FrameW = w;
-	FrameH = h;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
 	FontSize = Fsize;
 	TxtBoxH = FontSize + 4; // For Arial the Box height is generaly 2 points bigger than the font size
 							// Then add a gap at the top and at the bottom so add 4
 	Fill = true;
 
 	LineColor = J_C_Frame; // Frame Color
-	CreatePts(); // Build frame
+	CreateFrame(); // Build frame
 
 	// Create Slider Box
-	SliderBox = new Jbw_Frame(handles, FrameX + FrameW - 15, FrameY + 14, 15, FrameH - 28, true);
+	SliderBox = new Jbw_Frame(handles, Obj.x + Obj.w - 15, Obj.y + 14, 15, Obj.h - 28, true);
 	SliderBox->LineColor = J_C_Frame;
 	SliderBox->FillColor = J_C_LGrey;
 
 	// Create Slider 
-	Slider = new Jbw_Frame(handles, FrameX + FrameW - 15, FrameY + 20, 15, 5, true);
+	Slider = new Jbw_Frame(handles, Obj.x + Obj.w - 15, Obj.y + 20, 15, 5, true);
 	Slider->LineColor = J_C_Frame;
 	Slider->FillColor = J_C_BtnGrey;
 
 	// Create Slider Buttons
-	SldrBtnUp = new Jbw_Button(handles, FrameX + FrameW - 15, FrameY, 15, 15, "^");
-	SldrBtnDwn = new Jbw_Button(handles, FrameX + FrameW - 15, FrameY + FrameH - 15, 15, 15, "^");
-	SldrBtnDwn->Flip = SDL_FLIP_VERTICAL;
+	SldrBtnUp = new Jbw_Button(handles, Obj.x + Obj.w - 15, Obj.y, 15, 15, "^");
+	SldrBtnDwn = new Jbw_Button(handles, Obj.x + Obj.w - 15, Obj.y + Obj.h - 15, 15, 15, "^");
+	SldrBtnDwn->Tbx->Flip = SDL_FLIP_VERTICAL;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -48,27 +48,27 @@ Jbw_ListBox::~Jbw_ListBox() {
 void Jbw_ListBox::ResizeListBox(int x, int y, int w, int h)
 {
 	// Setting basic Listbox size
-	FrameX = x;
-	FrameY = y;
-	FrameW = w;
-	FrameH = h;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
 
 	// Setting Slider box position & size
-	SliderBox->FrameX = FrameX + FrameW - 15;
-	SliderBox->FrameY = FrameY + 14; 	//SliderBox->FrameW = 15; remains the same - never changes
-	SliderBox->FrameH = FrameH - 28;
+	SliderBox->Obj.x = Obj.x + Obj.w - 15;
+	SliderBox->Obj.y = Obj.y + 14; 	//SliderBox->Obj.w = 15; remains the same - never changes
+	SliderBox->Obj.h = Obj.h - 28;
 
 	// Setting Slider position
-	Slider->FrameX = FrameX + FrameW - 15;
-	Slider->FrameY = FrameY + 20;
+	Slider->Obj.x = Obj.x + Obj.w - 15;
+	Slider->Obj.y = Obj.y + 20;
 
 	// Setting Slider Buttons positions
-	SldrBtnUp->TbxX = FrameX + FrameW - 15;
-	SldrBtnUp->TbxY = FrameX + FrameY;
+	SldrBtnUp->Obj.x = Obj.x + Obj.w - 15;
+	SldrBtnUp->Obj.y = Obj.x + Obj.y;
 
-	SldrBtnDwn->TbxX = FrameX + FrameW - 15;
-	SldrBtnDwn->TbxY = FrameY + FrameH - 15;
-	SldrBtnDwn->Border->FrameY = SldrBtnDwn->TbxY;
+	SldrBtnDwn->Obj.x = Obj.x + Obj.w - 15;
+	SldrBtnDwn->Obj.y = Obj.y + Obj.h - 15;
+	SldrBtnDwn->Tbx->Border->Obj.y = SldrBtnDwn->Obj.y;
 
 	FitLines(true);
 }
@@ -85,8 +85,8 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 		NList[I] = TxtList[I]; // Copy all current TxtPtrs		
 	}
 
-	NList[Cnt].InitTbx(Jhandle, NewTxt, FrameX + 3, FrameY + 3, FrameW - 5, TxtBoxH);
-	NList[Cnt].Add(NewTxt);
+	NList[Cnt].InitTbx(Jhandle, NewTxt, Obj.x + 3, Obj.y + 3, Obj.w - 5, TxtBoxH);
+
 	if (Cnt > 0) {
 		delete[] TxtList;
 	}
@@ -121,12 +121,12 @@ void Jbw_ListBox::Close(void)
 void Jbw_ListBox::FitLines(bool ChangeCnt)
 {
 	// Get number of lines that will fit into the ListBox display
-	Lines = (int)floor((FrameH - 20)/TxtBoxH);
+	Lines = (int)floor((Obj.h - 20)/TxtBoxH);
 	
 	// Set Slider size
-	Slider->FrameH = SliderBox->FrameH - (Cnt - Lines - 1) * TxtBoxH / 5; // Divide by 5 gives a nice slider size
-	if (Slider->FrameH < 4) {
-		Slider->FrameH = 4; // Minimum size of slider
+	Slider->Obj.h = SliderBox->Obj.h - (Cnt - Lines - 1) * TxtBoxH / 5; // Divide by 5 gives a nice slider size
+	if (Slider->Obj.h < 4) {
+		Slider->Obj.h = 4; // Minimum size of slider
 	} 
 
 	if (Cnt > Lines + 1) {
@@ -135,7 +135,7 @@ void Jbw_ListBox::FitLines(bool ChangeCnt)
 			ToLine = FromLine + Lines + 1;
 		}
 		// Number of mouse movement points per line of Text
-		PointsPerline = (SliderBox->FrameH - Slider->FrameH) / (Cnt - Lines - 1);
+		PointsPerline = (SliderBox->Obj.h - Slider->Obj.h) / (Cnt - Lines - 1);
 	}
 	else {
 		FromLine = 0;
@@ -148,20 +148,20 @@ void Jbw_ListBox::FitLines(bool ChangeCnt)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::RdrLbx()
 {	
-	SDL_Rect RdrBox = { FrameX, FrameY, FrameW, FrameH };
+	SDL_Rect RdrBox = { Obj.x, Obj.y, Obj.w, Obj.h };
 	SDL_RenderSetViewport(Jhandle->Rdr, &RdrBox);
 	
 	// Render Frame of ListBox
 	RdrFrame(); 
-	int TxtWidth = FrameW - 5;
+	int TxtWidth = Obj.w - 5;
 
 	if (Cnt > Lines + 1) {
 		SliderBox->RdrFrame(); // Render  Slider Frame
 		SldrBtnUp->RdrBtn(); // Render Up button
 		SldrBtnDwn->RdrBtn(); // Render Down button
 		// Set the Slider Y position
-		Slider->FrameY = SliderBox->FrameY + FromLine * (SliderBox->FrameH - Slider->FrameH) / (Cnt - Lines - 1);
-		Slider->CreatePts();
+		Slider->Obj.y = SliderBox->Obj.y + FromLine * (SliderBox->Obj.h - Slider->Obj.h) / (Cnt - Lines - 1);
+		Slider->CreateFrame();
 		Slider->RdrFrame(); // Render Slider
 		TxtWidth -= 15;
 	}
@@ -170,11 +170,11 @@ void Jbw_ListBox::RdrLbx()
 	if (TxtList != NULL) {
 		TxtRendered = true;
 		for (int I = FromLine; I < ToLine; I++) {
-			TxtList[I].TbxY = FrameY + 1 + (I - FromLine) * TxtBoxH;
-			TxtList[I].TbxW = TxtWidth - 2;
-			TxtList[I].Border->FrameW = TxtWidth;
-			TxtList[I].Border->FrameY = FrameY + 1 + (I - FromLine) * TxtBoxH;
-			TxtList[I].Border->CreatePts();
+			TxtList[I].Obj.y = Obj.y + 1 + (I - FromLine) * TxtBoxH;
+			TxtList[I].Obj.w = TxtWidth - 2;
+			TxtList[I].Border->Obj.w = TxtWidth;
+			TxtList[I].Border->Obj.y = Obj.y + 1 + (I - FromLine) * TxtBoxH;
+			TxtList[I].Border->CreateFrame();
 			TxtList[I].FrameOn = true;
 			TxtList[I].FillOn = true;
 			TxtList[I].Border->LineColor = J_WHITE;
@@ -220,15 +220,16 @@ J_Type Jbw_ListBox::ListEvent(SDL_Event* Event, int msX, int msY)
 	J_Type Answer = J_NULL;
 
 		// Mouse pointer inside List Box box
-		if (msX > FrameX&& msX < FrameX + FrameW && msY > FrameY&& msY < FrameY + FrameH) {
+		if (msX > Obj.x && msX < Obj.x + Obj.w && msY > Obj.y && msY < Obj.y + Obj.h) {
 			msOver = true;
+
 			if (TxtList != NULL) {
 				for (int I = FromLine; I < ToLine; I++)
 				{
-					if (msX > TxtList[I].TbxX
-						&& msX < TxtList[I].TbxX + TxtList[I].TbxW
-						&& msY > TxtList[I].TbxY 
-						&& msY < TxtList[I].TbxY + 3 + TxtList[I].TbxH)
+					if (msX > TxtList[I].Border->Obj.x
+						&& msX < TxtList[I].Border->Obj.x + TxtList[I].Border->Obj.w
+						&& msY > TxtList[I].Border->Obj.y
+						&& msY < TxtList[I].Border->Obj.y + 3 + TxtList[I].Border->Obj.h)
 					{
 						TxtList[I].msOver = true;
 						if (TxtList[I].DoRender == false) {
@@ -277,8 +278,8 @@ void Jbw_ListBox::SliderEvent(SDL_Event* Event, int msX, int msY)
 	}
 
 	// Mouse pointer inside Slider 
-	if (msX > Slider->FrameX && msX < Slider->FrameX + Slider->FrameW 
-		&& msY > Slider->FrameY && msY < Slider->FrameY + Slider->FrameH) {
+	if (msX > Slider->Obj.x && msX < Slider->Obj.x + Slider->Obj.w 
+		&& msY > Slider->Obj.y && msY < Slider->Obj.y + Slider->Obj.h) {
 		Slider->msOver = true;
 		Slider->LineColor = J_BLACK;
 		Slider->RdrFrame();

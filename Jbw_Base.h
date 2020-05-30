@@ -73,8 +73,8 @@ struct Jbw_Handles {
 	SDL_Renderer* Rdr = NULL;
 	SDL_Event Event;
 	void** Jbw_Obj;
-
 };
+
 
 /******************************************************************************************
 								 CLASS: Jbw_Base
@@ -83,7 +83,9 @@ class Jbw_Base{
 public:	
 	short int Id = 0;
 	std::string Tag = "";
-	Jbw_Handles *Jhandle;
+	Jbw_Handles *Jhandle = NULL;
+
+	SDL_Rect Obj = { -1, -1, -1, -1 }; 
 
 	bool Visible = true;
 	bool Enabled = true;

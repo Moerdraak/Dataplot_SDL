@@ -14,11 +14,11 @@ public:
 	Jbw_Button* SldrBtnDwn = NULL;
 
 	bool BtnRender = true;
-	int MoveFactor = 1;
 	int SldrPos = 0;
 	int Steps = 0; // Number of Steps that it can move
 	float StepSize = 0; // Step size each time it moves
 	bool SliderActive = false;
+	bool Vert = true;
 
 	int msStartPos = 0;
 	int SldrStartPos = 0;
@@ -27,7 +27,8 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_Slider() {};
-	Jbw_Slider(Jbw_Handles* handles, int x, int y, int w, int h, int Resolution = 10);
+	Jbw_Slider(Jbw_Handles* handles, int x, int y, int w, int h, int Resolution = 10, 
+		bool Vertical = true);
 	~Jbw_Slider();
 
 /*-----------------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 
-	void RdrSldr(void);
+	void RdrSldr();
 /*-----------------------------------------------------------------------------------------
 		EVENT FUNCTIONS
 ------------------------------------------------------------------------------------------*/

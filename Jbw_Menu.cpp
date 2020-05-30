@@ -7,14 +7,14 @@ Jbw_Menu::Jbw_Menu(Jbw_Handles* handles)
 {
 	Jhandle = handles;
 	// Create Frame at the top of the screen
-	FrameX = 0;
-	FrameY = 0; // Hide Top line of Frame
-	FrameH = 18;
-	FrameW = Jhandle->GuiArea.w;
+	Obj.x = 0;
+	Obj.y = 0; // Hide Top line of Frame
+	Obj.h = 18;
+	Obj.w = Jhandle->GuiArea.w;
 	LineColor = J_WHITE;
 	FillColor = J_WHITE;
 	Fill = true;
-	CreatePts(); // Create the frame points from above info
+	CreateFrame(); // Create the frame points from above info
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -39,30 +39,11 @@ void Jbw_Menu::MenuAdd(std::string NewText, int w)
 	}
 	MainMenu = TmpMainMenu;
 
-	MainMenu[MnuCnt].Jhandle = Jhandle;
-	MainMenu[MnuCnt].TbxX = TotalWidth + 1;
-	MainMenu[MnuCnt].TbxY = 1;
-	MainMenu[MnuCnt].TbxW = w-2;
-	MainMenu[MnuCnt].TbxH = 16;
-	MainMenu[MnuCnt].TxtSize = 12;
-	MainMenu[MnuCnt].Align = J_CENTRE;
-	MainMenu[MnuCnt].Add(NewText);
-
-	// Build a nice border
-	MainMenu[MnuCnt].Border = new Jbw_Frame(Jhandle, TotalWidth, 0, w, 18, true);
-	MainMenu[MnuCnt].Border->FrameX = TotalWidth;
-	MainMenu[MnuCnt].Border->FrameY = 0;
-	MainMenu[MnuCnt].Border->FrameW = w;
-	MainMenu[MnuCnt].Border->FrameH = 18;
-	MainMenu[MnuCnt].Border->CreatePts();
-	MainMenu[MnuCnt].Border->LineColor = J_WHITE;
-	MainMenu[MnuCnt].Border->FillColor = J_WHITE;	
-	MainMenu[MnuCnt].BtnColor = J_WHITE;
+	MainMenu[MnuCnt].InitBtn(Jhandle, TotalWidth, 0, w, 18, NewText, 12); // Initialise the basic button
+	MainMenu[MnuCnt].BtnColor = J_WHITE; // Change the color to white
 	MainMenu[MnuCnt].BtnBorderColor = J_WHITE;
-	MainMenu[MnuCnt].HoverColor = J_C_msOver;
-	MainMenu[MnuCnt].HoverBorderColor = J_C_Frame;
-	MainMenu[MnuCnt].ClickColor = J_C_BtnDwn;
-	
+	MainMenu[MnuCnt].CreateButton(); // Because we changed the color
+
 	MnuCnt++;
 	TotalWidth += w;
 }

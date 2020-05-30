@@ -3,35 +3,61 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_Slider::Jbw_Slider(Jbw_Handles* handles, int x, int y, int w, int h, int Resolution)
+Jbw_Slider::Jbw_Slider(Jbw_Handles* handles, int x, int y, int w, int h, int Resolution, bool Vertical)
 {
 	Jhandle = handles;
 	Steps = Resolution - 1;
-	
+	Vert = Vertical;
+
 	// Size and position for the SliderBox
-	FrameX = x;
-	FrameY = y + (w - 1); // Leave space for Up button
-	FrameW = w;
-	FrameH = h - 2 * (w - 1); // Leave space for top and bottom buttons
+	if (Vert == true) {
+		Obj.x = x;
+		Obj.y = y + (w - 1); // Leave space for Up button
+		Obj.w = w;
+		Obj.h = h - 2 * (w - 1); // Leave space for top and bottom buttons
+	}
+	else {
+		Obj.x = x + (h - 1); // Leave space for Left button
+		Obj.y = y; 
+		Obj.w = w - 2 * (h - 1); // Leave space for Right and bottom buttons
+		Obj.h = h;
+	}
+	
 	Fill = true; // Slider box must be solid grey color
 	LineColor = J_C_Frame; // Frame Color
-	FillColor = J_C_LGrey;
-	CreatePts(); // Create the points for the sliderbox from above info
+	FillColor = J_C_Grey; // { 240, 240, 240, 255 }
+	CreateFrame(); // Create the points for the sliderbox from above info
 
 	// Create Slider 	
-	int SlrH = (int)floor(FrameH / (Steps + 1)); // Determine Slider Button height
-	if(SlrH < 5){ // Minimum sensible height for a slider
-		SlrH = 5;
+	if (Vert == true) {
+		int SlrH = (int)floor(Obj.h / (Steps + 1)); // Determine Slider Button height
+		if (SlrH < 5) { // Minimum sensible height for a slider
+			SlrH = 5;
+		}
+		Slider = new Jbw_Frame(handles, Obj.x + 1, Obj.y, w - 2, SlrH, true);
+		StepSize = (float)(Obj.h - 2 - Slider->Obj.h) / Steps; // Step size when moving slider
 	}
-	Slider = new Jbw_Frame(handles, FrameX + 1, FrameY, w - 2, SlrH, true);
+	else {
+		int SlrW = (int)floor(Obj.w / (Steps + 1)); // Determine Slider Button height
+		if (SlrW < 5) { // Minimum sensible height for a slider
+			SlrW = 5;
+		}
+		Slider = new Jbw_Frame(handles, Obj.x, Obj.y + 1, SlrW, h - 2 , true);
+		StepSize = (float)(Obj.w - 2 - Slider->Obj.w) / Steps; // Step size when moving slider
+	}
 	Slider->LineColor = J_C_Frame;
 	Slider->FillColor = J_C_BtnGrey;
-	StepSize = (float)(FrameH - 2 - Slider->FrameH) / Steps; // Step size when moving slider
 
 	// Create Slider Buttons
-	SldrBtnUp = new Jbw_Button(handles, x, y, w, w, "^"); // Button is square so use width for height as well
-	SldrBtnDwn = new Jbw_Button(handles, x, y + h - w, w, w, "^");
-	SldrBtnDwn->Flip = SDL_FLIP_VERTICAL;
+	if (Vert == true) {
+		SldrBtnUp = new Jbw_Button(handles, x, y, w, w, "^"); // Button is square so use width for height as well
+		SldrBtnDwn = new Jbw_Button(handles, x, y + h - w, w, w, "^");
+		SldrBtnDwn->Tbx->Flip = SDL_FLIP_VERTICAL;
+	}
+	else {
+		SldrBtnUp = new Jbw_Button(handles, x, y, h, h, "<"); // Button is square so use height for width as well
+		SldrBtnDwn = new Jbw_Button(handles, x + w - h, y, h, h, ">");
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -46,7 +72,7 @@ Jbw_Slider::~Jbw_Slider() {
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: RdrSldr
 ------------------------------------------------------------------------------------------*/
-void Jbw_Slider::RdrSldr(void)
+void Jbw_Slider::RdrSldr()
 {
 	RdrFrame(); // Render Slider Box
 
@@ -55,8 +81,15 @@ void Jbw_Slider::RdrSldr(void)
 		SldrBtnUp->RdrBtn(); // Render Up button
 		SldrBtnDwn->RdrBtn(); // Render Down button
 	}
-	Slider->FrameY = (int)floor(FrameY + 1 + SldrPos * StepSize); // Get the Slider Y position
-	Slider->CreatePts();
+	if (Vert == true) {
+		Slider->Obj.y = (int)floor(Obj.y + 1 + SldrPos); // Get the Slider Y position
+	}
+	else {
+		Slider->Obj.x = (int)floor(Obj.x + 1 + SldrPos); // Get the Slider X position
+
+	}
+	
+	Slider->CreateFrame();
 	Slider->RdrFrame(); // Render Slider
 }
 
@@ -101,8 +134,8 @@ J_Type Jbw_Slider::SliderEvent(SDL_Event* Event)
 	}
 
 	// Mouse pointer inside Slider 
-	if (msX > Slider->FrameX&& msX < Slider->FrameX + Slider->FrameW
-		&& msY > Slider->FrameY&& msY < Slider->FrameY + Slider->FrameH) {
+	if (msX > Slider->Obj.x && msX < Slider->Obj.x + Slider->Obj.w
+		&& msY > Slider->Obj.y && msY < Slider->Obj.y + Slider->Obj.h) {
 		if (Slider->msOver == false) {
 			Slider->msOver = true;
 			Slider->LineColor = J_BLACK;
@@ -111,7 +144,12 @@ J_Type Jbw_Slider::SliderEvent(SDL_Event* Event)
 
 		// If you left click on the Slider button it becomes Active for dragging
 		if (Event->type == SDL_MOUSEBUTTONDOWN) {
-			msStartPos = msY;
+			if (Vert == true) {
+				msStartPos = msY;
+			}
+			else{
+				msStartPos = msX;	
+			}
 			SldrStartPos = SldrPos;
 			SliderActive = true;
 		}
@@ -126,16 +164,24 @@ J_Type Jbw_Slider::SliderEvent(SDL_Event* Event)
 
 	// Move slider up and down while Mousebutton down
 	if (SliderActive == true) {
-	
-		SldrPos = (msY - msStartPos) / StepSize + SldrStartPos;
+		if (Vert == true) {
+			SldrPos = msY - msStartPos + SldrStartPos;
+			if (SldrPos >= Obj.h - Slider->Obj.h - 1) {// If you pull mouse past maximum of sliderbox
+				SldrPos = Obj.h - Slider->Obj.h - 2;
+			}
+		}
+		else {
+			SldrPos = msX - msStartPos  + SldrStartPos;
+			if (SldrPos >= Obj.w - Slider->Obj.w - 1) {// If you pull mouse past maximum of sliderbox
+				SldrPos = Obj.w - Slider->Obj.w - 2;
+			}
+		}
 			
-		// If you pull mouse past edges of sliderbox
+		// If you pull mouse past minimum of sliderbox
 		if (SldrPos < 0) {
 			SldrPos = 0;
 		}
-		else if (SldrPos > Steps) { 
-			SldrPos = Steps;
-		}
+
 		DoRender = true;
 	}
 
@@ -153,11 +199,23 @@ J_Type Jbw_Slider::BtnUpEvent(SDL_Event* Event)
 {
 	J_Type Answer = J_NULL;
 	if (SldrBtnUp->BtnEvent(Event) == J_BTN_CLICK) {
-		Answer = J_BTN_CLICK;
-		if (SldrPos > 0) {
-			SldrPos--;
-			Answer = J_UP;
+		if (Vert == true ) {
+			if (SldrPos > Slider->Obj.h) {
+				SldrPos -= (int)StepSize;
+			}
+			else {
+				SldrPos = 0;
+			}
 		}
+		else {
+			if (SldrPos > Slider->Obj.w) {
+				SldrPos -= (int)StepSize;
+			}
+			else {
+				SldrPos = 0;
+			}
+		}
+		Answer = J_UP;
 	}
 	return Answer;
 }
@@ -169,10 +227,23 @@ J_Type Jbw_Slider::BtnDwnEvent(SDL_Event* Event)
 {
 	J_Type Answer = J_NULL;
 	if (SldrBtnDwn->BtnEvent(Event) == J_BTN_CLICK) {
-		if (SldrPos < Steps) {
-			SldrPos++;
-			Answer = J_DOWN;
+		if (Vert == true) {
+			if (SldrPos <= Obj.h - 2 * Slider->Obj.h - 1) {
+				SldrPos += (int)StepSize;
+			}
+			else {
+				SldrPos = Obj.h - Slider->Obj.h - 2;
+			}
 		}
+		else {
+			if (SldrPos <= Obj.w - 2*Slider->Obj.w - 1) {
+				SldrPos += (int)StepSize;
+			}
+			else {
+				SldrPos = Obj.w - Slider->Obj.w - 2;
+			}
+		}
+		Answer = J_DOWN;
 	}
 	return Answer;
 }

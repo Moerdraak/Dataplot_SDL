@@ -228,7 +228,7 @@ Jbw_FrameWork::~Jbw_FrameWork()
 //	}
 //
 //	Prop->Id = BtnCnt;
-//	NewPtr[BtnCnt].InitBtn(Prop);
+//	NewPtr[BtnCnt].CreateButton(Prop);
 //	if (BtnCnt > 0) {
 //		delete[] BtnPtr;
 //	}

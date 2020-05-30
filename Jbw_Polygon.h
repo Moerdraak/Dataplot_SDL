@@ -14,6 +14,6 @@ public:
 	~Jbw_Polygon() {};
 
 	void AddPoint(int x, int y);
-	void PolyRdr(void);
+	void RdrPoly(void);
 };
 

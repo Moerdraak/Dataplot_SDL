@@ -6,7 +6,15 @@
 Jbw_ComboBox::Jbw_ComboBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
 	bool IsGridBtn)
 {
-	InitCbx(handles, x, y, w, h, Fsize, IsGridBtn);
+	Jhandle = handles;
+	Obj.x = x; 
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+
+	CbxTxtSize = Fsize;
+	GridBtn = IsGridBtn;
+	CreateCbx();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -14,37 +22,74 @@ Jbw_ComboBox::Jbw_ComboBox(Jbw_Handles* handles, int x, int y, int w, int h, int
 ------------------------------------------------------------------------------------------*/
 Jbw_ComboBox::~Jbw_ComboBox() 
 {
-
+	delete CbxEdit;
+	delete CbxBtn;
+	delete CbxList;
+	CbxEdit = NULL;
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: Create
 ------------------------------------------------------------------------------------------*/
+void Jbw_ComboBox::CreateCbx(void)
+{
+	if (CbxEdit == NULL) {
+		if (GridBtn == true) {
+			CbxEdit = new Jbw_EditBox(Jhandle, Obj.x, Obj.y, Obj.w, Obj.h, CbxTxtSize);
+		}
+		else {
+			CbxEdit = new Jbw_EditBox(Jhandle, Obj.x, Obj.y, Obj.w - 14, Obj.h, CbxTxtSize);
+		}
+	}
+	else {
+		CbxEdit->Obj = Obj;
+		if (GridBtn != true) {
+			CbxEdit->Obj.w -= 14; // Leave space For Button
+		}
+		CbxEdit->CreateEbx();
+	}
+
+	if (CbxBtn == NULL) {
+		CbxBtn = new Jbw_Button(Jhandle, Obj.x + Obj.w - 15, Obj.y, 15, Obj.h, "^");
+		CbxBtn->Tbx->Flip = SDL_FLIP_VERTICAL;
+	}
+	else {
+		CbxBtn->Obj.x = Obj.x + Obj.w - 15;
+		CbxBtn->Obj.y = Obj.y;
+		CbxBtn->Obj.w = 15;
+		CbxBtn->Obj.h = Obj.h;
+		CbxBtn->CreateButton();
+	}
+
+	if (CbxList != NULL) {
+		delete CbxList;
+		CbxList = NULL;
+	}
+	if (lsthandles != NULL) {
+		delete lsthandles;
+		lsthandles = NULL;
+	}
+
+	// Create List Box
+	lsthandles = new Jbw_Handles;
+	CbxList = new Jbw_ListBox(lsthandles, 0, 0, Obj.w, 20, 11);
+}
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: InitCbx
+------------------------------------------------------------------------------------------*/
 void Jbw_ComboBox::InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
 	bool IsGridBtn)
 {
 	Jhandle = handles;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+
+	CbxTxtSize = Fsize;
 	GridBtn = IsGridBtn;
-	ComboX = x; // Needed for the CbxList during Rendering
-	ComboY = y; 
-	ComboW = w; 
-	ComboH = h; 
-
-	// Initialize Editbox 
-	if (GridBtn == true) {
-		CbxEdit = new Jbw_EditBox(handles, x, y, w, h, Fsize);
-	}
-	else {
-		CbxEdit = new Jbw_EditBox(handles, x, y, w - 14, h, Fsize);
-	}
-
-	// Initialize Button
-	CbxBtn = new Jbw_Button(handles, x + w - 15, y, 15, h, "^");
-	CbxBtn->Flip = SDL_FLIP_VERTICAL;
-
-	// Initalise List Box
-	lsthandles = new Jbw_Handles;
-	CbxList = new Jbw_ListBox(lsthandles, 0, 0, ComboW, 20, 11);
+	CreateCbx();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -83,24 +128,22 @@ void Jbw_ComboBox::RdrCbx()
 		else {
 			Lheight = 6 + 10 * 15; // Limit of List box size
 		}
-		CbxList->ResizeListBox(0, 0 , ComboW, Lheight);
+		CbxList->ResizeListBox(0, 0 , Obj.w, Lheight);
 
 		// Create Listbox Window
-		lsthandles->JbwGui = SDL_CreateWindow("CbxList", GuiX + ComboX, GuiY + ComboY + ComboH - 1,
-			ComboW, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
+		lsthandles->JbwGui = SDL_CreateWindow("CbxList", GuiX + Obj.x, GuiY + Obj.y + Obj.h - 1,
+			Obj.w, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
 			SDL_WINDOW_ALWAYS_ON_TOP);
 
 		// Create Listbox Renderer
 		lsthandles->Rdr = SDL_CreateRenderer(lsthandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
 
 		SDL_RenderPresent(lsthandles->Rdr);
-
 		CbxList->RdrLbx();
-
 		SDL_RenderPresent(lsthandles->Rdr);
 
 		// Draw border around window
-		Jbw_Frame Border(lsthandles, 0, 0, CbxList->FrameW + 1, Lheight, false);
+		Jbw_Frame Border(lsthandles, 0, 0, CbxList->Obj.w + 1, Lheight, false);
 		Border.LineColor = J_C_Frame;
 		Border.RdrFrame();
 
@@ -135,7 +178,7 @@ J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 		}
 	}
 
-	CbxBtn->EbxEvent(Event);
+	CbxBtn->BtnEvent(Event);
 	CbxEdit->EbxEvent(Event);
 
 	if (GridBtn == true) {
@@ -161,8 +204,8 @@ J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 	// Listbox Events
 	if (CbxListVis == true && lsthandles != NULL) {
 		if (CbxList->LbxEvent(Event) == J_BTN_CLICK) {
-			CbxEdit->Text.assign(CbxList->TxtList[CbxList->Index].Text);
-			CbxEdit->CreateTexture();
+			CbxEdit->Tbx->Text.assign(CbxList->TxtList[CbxList->Index].Text);
+			CbxEdit->Tbx->CreateTexture();
 			CbxEdit->DoRender = true;
 			CbxListVis = false;
 			RdrCbx();

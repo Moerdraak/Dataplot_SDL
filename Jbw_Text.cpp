@@ -206,7 +206,7 @@ void Jbw_Text::TxtEvent(SDL_Event* e)
 		SDL_GetMouseState(&x, &y);
 
 		//Mouse is left of the button
-		if (x > txtBox.x&& x < txtBox.x + txtBox.w && y > txtBox.y&& y < txtBox.y + txtBox.h)
+		if (x > txtBox.x && x < txtBox.x + txtBox.w && y > txtBox.y && y < txtBox.y + txtBox.h)
 		{
 			// ToolTip
 			int a = 0;

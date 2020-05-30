@@ -24,7 +24,6 @@ public:
 	int ToLine = 0;
 	int Index = -1;
 	
-	//int msBtnDwnPosX = -1;
 	int msPrevPosY = 0;
 	bool SliderActive = false;
 	int PointsPerline = 0;

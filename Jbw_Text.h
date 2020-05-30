@@ -6,12 +6,12 @@
 ******************************************************************************************/
 class Jbw_Text : public Jbw_Base{
 public:
-	int TxtX = 0;
-	int TxtY = 0;
-
 	TTF_Font* Font = NULL;
 	SDL_Texture* txtImage = NULL;
 	
+	int TxtX = 0;
+	int TxtY = 0;
+
 	int TxtSize = 0;
 	int Angle = 0;
 	SDL_RendererFlip Flip = SDL_FLIP_NONE;

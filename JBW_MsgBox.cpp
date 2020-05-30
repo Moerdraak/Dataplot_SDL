@@ -24,12 +24,15 @@ Jbw_MsgBox::~Jbw_MsgBox()
 void Jbw_MsgBox::Close(void)
 {
 	if (btnNo != NULL) {
-		delete btnNo; btnNo = NULL;
+		delete btnNo; 
+		btnNo = NULL;
 	}
-	delete btnAck; btnAck = NULL;
-	delete Header; Header = NULL;
+	delete btnAck; 
+	btnAck = NULL;
+	delete Header; 
+	Header = NULL;
 
-	SDL_DestroyWindow(Jhandle->JbwGui); Jhandle->JbwGui = NULL;
+	SDL_DestroyWindow(Jhandle->JbwGui); //Jhandle->JbwGui = NULL;
 	SDL_DestroyRenderer(Jhandle->Rdr); Jhandle->Rdr = NULL;
 	SDL_DestroyTexture(txtImage); txtImage = NULL;
 	TTF_CloseFont(Font); Font = NULL;
@@ -90,10 +93,10 @@ void Jbw_MsgBox::RenderBox(void) {
 	MsgFrame->RdrFrame();
 
 	// Render Header
-	Header->Border->LineColor = J_C_Frame;
-	Header->Border->FillColor = J_C_Frame;
-	Header->Align = J_CENTRE;
-	Header->CreateTexture();
+	Header->Tbx->Border->LineColor = J_C_Frame;
+	Header->Tbx->Border->FillColor = J_C_Frame;
+	Header->Tbx->Align = J_CENTRE;
+	Header->Tbx->CreateTexture();
 	Header->RdrEbx();
 
 	// Create Buttons
@@ -147,10 +150,10 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	MsgFrame = new Jbw_Frame(Jhandle, 0, 0, Window_w, Window_h, true);
 	MsgFrame->LineColor = { 180, 180, 180, 255 };
 	MsgFrame->FillColor = J_C_Window;
-	MsgFrame->CreatePts();
+	MsgFrame->CreateFrame();
 
 	Header = new Jbw_EditBox(Jhandle, 0, 0, Window_w, 18);
-	Header->Text.assign(Title);
+	Header->Tbx->Text.assign(Title);
 
 	RenderBox();
 

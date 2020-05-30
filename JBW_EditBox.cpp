@@ -5,7 +5,15 @@
 ------------------------------------------------------------------------------------------*/
 Jbw_EditBox::Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize)
 {
-	InitEbx(handles, x, y, w, h, Fsize);
+	Jhandle = handles;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+	TxtSize = Fsize;
+
+	CreateEbx();
+//	InitEbx(handles, x, y, w, h, Fsize);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -21,12 +29,29 @@ Jbw_EditBox::~Jbw_EditBox() {
 void Jbw_EditBox::InitEbx(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize)
 {
 	Jhandle = handles;
-	TbxX = x + 1;
-	TbxY = y + 1;
-	TbxW = w - 2;
-	TbxH = h - 2;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
 	TxtSize = Fsize;
-	Border = new Jbw_Frame(handles, x, y, w, h, true);
+
+	CreateEbx();
+}
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: ReSizeEbx
+------------------------------------------------------------------------------------------*/
+void Jbw_EditBox::CreateEbx(void)
+{
+	if (Tbx == NULL) {
+		Tbx = new Jbw_TextBox(Jhandle, "", Obj.x, Obj.y, Obj.w, Obj.h, TxtSize);
+		Tbx->FrameOn = true;
+		Tbx->FillOn = true;
+	}
+	else {
+		Tbx->Obj = Obj;
+		Tbx->CreateTbx();
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -34,7 +59,7 @@ FUNCTION: Set
 ------------------------------------------------------------------------------------------*/
 bool Jbw_EditBox::SetEbx(std::string* Var, const char* Val)
 {
-	return SetTbx(Var, Val);
+	return Tbx->SetTbx(Var, Val);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -42,9 +67,7 @@ bool Jbw_EditBox::SetEbx(std::string* Var, const char* Val)
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::RdrEbx(void)
 {
-	FrameOn = true;
-	FillOn = true;
-	RdrTbx();
+	Tbx->RdrTbx();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -60,11 +83,11 @@ void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 		SDL_GetMouseState(&msX, &msY);
 
 		// Mouse pointer inside Edit box
-		if (msX > TbxX && msX < TbxX + TbxW && msY > TbxY && msY < TbxY + TbxH)
+		if (msX > Obj.x && msX < Obj.x + Obj.w && msY > Obj.y && msY < Obj.y + Obj.h)
 		{
 			if (msOver == false) {
 				msOver = true;
-				Border->LineColor = J_BLACK;
+				Tbx->Border->LineColor = J_BLACK;
 				DoRender = true;
 			}
 
@@ -75,7 +98,7 @@ void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 					Focus = true;
 				}
 				else if (Event->button.button == 3) {
-				Add(SDL_GetClipboardText());
+					Tbx->Add(SDL_GetClipboardText());
 				}
 				break;
 
@@ -86,26 +109,26 @@ void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 		else {
 			if (msOver == true) {
 				msOver = false;
-				Border->LineColor = J_C_Frame;
+				Tbx->Border->LineColor = J_C_Frame;
 				DoRender = true;
 			}
 
 			if (Event->type == SDL_MOUSEBUTTONDOWN) {
 				Focus = false;
-				Border->LineColor = J_C_Frame;
+				Tbx->Border->LineColor = J_C_Frame;
 			}
 		}
 	}
 
 	if (Focus == true && Enabled == true) {
 		if (Event->type == SDL_TEXTINPUT){
-			Add(Event->text.text);
+			Tbx->Add(Event->text.text);
 			OnChange = true;
 			DoRender = true;
 		}
 		else if (Event->type == SDL_KEYDOWN){
 			if (Event->key.keysym.sym == SDLK_BACKSPACE) {
-				BackSpace();
+				Tbx->BackSpace();
 				OnChange = true;
 				DoRender = true;
 			}
@@ -114,7 +137,7 @@ void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 				DoRender = true;
 			}
 		}
-		Border->LineColor = J_BLACK;
+		Tbx->Border->LineColor = J_BLACK;
 	}
 
 	if (DoRender == true) {
@@ -152,7 +175,7 @@ std::string Jbw_EditBox::EboxGetS(std::string Property)
 {
 	std::string Answer = "";
 	if (Property == "Text") {
-		Answer.assign(Text);
+		Answer.assign(Tbx->Text);
 	}
 	else if (Property == "Something1") {
 

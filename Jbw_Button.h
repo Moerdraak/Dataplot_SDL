@@ -1,7 +1,7 @@
 #pragma once
 #include "Jbw_Base.h"
 #include "JBW_EditBox.h"
-class Jbw_Button : public Jbw_EditBox{
+class Jbw_Button : public Jbw_Base{
 public:
 	SDL_Color BtnColor = J_C_BtnGrey;
 	SDL_Color BtnBorderColor = J_C_Frame;
@@ -9,12 +9,18 @@ public:
 	SDL_Color HoverBorderColor = J_BLACK;
 	SDL_Color ClickColor = J_C_BtnDwn;
 
+	int TxtSize = 12;
+	J_Type TxtAlign = J_CENTRE;
+
+	std::string Caption = "";
+	Jbw_TextBox* Tbx = NULL;
+
 /*-----------------------------------------------------------------------------------------
 	 CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_Button() {}; // 
-	Jbw_Button(Jbw_Handles* handles, int x, int y, int w, int h, std::string Caption,
+	Jbw_Button(Jbw_Handles* handles, int x, int y, int w, int h, std::string Text,
 		int Fsize = 12);
 	~Jbw_Button();
 
@@ -22,11 +28,11 @@ public:
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-//	void InitBtn(J_Properties* Prop);
-
-	void RdrBtn(void);
+	void InitBtn(Jbw_Handles* handles, int x, int y, int w, int h, std::string Text,
+		int Fsize = 12);
+	void CreateButton(void);
+	void RdrBtn();
 	J_Type BtnEvent(SDL_Event* Event);
 	
-
 };
 

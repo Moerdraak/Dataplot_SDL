@@ -1,16 +1,11 @@
 #pragma once
 
 #include "Jbw_Base.h"
-#include "JBW_TextBox.h"
 #include "JBW_ListBox.h"
 #include "Jbw_Frame.h"
 
 class Jbw_Menu : public Jbw_Frame{
 public:
-	int MnuX = 0;
-	int MnuY = 0;
-	int MnuW = 0;
-	int MnuH = 18;
 	int TotalWidth = 0;
 
 	int MnuCnt = 0;

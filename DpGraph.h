@@ -2,7 +2,7 @@
 #include "Jbw_Base.h"
 //#include "SDL.h"
 //#include "SDL_image.h"
-#include "Jbw_FrameWork.h"
+#include "Jbw_Framework.h"
 #include "Jbw_EditBox.h"
 #include "data.h"
 #include "fft.h"

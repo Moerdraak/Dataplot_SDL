@@ -9,7 +9,7 @@ Jbw_Polygon::Jbw_Polygon(Jbw_Handles* handles)
 }
 
 /*---------------------------------------------------------------
-FUNCTION:
+FUNCTION: AddPoint
 ---------------------------------------------------------------*/
 void Jbw_Polygon::AddPoint(int x, int y)
 {
@@ -29,9 +29,9 @@ void Jbw_Polygon::AddPoint(int x, int y)
 }
 
 /*---------------------------------------------------------------
-FUNCTION:
+FUNCTION: RdrPoly
 ---------------------------------------------------------------*/
-void Jbw_Polygon::PolyRdr(void)
+void Jbw_Polygon::RdrPoly(void)
 {
     SDL_SetRenderDrawColor(Jhandle->Rdr, LineColor.r, LineColor.g, LineColor.b, LineColor.a);
     SDL_RenderDrawLines(Jhandle->Rdr, PolyLine, NumPoints);

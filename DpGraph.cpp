@@ -80,7 +80,7 @@ DpGraph::DpGraph(Jbw_Handles* h) {
 	GraphArea.w = GRAPH_W;
 	GraphArea.h = GRAPH_H;
 
-	txtRandom = new Jbw_EditBox(ghandles, J_TXT, 0, 0, 10);
+	txtRandom = new Jbw_TextBox(ghandles, "", 0, 0, 10);
 
 	//Legend Area
 	//	SDL_Rect LegendArea;
@@ -93,7 +93,7 @@ DpGraph::DpGraph(Jbw_Handles* h) {
 //	std::string aa = GetS(handles, "edXaxLabel", "Text" );
 
 	Jbw_EditBox* Tmp = static_cast<Jbw_EditBox *>(h->Jbw_Obj[2]);
-	BaseData = new TData(Tmp->Text); // Read in data from a txt file
+	BaseData = new TData(Tmp->Tbx->Text); // Read in data from a txt file
 	FreqData = new TData;
 	Time2Freq(BaseData, FreqData);
 }
@@ -168,8 +168,10 @@ void DpGraph::GraphRender(int Config)
 	if (xxx < 10000) {
 		for (int I = 0; I <= 10; I++) {
 			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
-//			txtRandom->Set(TmpTxt, "x", 50 + I * (GRAPH_W / 10), "y", 544, "TxtSize", 10, "w", 50, "h", 10, "Align", J_CENTRE);
-			txtRandom->InitTbx(ghandles, TmpTxt, 50 + I * (GRAPH_W / 10), 545, 10, 50, 10);
+		//	txtRandom->Obj = { 545, 10, 50, 10 };
+			txtRandom->SetTbx({ 545, 10, 50, 10 }, TmpTxt);
+		//	txtRandom->InitTbx(ghandles, TmpTxt, 50 + I * (GRAPH_W / 10), 545, 10, 50, 10);
+
 			txtRandom->Align = J_CENTRE;
 			txtRandom->RdrTbx();
 

@@ -1,7 +1,6 @@
 #include "Dataplot.h"
 #include "Jbw_Text.h" // Temporary here
 
-
 SDL_Point* TmpPoints;
 
 Uint32 koos(Uint32 interval, void* param) {
@@ -31,11 +30,14 @@ int main(int argc, char* argv[])
 	//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 	/******************************/
 
-	//Jbw_TextBox Tmp(h, "The Lazy Quick Brown Fox jump over the fence", 400, 400, 300, 16, 11);
-	//Tmp.FrameOn = true;
-	//Tmp.TxtColor = J_WHITE;
-	//Tmp.CreateTexture();
-	//Tmp.RdrTbx();
+	Jbw_TextBox Tmp(h, "The Lazy Quick Brown Fox jump over the fence", 400, 400, 300, 16, 11);
+	Tmp.FrameOn = true;
+	Tmp.TxtColor = J_RED;
+	Tmp.BorderColor(J_GREEN);
+	Tmp.BackColor(J_YELLOW);
+	Tmp.FillOn = true;
+	Tmp.CreateTexture();
+	Tmp.RdrTbx();
 
 	
 
@@ -89,8 +91,8 @@ int main(int argc, char* argv[])
 	SDL_RenderPresent(h->Rdr);
 
 	/*   BEGIN Twak    */
-	Dp.edDataSet->Text.assign("Rooivalk Rocket Flight test at OTB (2019-02-03)");
-	Dp.edDataSet->CreateTexture();
+	Dp.edDataSet->Tbx->Text.assign("Rooivalk Rocket Flight test at OTB (2019-02-03)");
+	Dp.edDataSet->Tbx->CreateTexture();
 	Dp.edDataSet->RdrEbx();
 	/*   END Twak  */
 
@@ -238,7 +240,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	btnAdd = new Jbw_Button(&handles, 800, 30, 60, 18, "Add Bits", 12);
 
 	/*  SETUP GRAPHICS TABLE AREA   */	
-	grdFigure = new Jbw_Grid(&handles, 360, 55, 695, 180);
+	grdFigure = new Jbw_Grid(&handles, 360, 55, 700/* 700 */, 180/* 180 */);
 	grdFigure->RowHeight = 17;
 	grdFigure->TxtSize(-1, -1, 15);
 
@@ -248,10 +250,11 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	grdFigure->AddCol(&handles, "grdFigure", "Description", 120, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
 	grdFigure->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
+	
 	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);	
-		std::vector<std::string> Colors = { "Black", "Red", "Lime", "Blue", "Magenta", 
-			"Cyan", "Yellow", "Maroon", "Green", "Navy", "Teal", "Olive", "Purple", "Grey" };
-		grdFigure->AddCbxList("Colour", Colors);
+	std::vector<std::string> Colors = { "Black", "Red", "Lime", "Blue", "Magenta", 
+		"Cyan", "Yellow", "Maroon", "Green", "Navy", "Teal", "Olive", "Purple", "Grey" };
+	grdFigure->AddCbxList("Colour", Colors);
 		
 	grdFigure->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
 		std::vector<std::string> Symbols = { "*", "+", "x", "d", "s", "o", "NO" };
@@ -381,15 +384,12 @@ void Dataplot::UserRender(void)
 	lbxMessage->AddText("Lyn Vyftien, sy Index moet 14 wees");
 	lbxMessage->RdrLbx();
 
-	edDataDir->Text.assign("data.txt");
-	edDataDir->CreateTexture();
+	edDataDir->Tbx->Text.assign("data.txt");
+	edDataDir->Tbx->CreateTexture();
 	edDataDir->RdrEbx();
-
-
 
 	/********** PLAY AREA ********/
 	Slider->RdrSldr();
-
 
 	SDL_RenderPresent(handles.Rdr);
 
@@ -465,7 +465,7 @@ void Dataplot::TheLoop(void)
 		}
 
 		/*   Grid   */
-		grdFigure->GrdEvent(&handles.Event);
+		grdFigure->GEvent(&handles.Event);
 	
 		if (grdFigure->OnChange == true) {
 			grdFigure->OnChange = false;
@@ -475,7 +475,6 @@ void Dataplot::TheLoop(void)
 		if (handles.Event.user.type == 1) {
 			int sdfg = 0;
 		}
-
 
 		if (btnPlot->BtnEvent(&handles.Event) == J_BTN_CLICK) {
 			btnPlot_Click(&handles);
@@ -642,9 +641,7 @@ FUNCTION: grdFigure_OnChange
 		grdFigure->SetCellTxtColor(J_GREY, Col, Row);
 		break;
 	}
-
 }
-
 
 /*------------------------------------------------------------------------------------------
   FUNCTION: LoadConfigFile
@@ -689,6 +686,4 @@ void Dataplot::LoadConfigFile(std::string FileName)
 		RowNum++;
 	}
 	delete[] s;
-
-
 }

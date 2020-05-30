@@ -4,10 +4,14 @@
 #include "Jbw_TextBox.h"
 #include "Jbw_Frame.h"
 
-class Jbw_EditBox : public Jbw_TextBox { 
+class Jbw_EditBox : public Jbw_Base { 
 private: 
 	
 public: 
+
+	Jbw_TextBox* Tbx = NULL;
+	int TxtSize = 12;
+
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS
@@ -22,8 +26,9 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	void InitEbx(Jbw_Handles* handles, int x, int y, int w, int h = 14, int Fsize = 12);
+	void CreateEbx(void);
 	bool SetEbx(std::string  *Var, const char* Val);
-	void RdrEbx(void);
+	void RdrEbx();
 	void EbxEvent(SDL_Event* Event);
 	std::string EboxGetS(std::string Property);
 

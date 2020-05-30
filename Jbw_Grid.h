@@ -1,10 +1,10 @@
 #pragma once
-#include "Jbw_Base.h"
+//#include "Jbw_Base.h"
 #include "Jbw_Editbox.h"
 #include "Jbw_ComboBox.h"
 #include "Jbw_Slider.h"
 
-class Jbw_Grid : public Jbw_Base {
+class Jbw_Grid : public Jbw_Frame {
 private:
 	enum GridProp{ BACK_COLOR, TXT_COLOR, TXT_ALIGN, TXT_SIZE, TXT_BOLD, TXT_ITALIC};
 	struct GridVal {
@@ -25,27 +25,25 @@ public:
 	} GridEvent;
 
 	Jbw_Handles grdHandles;
-	Jbw_Slider* Slider = NULL;
-	
+	Jbw_Slider* SliderV = NULL;
+	Jbw_Slider* SliderH = NULL;
+	SDL_Rect GridArea = { 0, 0, 0, 0 }; // !!!!!  TO BE DELETED  !!!!!!!!!
 
-	bool ShowSlider = false;
+	bool SliderVert = false;
+	bool SliderHor = false;
 
-	int GridX;
-	int GridY;
-	int GridW;
-	int GridH;
+	int StartRow = 0;
+	int StartCol = 0;
 
 	short int RowCnt = 0;
 	short int ColCnt = 0;
 	short int RowHeight = 0;
 	short int TotalW = 0;
-
-
-
+	short int TotalH = 0;
 
 	J_Type* ColType = NULL;
 
-	Jbw_EditBox* Header = NULL;
+	Jbw_TextBox* Header = NULL;
 	void** Element = NULL;
 
 	SDL_Color RowColor = { 255, 255, 255, 255 }; // Red, Green, Blue, Alpha}
@@ -65,6 +63,7 @@ public:
 	/*-----------------------------------------------*/
 	void AddCol(Jbw_Handles* handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
 	void AddRow(int Num = 1);
+	void SetSlider(int TotColW, int TotRowH, bool Vertical);
 	void Set(int Col, int Row, double Val);
 	void AddCbxList(std::string ColName, std::vector<std::string> List);
 	//void AddCbxList(std::string ColName, std::string* List, int Num);
@@ -95,6 +94,8 @@ public:
 	std::string GetTxt(int Col, int Row);
 	void RdrGrd(void);
 	
-	grdEvent GrdEvent(SDL_Event* Event);
+
+
+	grdEvent GEvent(SDL_Event* Event);
 };
 
