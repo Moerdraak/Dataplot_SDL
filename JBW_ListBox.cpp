@@ -43,6 +43,56 @@ Jbw_ListBox::~Jbw_ListBox() {
 }
 
 /*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_ListBox::Jbw_ListBox(const Jbw_ListBox& cp) : Jbw_Frame(cp)
+{
+	/* This will first call Base copy constructor which will make a copy of the important stuff
+		like "Obj" and "Jhandle". Then it will call CreateCbx() which will ensure that we have
+		new memory for all thes ethings instead of just referencing the same memory space  as
+		where we are copying from */
+	Cnt = cp.Cnt;
+	TxtBoxH = cp.TxtBoxH;
+	FontSize = cp.FontSize;
+	Lines = cp.Lines;
+	Index = 0;
+
+	PointsPerline = 0;
+
+	TxtList = new Jbw_TextBox[Cnt];
+	for (int I = 0; I < Cnt; I++) {
+		TxtList->Add(cp.TxtList[I].Text);
+	}
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+Jbw_ListBox& Jbw_ListBox::operator=(const Jbw_ListBox& cp)
+{
+	//	Jbw_Base(cp);
+	Jbw_Frame::operator=(cp); // Calling Baseclass Assignment
+
+	int Cnt = cp.Cnt;
+	int TxtBoxH = cp.TxtBoxH;
+	int FontSize = cp.FontSize;
+	int Lines = cp.Lines;
+	int Index = 0;
+
+	int msPrevPosY = 0;
+	bool SliderActive = false;
+	int PointsPerline = 0;
+
+	delete TxtList;
+	TxtList = new Jbw_TextBox[Cnt];
+	for (int I = 0; I < Cnt; I++) {
+		TxtList->Add(cp.TxtList[I].Text);
+	}
+
+	return *this;
+}
+
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: AddText
 ------------------------------------------------------------------------------------------*/
 void Jbw_ListBox::ResizeListBox(int x, int y, int w, int h)

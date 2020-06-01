@@ -20,9 +20,8 @@ void SetColTxtBox(Jbw_TextBox* ColName, SDL_Color Color, SDL_Color TxtColor);
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char* argv[])
 {
-
 	Dataplot Dp; 
-	Jbw_Handles *h = Dp.JbwCreateLayout(); // SORT OUT Dp or handles DAMMIT
+	Jbw_Handles *h = Dp.JbwCreateLayout(); 
 
 	/******************************/
 	/*   SDL TIMER STUFFS   */
@@ -39,9 +38,7 @@ int main(int argc, char* argv[])
 	Tmp.CreateTexture();
 	Tmp.RdrTbx();
 
-	
 
-	
 
 	Dp.cbxFigure->AddRow("Main Sight");
 	Dp.cbxFigure->AddRow("Cannon testing");
@@ -240,8 +237,8 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	btnAdd = new Jbw_Button(&handles, 800, 30, 60, 18, "Add Bits", 12);
 
 	/*  SETUP GRAPHICS TABLE AREA   */	
-	grdFigure = new Jbw_Grid(&handles, 360, 55, 700/* 700 */, 180/* 180 */);
-	grdFigure->RowHeight = 17;
+	grdFigure = new Jbw_Grid(&handles, 360, 55, 660/* 700 */, 180/* 180 */);
+	grdFigure->SetRowHeight(17, -1);
 	grdFigure->TxtSize(-1, -1, 15);
 
 	grdFigure->AddCol(&handles, "grdFigure", "Parameter", 180, J_EBX);
@@ -659,6 +656,7 @@ void Dataplot::LoadConfigFile(std::string FileName)
 	char* s = new char[200];
 	int RowNum = 0;
 	while (!DataFile.eof()) {
+		grdFigure->AddRow(&handles);
 		DataFile.getline(s, 200, 2);
 		grdFigure->SetCellText(s, 0, RowNum); // Parameter
 		DataFile.getline(s, 200, 2);

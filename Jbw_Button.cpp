@@ -26,6 +26,46 @@ Jbw_Button::~Jbw_Button()
 }
 
 /*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_Button::Jbw_Button(const Jbw_Button& cp, std::string NewCaption) : Jbw_Base(cp)
+{
+	BtnColor = cp.BtnColor;
+	BtnBorderColor = cp.BtnBorderColor;
+	HoverColor = cp.HoverColor;
+	HoverBorderColor = cp.HoverBorderColor;
+	ClickColor = cp.ClickColor;
+	TxtSize = cp.TxtSize;
+	TxtAlign = cp.TxtAlign;
+	Caption = NewCaption;
+	
+	Tbx = new Jbw_TextBox(*cp.Tbx);
+	Tbx->Text.assign(Caption);
+	Tbx->CreateTexture();
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+Jbw_Button& Jbw_Button::operator=(const Jbw_Button& cp)
+{
+	if (this != &cp)// Self assign check
+	{
+		BtnColor = cp.BtnColor;
+		BtnBorderColor = cp.BtnBorderColor;
+		HoverColor = cp.HoverColor;
+		HoverBorderColor = cp.HoverBorderColor;
+		ClickColor = cp.ClickColor;
+		TxtSize = cp.TxtSize;
+		TxtAlign = cp.TxtAlign;
+		Caption = cp.Caption;
+
+		Tbx = new Jbw_TextBox(*cp.Tbx);
+	}
+	return *this;
+}
+
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: InitBtn
 ------------------------------------------------------------------------------------------*/
 void Jbw_Button::InitBtn(Jbw_Handles* handles, int x, int y, int w, int h,

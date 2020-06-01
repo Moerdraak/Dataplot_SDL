@@ -21,6 +21,10 @@ public:
 		int Fsize = 12);
 	~Jbw_TextBox();
 
+	Jbw_TextBox(const Jbw_TextBox& cp); // Copy constructor
+	Jbw_TextBox& operator=(const Jbw_TextBox& cp); // Assignment Constructor
+	
+
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/

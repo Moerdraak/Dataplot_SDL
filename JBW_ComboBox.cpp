@@ -4,7 +4,7 @@
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
 Jbw_ComboBox::Jbw_ComboBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
-	bool IsGridBtn)
+	bool IsGridBtn) 
 {
 	Jhandle = handles;
 	Obj.x = x; 
@@ -26,6 +26,111 @@ Jbw_ComboBox::~Jbw_ComboBox()
 	delete CbxBtn;
 	delete CbxList;
 	CbxEdit = NULL;
+	CbxBtn = NULL;
+	CbxList = NULL;
+}
+
+/*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_ComboBox::Jbw_ComboBox(const Jbw_ComboBox& cp) : Jbw_Base(cp)
+{
+	GridBtn = cp.GridBtn;
+	CbxListVis = cp.CbxListVis;
+	CbxTxtSize = cp.CbxTxtSize;
+
+	CreateCbx();
+
+	for (int I = 0; I < cp.CbxList->Cnt; I++) {
+		CbxList->AddText(cp.CbxList->TxtList[I].Text);
+	}
+	CbxList->Index = cp.CbxList->Index;
+
+	// Assign TxtBox Border to it's own memory space
+	CbxEdit->Tbx->Border = new Jbw_Frame(Jhandle, cp.CbxEdit->Tbx->Border->Obj.x,
+		cp.CbxEdit->Tbx->Border->Obj.y, cp.CbxEdit->Tbx->Border->Obj.w,
+		cp.CbxEdit->Tbx->Border->Obj.h, cp.CbxEdit->Tbx->Border->Fill);
+
+	CbxEdit->Tbx->txtImage = NULL; // So that you remove it from the prvious memory space without deleting that
+	CbxEdit->Tbx->CreateTexture(); // Create its own new TxtImage
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+Jbw_ComboBox& Jbw_ComboBox::operator=(const Jbw_ComboBox& cp)
+{
+	Jbw_Base::operator=(cp); // Calling Baseclass Assignment
+
+	GridBtn = cp.GridBtn;
+	CbxListVis = cp.CbxListVis;
+	CbxTxtSize = cp.CbxTxtSize;
+
+	delete CbxEdit;
+	delete CbxBtn;
+	delete CbxList;
+	delete lstHandles;
+
+	
+//	CbxEdit = new Jbw_EditBox(*cp.CbxEdit);
+//	CbxBtn = new Jbw_Button(*cp.CbxBtn);
+//	CbxList = new Jbw_ListBox(*cp.CbxList);
+//
+//
+//	if (lstHandles == NULL) {
+//		lstHandles = new Jbw_Handles;
+//	}
+//
+//	if (CbxList == NULL) {
+//		CbxList = new Jbw_ListBox(lstHandles, 0, 0, Obj.w, 20, 11);
+//	}
+//return *this;
+
+		
+	CreateCbx();
+
+	for (int I = 0; I < cp.CbxList->Cnt; I++) {
+		CbxList->AddText(cp.CbxList->TxtList[I].Text);
+	}
+	CbxList->Index = cp.CbxList->Index;
+	
+	// Assign TxtBox Border to it's own memory space
+	CbxEdit->Tbx->Border = new Jbw_Frame(Jhandle, cp.CbxEdit->Tbx->Border->Obj.x,
+		cp.CbxEdit->Tbx->Border->Obj.y, cp.CbxEdit->Tbx->Border->Obj.w,
+		cp.CbxEdit->Tbx->Border->Obj.h, cp.CbxEdit->Tbx->Border->Fill);
+
+	CbxEdit->Tbx->Border->Fill = cp.CbxEdit->Tbx->Border->Fill;
+	CbxEdit->Tbx->Border->FillColor = cp.CbxEdit->Tbx->Border->FillColor;
+
+	CbxEdit->Tbx->txtImage = NULL; // So that you remove it from the prvious memory space without deleting that
+	
+	
+
+	/* NOT RIGHT !!! Must be a shorter way !!*/
+	CbxEdit->Tbx->TxtSize = cp.CbxEdit->Tbx->TxtSize;
+	CbxEdit->Tbx->Angle = cp.CbxEdit->Tbx->Angle;
+	CbxEdit->Tbx->Flip = cp.CbxEdit->Tbx->Flip;
+	CbxEdit->Tbx->RotPoint = cp.CbxEdit->Tbx->RotPoint;
+	CbxEdit->Tbx->TxtColor = cp.CbxEdit->Tbx->TxtColor;
+
+	CbxEdit->Tbx->F_Bold = cp.CbxEdit->Tbx->F_Bold;
+	CbxEdit->Tbx->F_Italic = cp.CbxEdit->Tbx->F_Italic;
+	CbxEdit->Tbx->F_UnderL = cp.CbxEdit->Tbx->F_UnderL;
+	CbxEdit->Tbx->F_Strike = cp.CbxEdit->Tbx->F_Strike;
+
+	CbxEdit->Tbx->Text = cp.CbxEdit->Tbx->Text;
+	CbxEdit->Tbx->Value = cp.CbxEdit->Tbx->Value;
+
+	CbxEdit->Tbx->txtBox = cp.CbxEdit->Tbx->txtBox;
+	CbxEdit->Tbx->txtClip = cp.CbxEdit->Tbx->txtClip;
+	CbxEdit->Tbx->FrameOn = cp.CbxEdit->Tbx->FrameOn;
+	CbxEdit->Tbx->FillOn = cp.CbxEdit->Tbx->FillOn;
+	CbxEdit->Tbx->Align = cp.CbxEdit->Tbx->Align;
+	CbxEdit->Tbx->Flip = cp.CbxEdit->Tbx->Flip;
+	/* NOT RIGHT !!! Must be a shorter way !!*/
+	
+	CbxEdit->Tbx->CreateTexture(); // Create its own new TxtImage	
+	return *this;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -61,18 +166,13 @@ void Jbw_ComboBox::CreateCbx(void)
 		CbxBtn->CreateButton();
 	}
 
-	if (CbxList != NULL) {
-		delete CbxList;
-		CbxList = NULL;
-	}
-	if (lsthandles != NULL) {
-		delete lsthandles;
-		lsthandles = NULL;
+	if (lstHandles == NULL) {
+		lstHandles = new Jbw_Handles;
 	}
 
-	// Create List Box
-	lsthandles = new Jbw_Handles;
-	CbxList = new Jbw_ListBox(lsthandles, 0, 0, Obj.w, 20, 11);
+	if (CbxList == NULL) {
+		CbxList = new Jbw_ListBox(lstHandles, 0, 0, Obj.w, 20, 11);
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -105,8 +205,8 @@ void Jbw_ComboBox::AddRow(std::string NewText)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ComboBox::CloseList(void)
 {
-	SDL_DestroyWindow(lsthandles->JbwGui);
-	SDL_DestroyRenderer(lsthandles->Rdr);
+	SDL_DestroyWindow(lstHandles->JbwGui);
+	SDL_DestroyRenderer(lstHandles->Rdr);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -131,27 +231,27 @@ void Jbw_ComboBox::RdrCbx()
 		CbxList->ResizeListBox(0, 0 , Obj.w, Lheight);
 
 		// Create Listbox Window
-		lsthandles->JbwGui = SDL_CreateWindow("CbxList", GuiX + Obj.x, GuiY + Obj.y + Obj.h - 1,
+		lstHandles->JbwGui = SDL_CreateWindow("CbxList", GuiX + Obj.x, GuiY + Obj.y + Obj.h - 1,
 			Obj.w, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
 			SDL_WINDOW_ALWAYS_ON_TOP);
 
 		// Create Listbox Renderer
-		lsthandles->Rdr = SDL_CreateRenderer(lsthandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
+		lstHandles->Rdr = SDL_CreateRenderer(lstHandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
 
-		SDL_RenderPresent(lsthandles->Rdr);
+		SDL_RenderPresent(lstHandles->Rdr);
 		CbxList->RdrLbx();
-		SDL_RenderPresent(lsthandles->Rdr);
+		SDL_RenderPresent(lstHandles->Rdr);
 
 		// Draw border around window
-		Jbw_Frame Border(lsthandles, 0, 0, CbxList->Obj.w + 1, Lheight, false);
+		Jbw_Frame Border(lstHandles, 0, 0, CbxList->Obj.w + 1, Lheight, false);
 		Border.LineColor = J_C_Frame;
 		Border.RdrFrame();
 
-		SDL_RenderPresent(lsthandles->Rdr);
+		SDL_RenderPresent(lstHandles->Rdr);
 	}
-	else if (lsthandles != NULL){
-		SDL_DestroyRenderer(lsthandles->Rdr);
-		SDL_DestroyWindow(lsthandles->JbwGui);
+	else if (lstHandles != NULL){
+		SDL_DestroyRenderer(lstHandles->Rdr);
+		SDL_DestroyWindow(lstHandles->JbwGui);
 	}
 	
 	CbxBtn->RdrBtn(); // Render the Button
@@ -202,7 +302,7 @@ J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 	}
 
 	// Listbox Events
-	if (CbxListVis == true && lsthandles != NULL) {
+	if (CbxListVis == true && lstHandles != NULL) {
 		if (CbxList->LbxEvent(Event) == J_BTN_CLICK) {
 			CbxEdit->Tbx->Text.assign(CbxList->TxtList[CbxList->Index].Text);
 			CbxEdit->Tbx->CreateTexture();

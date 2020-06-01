@@ -21,6 +21,9 @@ public:
 	Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h=14, int Fsize = 12);
 	~Jbw_EditBox();
 
+	Jbw_EditBox(const Jbw_EditBox& cp);
+	void operator=(const Jbw_EditBox& cp);
+
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS 
 ------------------------------------------------------------------------------------------*/

@@ -40,12 +40,54 @@ Jbw_TextBox::~Jbw_TextBox()
 }
 
 /*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_TextBox::Jbw_TextBox(const Jbw_TextBox& cp) : Jbw_Text(cp)
+{
+//	Jbw_Text::Jbw_Text(cp); Same as : declaration above
+	// Jbw_Base
+//	Jhandle = cp.Jhandle; // Handle only get's assigned does not get created
+
+	// Jbw_TextBox
+	FrameOn = cp.FrameOn;
+	FillOn = cp.FillOn;
+	Align = cp.Align;
+	
+	delete Border;
+	Border = new Jbw_Frame(cp.Border->Jhandle, cp.Border->Obj.x, cp.Border->Obj.y,
+		cp.Border->Obj.w, cp.Border->Obj.h);
+	Border->Fill = cp.Border->Fill;
+	Border->FillColor = cp.Border->FillColor;
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+Jbw_TextBox& Jbw_TextBox::operator=(const Jbw_TextBox& cp)
+{
+	if (this != &cp)// Self assign check
+	{
+		Jbw_Text::operator=(cp); // Calling Baseclass copy
+		FrameOn = cp.FrameOn;
+		FillOn = cp.FillOn;
+		Align = cp.Align;
+
+		delete Border;
+		Border = new Jbw_Frame(cp.Border->Jhandle, cp.Border->Obj.x, cp.Border->Obj.y,
+			cp.Border->Obj.w, cp.Border->Obj.h);
+
+		Border->Fill = cp.Border->Fill;
+		Border->FillColor = cp.Border->FillColor;
+		return *this;
+	}
+}
+
+/*-----------------------------------------------------------------------------------------
 	FUNCTION: CreateTbx
 ------------------------------------------------------------------------------------------*/ 
 void Jbw_TextBox::CreateTbx(void)
 {
 	if (Border == NULL) {
-
 		Border = new Jbw_Frame(Jhandle, Obj.x, Obj.y, Obj.w, Obj.h, false);
 	}
 	else {

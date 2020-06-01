@@ -35,6 +35,8 @@ public:
 	Jbw_ListBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize);
 	~Jbw_ListBox();
 
+	Jbw_ListBox(const Jbw_ListBox& cp);
+	Jbw_ListBox& operator=(const Jbw_ListBox& copy);
 /*-----------------------------------------------------------------------------------------
 		FUNCTION DECLARATIONS
 ------------------------------------------------------------------------------------------*/

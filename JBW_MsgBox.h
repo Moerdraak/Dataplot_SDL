@@ -21,7 +21,7 @@ public:
 	Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);
 	~Jbw_MsgBox();
-	void Close(void);
+	void Free(void);
 	
 	J_Type MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);

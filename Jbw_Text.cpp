@@ -21,13 +21,71 @@ Jbw_Text::Jbw_Text(Jbw_Handles* handles, std::string NewText, int x, int y, int 
 ---------------------------------------------------------------*/
 Jbw_Text::~Jbw_Text()
 {
-//	SDL_DestroyTexture(txtImage);// Copy all current TxtPtrs		
-								// If you delete txtImage like you should with Destructor
-								// This does not copy well - Write a copy constructor to ensure new 
-								// Memory space is created for stuff inside TxtPtr 
-								// THIS WILL become important when I start fixing all my memory leaks.
-	Font = NULL;
-	txtImage = NULL;
+	if (txtImage != NULL) {
+//		SDL_DestroyTexture(txtImage);// Copy all current TxtPtrs - Look at Listbox if you delete here it breaks the listbox		
+									// If you delete txtImage like you should with Destructor
+									// This does not copy well - Write a copy constructor to ensure new 
+									// Memory space is created for stuff inside TxtPtr 
+									// THIS WILL become important when I start fixing all my memory leaks.
+		txtImage = NULL;
+	}
+}
+
+/*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_Text::Jbw_Text(const Jbw_Text& cp) : Jbw_Base(cp)
+{
+	/* This will first call Base copy constructor which will make a copy of the important stuff
+		like "Obj" and "Jhandle". Then it will call CreateCbx() which will ensure that we have
+		new memory for all thes ethings instead of just referencing the same memory space  as
+		where we are copying from */
+
+	TxtSize = cp.TxtSize;
+	Angle = cp.Angle;
+	Flip = cp.Flip;
+	RotPoint = cp.RotPoint;
+	TxtColor = cp.TxtColor;
+
+	F_Bold = cp.F_Bold;
+	F_Italic = cp.F_Italic;
+	F_UnderL = cp.F_UnderL;
+	F_Strike = cp.F_Strike;
+
+	Text = cp.Text;
+	Value = cp.Value;
+
+	txtBox = cp.txtBox;
+	txtClip = cp.txtClip;
+
+	CreateTexture();
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+void Jbw_Text::operator=(const Jbw_Text& cp)
+{
+	Jbw_Base::operator=(cp); // Calling Baseclass Assignment
+
+	TxtSize = cp.TxtSize;
+	Angle = cp.Angle;
+	Flip = cp.Flip;
+	RotPoint = cp.RotPoint;
+	TxtColor = cp.TxtColor;
+
+	F_Bold = cp.F_Bold;
+	F_Italic = cp.F_Italic;
+	F_UnderL = cp.F_UnderL;
+	F_Strike = cp.F_Strike;
+
+	Text = cp.Text;
+	Value = cp.Value;
+
+	txtBox = cp.txtBox;
+	txtClip = cp.txtClip;
+
+	CreateTexture();
 }
 
 /*---------------------------------------------------------------
@@ -35,7 +93,7 @@ FUNCTION: Create Texture
 ---------------------------------------------------------------*/
 void Jbw_Text::CreateTexture(void) {
 
-	Font = TTF_OpenFont("fonts/arial.ttf", TxtSize); // Load the default font	
+	TTF_Font* Font = TTF_OpenFont("fonts/arial.ttf", TxtSize); // Load the default font	
 	TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
 
 	// Build font Style	
@@ -61,6 +119,7 @@ void Jbw_Text::CreateTexture(void) {
 		txtSurf = TTF_RenderText_Blended(Font, Text.c_str(), TxtColor);
 	}
 	TTF_CloseFont(Font);
+	Font = NULL;
 
 	// Free the previous txtImage
 	SDL_DestroyTexture(txtImage);

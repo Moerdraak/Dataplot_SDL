@@ -83,7 +83,10 @@ class Jbw_Base{
 public:	
 	short int Id = 0;
 	std::string Tag = "";
-	Jbw_Handles *Jhandle = NULL;
+
+	/* I don't "new" jhandle - therefore I do not create memory for it 
+	and therefore do not need to have a copy or assignment constructor*/
+	Jbw_Handles *Jhandle = NULL; 
 
 	SDL_Rect Obj = { -1, -1, -1, -1 }; 
 
@@ -100,4 +103,11 @@ public:
 public:
 	Jbw_Base() {};
 	~Jbw_Base() {};
+
+	/* I don't "new" jhandle - therefore I do not create memory for it
+	and therefore do not need to have a copy or assignment constructor*/
+
+
+//	Jbw_Base(Jbw_Base& cp);
+//	void operator=(Jbw_Base& cp);
 };

@@ -10,12 +10,10 @@ public:
 	Jbw_EditBox *CbxEdit = NULL;
 	Jbw_Button* CbxBtn = NULL; // dropdown button
 	Jbw_ListBox* CbxList = NULL;
-	Jbw_Handles* lsthandles = NULL;
+	Jbw_Handles* lstHandles = NULL;
 	bool GridBtn = false; // When true it will hide the Combobox dropdown button until msOver.
 	bool CbxListVis = false;
-	int LbxCnt = 0;
 	int CbxTxtSize = 12;
-
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
@@ -24,6 +22,9 @@ public:
 	Jbw_ComboBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
 		bool IsGridBtn = false);
 	~Jbw_ComboBox();
+
+	Jbw_ComboBox(const Jbw_ComboBox& cp);
+	Jbw_ComboBox& operator=(const Jbw_ComboBox& copy);
 
 /*-----------------------------------------------------------------------------------------
 		FUNCTION DECLARATIONS

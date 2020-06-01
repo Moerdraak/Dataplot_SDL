@@ -24,6 +24,9 @@ public:
 		int Fsize = 12);
 	~Jbw_Button();
 
+	Jbw_Button(const Jbw_Button& cp, std::string NewCaption);
+	Jbw_Button& operator=(const Jbw_Button& cp);
+
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS
 ------------------------------------------------------------------------------------------*/

@@ -18,10 +18,11 @@ Jbw_Grid::Jbw_Grid(Jbw_Handles* handles, int x, int y, int w, int h)
 	CreateFrame();
 
 	Jhandle = handles;
-	RowHeight = 16; // Nice general value
+	RowHeight = 17; // Nice general value
 
 	// Determine amount of rows that will fit in
-	RowCnt = (short int)floor(h / RowHeight);
+	RowCnt = 1; // ALways have one blank row 
+	// RowCnt =(short int)floor(h / RowHeight);
 	
 	// Creating Slider
 	SliderV = new Jbw_Slider(handles, GridArea.x + GridArea.w, GridArea.y, 14, GridArea.h, 10, true);
@@ -45,6 +46,20 @@ Jbw_Grid::~Jbw_Grid()
 	delete[] Element;
 }
 
+/*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_Grid::Jbw_Grid(const Jbw_Grid& cp) : Jbw_Frame(cp)
+{
+
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+void Jbw_Grid::operator=(const Jbw_Grid& cp) {
+
+}
 /*-----------------------------------------------------------------------------------------
 FUNCTION: 
 ------------------------------------------------------------------------------------------*/
@@ -111,21 +126,84 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 		for (int I = 0; I < ColCnt; I++) {
 			TmpElement[I] = Element[I];
 		}
-		delete Element;
+		delete[] Element;
 	}
 
 	Element = TmpElement;
 	TotalW += Width - 1;
 	
-	
 	// Setup Sliders
 	SetSlider(TotalW, TotalH, true); // Set Vertical slider
 
 	ColCnt++;
+
+	/* Ebox and Cbox has done there jobs. The memory remains, which is now referenced by Element
+		but for safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
 }
 
+
 /*-----------------------------------------------------------------------------------------
-FUNCTION:
+FUNCTION: AddRow
+------------------------------------------------------------------------------------------*/
+void Jbw_Grid::AddRow(Jbw_Handles* handles, int Num, int Height)
+{
+	if (Height == -1) { // User didn't specify
+		Height = RowHeight;
+	}
+
+	void** TmpElement = new void* [ColCnt]; 
+	
+	// First Copy all existing elements
+	for (int I = 0; I < ColCnt; I++) {
+		if (ColType[I] == J_EBX) {
+			Ebox = static_cast<Jbw_EditBox*>(Element[I]);
+			// Make space for Old Rows + New Rows
+			TmpElement[I] = static_cast<Jbw_EditBox*>(new Jbw_EditBox[RowCnt + Num]); 
+			Jbw_EditBox* TmpEbox = static_cast<Jbw_EditBox*>(TmpElement[I]);
+			 
+			// Copy all existing Rows
+			for (int J = 0; J < RowCnt; J++) {
+				TmpEbox[J] = Ebox[J];
+			}
+			
+			// Initialise new Rows
+			for (int J = 0; J < Num; J++) {
+				TmpEbox[RowCnt + J].InitEbx(handles, 0, 0, Ebox[0].Obj.w, Height);
+				// OR CONSIDER
+				// TmpEbox[RowCnt + J] = Ebox[RowCnt - 1];
+				TotalH += Height;
+			}
+			delete[] Ebox; // Free old memory
+			Ebox = NULL;
+		}
+		else {
+			Cbox = static_cast<Jbw_ComboBox*>(Element[I]);
+			// Make space for Old Rows + New Rows
+			TmpElement[I] = static_cast<Jbw_ComboBox*>(new Jbw_ComboBox[RowCnt + Num]);
+			Jbw_ComboBox* TmpCbox = static_cast<Jbw_ComboBox*>(TmpElement[I]);
+
+			// Copy all existing Rows
+			for (int J = 0; J < RowCnt; J++) {
+				TmpCbox[J] = Cbox[J];
+			}
+
+			// Initialise new Rows
+			for (int J = 0; J < Num; J++) {
+				TmpCbox[RowCnt + J] = TmpCbox[RowCnt - 1];
+				TotalH += Height;
+			}
+			delete[] Cbox; // Free old memory
+			Cbox = NULL;
+		}	
+	}
+	delete[] Element;
+	Element = TmpElement;
+	RowCnt += Num;
+}
+/*-----------------------------------------------------------------------------------------
+FUNCTION: SetSlider
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetSlider(int TotColW, int TotRowH, bool Vertical)
 {
@@ -164,13 +242,7 @@ void Jbw_Grid::SetSlider(int TotColW, int TotRowH, bool Vertical)
 	}
 }
 
-/*-----------------------------------------------------------------------------------------
-FUNCTION:
-------------------------------------------------------------------------------------------*/
-void Jbw_Grid::AddRow(int Num)
-{
 
-}
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
@@ -312,6 +384,11 @@ void Jbw_Grid::SetCell(GridProp Property, GridVal Value, int Col, int Row)
 			}
 		}
 	}
+
+	/* Ebox and Cbox has done there jobs. The memory remains, which is now referenced by Element
+		but for safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -390,6 +467,9 @@ void Jbw_Grid::SetCellText(std::string Txt, int Col, int Row)
 		Cbox[Row].CbxEdit->Tbx->CreateTexture();
 		Cbox[Row].CbxEdit->RdrEbx();
 	}
+	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -409,6 +489,9 @@ void Jbw_Grid::Set(int Col, int Row, double Val)
 		Cbox[Row].CbxEdit->Tbx->CreateTexture();
 		Cbox[Row].CbxEdit->RdrEbx();
 	}
+	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -441,6 +524,11 @@ std::string Jbw_Grid::GetTxt(int Col, int Row)
 		Cbox = static_cast<Jbw_ComboBox*>(Element[Col]);
 		Answer.assign(Cbox[Row].CbxEdit->Tbx->Text);
 	}
+
+	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
+
 	return Answer;
 }
 
@@ -475,9 +563,42 @@ void Jbw_Grid::SetColWidth(int Col, int w)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: SetRowHeight
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::SetRowHeight(int Row, int h)
-{
+void Jbw_Grid::SetRowHeight(int h, int Row)
+{	
+	RowHeight = h;
 
+	for (int I = 0; I < ColCnt; I++) {
+		if (ColType[I] == J_EBX) {
+			Ebox = static_cast<Jbw_EditBox*>(Element[I]);
+			if (Row == -1) {
+				for (int J = 0; J < RowCnt; J++) {
+					Ebox[J].Obj.h = RowHeight;
+					Ebox[J].CreateEbx();
+				}
+			}
+			else {
+				Ebox[Row].Obj.h = RowHeight;
+				Ebox[Row].CreateEbx();
+			}
+		}
+		else {
+			Cbox = static_cast<Jbw_ComboBox*>(Element[I]);
+			if (Row == -1) {
+				for (int J = 0; J < RowCnt; J++) {
+					Cbox[J].Obj.h = RowHeight;
+					Cbox[J].CreateCbx();
+				}
+			}
+			else {
+				Cbox[Row].Obj.h = RowHeight;
+				Cbox[Row].CreateCbx();
+			}
+		}
+	}
+
+	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -601,35 +722,39 @@ void Jbw_Grid::RdrGrd(void)
 		}
 	}
 
-		// Render the Header
-		TotW = 0;
-		int TotH = 0;
-		for (int I = 0; I < ColCnt; I++) {
-			if (TotW + Header[I].Obj.w <= Obj.w - 2 - 14) {
-				Header[I].Obj.x = Obj.x + 1 + TotW;
-				Header[I].Obj.y = Obj.y + 1;
-				Header[I].CreateTbx();
-				TotW += Header[I].Obj.w - 1;
-				Header[I].RdrTbx();// Now Render this box
-			}
-			else if (TotW <= Obj.w - 2 - 14) { // Adjust height of this box to fit
-				Header[I].Obj.x = Obj.x + 1 + TotW;
-				Header[I].Obj.y = Obj.y + 1 + TotH;
-				Header[I].Obj.w = (Obj.w - 14) - TotW - 1;
-				Header[I].CreateTbx();
-				Header[I].RdrTbx(); // Now Render this box
-				break;
-			}
-			Header[I].CreateTexture();
-			Header[I].RdrTbx();
+	// Render the Header
+	TotW = 0;
+	int TotH = 0;
+	for (int I = 0; I < ColCnt; I++) {
+		if (TotW + Header[I].Obj.w <= Obj.w - 2 - 14) {
+			Header[I].Obj.x = Obj.x + 1 + TotW;
+			Header[I].Obj.y = Obj.y + 1;
+			Header[I].CreateTbx();
+			TotW += Header[I].Obj.w - 1;
+			Header[I].RdrTbx();// Now Render this box
 		}
-		if (SliderVert == true) {
-			SliderV->RdrSldr();
+		else if (TotW <= Obj.w - 2 - 14) { // Adjust height of this box to fit
+			Header[I].Obj.x = Obj.x + 1 + TotW;
+			Header[I].Obj.y = Obj.y + 1 + TotH;
+			Header[I].Obj.w = (Obj.w - 14) - TotW - 1;
+			Header[I].CreateTbx();
+			Header[I].RdrTbx(); // Now Render this box
+			break;
 		}
-		if (SliderHor == true) {
-			SliderH->RdrSldr();
-		}
+		Header[I].CreateTexture();
+		Header[I].RdrTbx();
+	}
+	if (SliderVert == true) {
+		SliderV->RdrSldr();
+	}
+	if (SliderHor == true) {
+		SliderH->RdrSldr();
+	}
 	
+	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
+
 	RdrFrame();
 }
 
@@ -683,5 +808,10 @@ Jbw_Grid::grdEvent Jbw_Grid::GEvent(SDL_Event * Event)
 	}
 	SliderV->SldrEvent(Event);
 	SliderH->SldrEvent(Event);
+
+	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
+	Ebox = NULL;
+	Cbox = NULL;
+
 	return Ev;
 }

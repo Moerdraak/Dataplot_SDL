@@ -8,14 +8,15 @@ class Jbw_Grid : public Jbw_Frame {
 private:
 	enum GridProp{ BACK_COLOR, TXT_COLOR, TXT_ALIGN, TXT_SIZE, TXT_BOLD, TXT_ITALIC};
 	struct GridVal {
-		SDL_Color Color;
-		J_Type Type;
-		int Number;
-		bool TrueFalse;
+		SDL_Color Color = { 0, 0, 0, 0 };
+		J_Type Type = J_NULL;
+		int Number = -1;
+		bool TrueFalse = false;
 	} PropVal;
 
 	Jbw_EditBox* Ebox = NULL;
 	Jbw_ComboBox* Cbox = NULL;
+	short int RowHeight = 0;
 
 public:
 	struct grdEvent {
@@ -37,7 +38,7 @@ public:
 
 	short int RowCnt = 0;
 	short int ColCnt = 0;
-	short int RowHeight = 0;
+	
 	short int TotalW = 0;
 	short int TotalH = 0;
 
@@ -58,11 +59,14 @@ public:
 	Jbw_Grid(Jbw_Handles* handles, int x, int y, int w, int h);
 	~Jbw_Grid();
 
+	Jbw_Grid(const Jbw_Grid& cp); // Copy constructor
+	void operator=(const Jbw_Grid& cp); // Assignment constructor
+
 	/*************************************************/
 	/*               Create Functions                */
 	/*-----------------------------------------------*/
 	void AddCol(Jbw_Handles* handles, std::string Obj, std::string ColName, int Width = 40, J_Type Type = J_EBX);
-	void AddRow(int Num = 1);
+	void AddRow(Jbw_Handles* handles, int Num = 1, int Height = -1);
 	void SetSlider(int TotColW, int TotRowH, bool Vertical);
 	void Set(int Col, int Row, double Val);
 	void AddCbxList(std::string ColName, std::vector<std::string> List);
@@ -87,7 +91,7 @@ public:
 
 
 	void SetColWidth(int Col, int w);
-	void SetRowHeight(int Row, int h);
+	void SetRowHeight(int h, int Row);
 	void RowTxtSize(int Row, int FontSize);
 	void TxtSize(int Col, int Row, int FontSize);
 	int GetIndex(int Col, int Row);

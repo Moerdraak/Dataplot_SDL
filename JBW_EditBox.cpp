@@ -11,9 +11,7 @@ Jbw_EditBox::Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h, int F
 	Obj.w = w;
 	Obj.h = h;
 	TxtSize = Fsize;
-
 	CreateEbx();
-//	InitEbx(handles, x, y, w, h, Fsize);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -21,6 +19,37 @@ Jbw_EditBox::Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h, int F
 ------------------------------------------------------------------------------------------*/
 Jbw_EditBox::~Jbw_EditBox() {
 
+}
+
+/*-----------------------------------------------------------------------------------------
+	COPY CONSTRUCTOR
+------------------------------------------------------------------------------------------*/
+Jbw_EditBox::Jbw_EditBox(const Jbw_EditBox& cp) : Jbw_Base(cp)
+{
+	TxtSize = cp.TxtSize;
+	Tbx = new Jbw_TextBox(*cp.Tbx);
+	
+	/*   OR YOU CAN   */
+	//	CreateEbx();
+	//	*Tbx = *cp.Tbx;
+}
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+void Jbw_EditBox::operator=(const Jbw_EditBox& cp) 
+{
+	if (this != &cp)// Self assign check
+	{
+		Jbw_Base::operator=(cp);
+		TxtSize = cp.TxtSize;
+		delete Tbx;
+		Tbx = new Jbw_TextBox(*cp.Tbx);
+
+		/*   OR YOU CAN   */
+		//	CreateEbx();
+		//	*Tbx = *cp.Tbx;
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -34,7 +63,6 @@ void Jbw_EditBox::InitEbx(Jbw_Handles* handles, int x, int y, int w, int h, int 
 	Obj.w = w;
 	Obj.h = h;
 	TxtSize = Fsize;
-
 	CreateEbx();
 }
 

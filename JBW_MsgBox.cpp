@@ -15,27 +15,44 @@ Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x
 
 Jbw_MsgBox::~Jbw_MsgBox()
 {
-	Close();
+	Free();
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: Close
+	FUNCTION: Free
 ------------------------------------------------------------------------------------------*/
-void Jbw_MsgBox::Close(void)
+void Jbw_MsgBox::Free(void)
 {
 	if (btnNo != NULL) {
 		delete btnNo; 
 		btnNo = NULL;
 	}
-	delete btnAck; 
-	btnAck = NULL;
-	delete Header; 
-	Header = NULL;
 
-	SDL_DestroyWindow(Jhandle->JbwGui); //Jhandle->JbwGui = NULL;
-	SDL_DestroyRenderer(Jhandle->Rdr); Jhandle->Rdr = NULL;
-	SDL_DestroyTexture(txtImage); txtImage = NULL;
-	TTF_CloseFont(Font); Font = NULL;
+	if (btnAck != NULL) {
+		delete btnAck;
+		btnAck = NULL;
+	}
+
+	if (Header != NULL) {
+		delete Header;
+		Header = NULL;
+	}
+
+	if (Jhandle != NULL) {
+		SDL_DestroyWindow(Jhandle->JbwGui);
+		Jhandle->JbwGui = NULL;
+
+		SDL_DestroyRenderer(Jhandle->Rdr);
+		Jhandle->Rdr = NULL;
+
+		SDL_DestroyTexture(txtImage);
+		txtImage = NULL;
+
+		TTF_CloseFont(Font);
+		Font = NULL;
+
+		Jhandle = NULL;
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -178,6 +195,6 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 			}
 		}
 	}
-	Close();
+	Free();
 	return Answer;
 }
