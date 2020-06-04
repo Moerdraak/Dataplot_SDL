@@ -112,7 +112,8 @@ public:
 
 	/********** PLAY AREA ********/
 	Jbw_Slider* Slider;
-
+	Jbw_ComboBox* cbxPlayCopy;
+	Jbw_Polygon* Lyn;
 	
 	/*******************************************************
 			   Gui Menu Callbacks

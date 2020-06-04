@@ -51,6 +51,7 @@ Jbw_Button& Jbw_Button::operator=(const Jbw_Button& cp)
 {
 	if (this != &cp)// Self assign check
 	{
+		Jbw_Base::operator=(cp); // Calling Baseclass copy
 		BtnColor = cp.BtnColor;
 		BtnBorderColor = cp.BtnBorderColor;
 		HoverColor = cp.HoverColor;
@@ -59,7 +60,8 @@ Jbw_Button& Jbw_Button::operator=(const Jbw_Button& cp)
 		TxtSize = cp.TxtSize;
 		TxtAlign = cp.TxtAlign;
 		Caption = cp.Caption;
-
+		
+		delete Tbx;
 		Tbx = new Jbw_TextBox(*cp.Tbx);
 	}
 	return *this;
@@ -107,6 +109,9 @@ void Jbw_Button::CreateButton(void)
 ------------------------------------------------------------------------------------------*/
 void Jbw_Button::RdrBtn(void)
 {
+	if (Visible == false) {
+		return;
+	}
 	Tbx->CreateTexture();
 	Tbx->RdrTbx();
 }
@@ -117,6 +122,11 @@ void Jbw_Button::RdrBtn(void)
 J_Type Jbw_Button::BtnEvent(SDL_Event* Event)
 {
 	J_Type EventType = J_NULL;
+
+	if (Visible == false || Enabled == false) {
+		return EventType;
+	}
+
 	//If mouse event happened
 	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN ||
 		Event->type == SDL_MOUSEBUTTONUP) {

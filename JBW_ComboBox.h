@@ -9,10 +9,10 @@ class Jbw_ComboBox : public Jbw_Base {
 public:
 	Jbw_EditBox *CbxEdit = NULL;
 	Jbw_Button* CbxBtn = NULL; // dropdown button
-	Jbw_ListBox* CbxList = NULL;
+	Jbw_ListBox* CbxLbx = NULL;
 	Jbw_Handles* lstHandles = NULL;
 	bool GridBtn = false; // When true it will hide the Combobox dropdown button until msOver.
-	bool CbxListVis = false;
+	bool CbxLbxVis = false;
 	int CbxTxtSize = 12;
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS

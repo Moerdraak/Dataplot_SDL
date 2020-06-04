@@ -29,17 +29,6 @@ int main(int argc, char* argv[])
 	//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
 	/******************************/
 
-	Jbw_TextBox Tmp(h, "The Lazy Quick Brown Fox jump over the fence", 400, 400, 300, 16, 11);
-	Tmp.FrameOn = true;
-	Tmp.TxtColor = J_RED;
-	Tmp.BorderColor(J_GREEN);
-	Tmp.BackColor(J_YELLOW);
-	Tmp.FillOn = true;
-	Tmp.CreateTexture();
-	Tmp.RdrTbx();
-
-
-
 	Dp.cbxFigure->AddRow("Main Sight");
 	Dp.cbxFigure->AddRow("Cannon testing");
 	Dp.cbxFigure->AddRow("Seeker vibration"); 
@@ -56,6 +45,9 @@ int main(int argc, char* argv[])
 	Dp.cbxFigure->AddRow("14. Free Turbine speed");
 	Dp.cbxFigure->AddRow("15. Free Turbine speed");
 	Dp.cbxFigure->AddRow("16. Free Turbine speed");
+	Dp.cbxFigure->CbxLbx->TxtList[1].TxtColor = { 180, 0, 0, 255 };
+
+
 
 //	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
@@ -166,13 +158,38 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 		//	LbxPtr[0].AddText(SDL_GetError());
 		}
 	}
+	
 	IMG_Quit();
+
+
 
 	/*  Dataplot Menu  */
 	Menu = new Jbw_Menu(&handles);
 	Menu->MenuAdd("File", 40);
+	//Menu->ItemAdd("File", "New Project");
+	//Menu->ItemAdd("File", "Load Project");
+	//Menu->ItemAdd("File", "Save Project");
+	//Menu->ItemAdd("File", "Save Project As");
+	//Menu->ItemAdd("File", "Save Figure Config");
+	//Menu->ItemAdd("File", "Load Figure Config");
+	//Menu->ItemAdd("File", "FileSub", "Something");
+
 	Menu->MenuAdd("Tools", 50);
+	//Menu->ItemAdd("Tools", "Graph Properties");
+	//Menu->ItemAdd("Tools", "Convert Old Project Files");
+	//Menu->MenuAdd("Tools", "Convert Data for Dataplot");
+	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "Pass3200 data");
+	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "CSV data");
+	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "ACRA data");
+	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "Seeker 400 data");
+
 	Menu->MenuAdd("Help", 40);
+	//Menu->ItemAdd("Help", "Help");
+	//Menu->ItemAdd("Help", "About");
+	
+	
+
+
 
 	/*  DataPlot Heading */
 	txtDataPlotName = new Jbw_Text(&handles, "DataPlot", 128, 30, 24);
@@ -237,7 +254,7 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	btnAdd = new Jbw_Button(&handles, 800, 30, 60, 18, "Add Bits", 12);
 
 	/*  SETUP GRAPHICS TABLE AREA   */	
-	grdFigure = new Jbw_Grid(&handles, 360, 55, 660/* 700 */, 180/* 180 */);
+	grdFigure = new Jbw_Grid(&handles, 360, 55, 700/* 700 */, 200/* 180 */);
 	grdFigure->SetRowHeight(17, -1);
 	grdFigure->TxtSize(-1, -1, 15);
 
@@ -251,17 +268,17 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	grdFigure->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);	
 	std::vector<std::string> Colors = { "Black", "Red", "Lime", "Blue", "Magenta", 
 		"Cyan", "Yellow", "Maroon", "Green", "Navy", "Teal", "Olive", "Purple", "Grey" };
-	grdFigure->AddCbxList("Colour", Colors);
+	grdFigure->AddCbxLbx("Colour", Colors);
 		
 	grdFigure->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
 		std::vector<std::string> Symbols = { "*", "+", "x", "d", "s", "o", "NO" };
-		grdFigure->AddCbxList("Symb.", Symbols);
+		grdFigure->AddCbxLbx("Symb.", Symbols);
 	grdFigure->AddCol(&handles, "grdFigure", "Line", 40, J_CBX);
 		std::vector<std::string> Lin = { "-", ":", ".", "NO"};
-		grdFigure->AddCbxList("Line", Lin);
+		grdFigure->AddCbxLbx("Line", Lin);
 	grdFigure->AddCol(&handles, "grdFigure", "Step", 40, J_CBX);
 		std::vector<std::string> Step = { "OFF", "ON" };
-		grdFigure->AddCbxList("Step", Step);
+		grdFigure->AddCbxLbx("Step", Step);
 	grdFigure->AddCol(&handles, "grdFigure", "Filter", 40, J_EBX);
 	
 	grdFigure->SetCellTxtAlign(J_CENTRE, 6, -1); // Symbol must display Centre
@@ -283,7 +300,10 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 
 
 	/********** PLAY AREA ********/	
-	Slider = new Jbw_Slider(&handles, 1050, 300, 15, 100, 15);
+	Slider = new Jbw_Slider(&handles, 1050, 300, 15, 100, 100);
+
+
+
 
 	return &handles;
 }
@@ -388,7 +408,31 @@ void Dataplot::UserRender(void)
 	/********** PLAY AREA ********/
 	Slider->RdrSldr();
 
-	SDL_RenderPresent(handles.Rdr);
+	cbxPlayCopy = new Jbw_ComboBox(*cbxFigure);
+
+	cbxPlayCopy->Obj.x = cbxFigure->Obj.x + cbxFigure->Obj.w + 20;
+	cbxPlayCopy->Obj.y = cbxFigure->Obj.y + cbxFigure->Obj.h + 20;
+	cbxPlayCopy->CreateCbx();
+	cbxPlayCopy->RdrCbx();
+
+	Lyn = new Jbw_Polygon(&handles, 500, 430);
+	Lyn->AddPoint(515, 460);
+	Lyn->AddPoint(500, 490);
+	Lyn->AddPoint(500, 430);
+	Lyn->LineColor = J_RED;
+	Lyn->RdrPoly();
+
+	Jbw_Polygon NoggeLyn(*Lyn);
+	NoggeLyn.LineColor = J_GREEN;
+	NoggeLyn.RdrPoly();
+	Lyn->RdrPoly();
+	delete Lyn;
+//	SDL_RenderPresent(handles.Rdr);
+
+	/**********   END PLAY AREA   ********/
+
+
+
 
 	/****    SET VIEWPORT TO LOGO AREA     ****/
 	SDL_RenderSetViewport(handles.Rdr, &LogoArea);
@@ -462,7 +506,7 @@ void Dataplot::TheLoop(void)
 		}
 
 		/*   Grid   */
-		grdFigure->GEvent(&handles.Event);
+		grdFigure->GrdEvent(&handles.Event);
 	
 		if (grdFigure->OnChange == true) {
 			grdFigure->OnChange = false;
@@ -492,6 +536,7 @@ void Dataplot::TheLoop(void)
 
 		/********** PLAY AREA ********/
 		Slider->SldrEvent(&handles.Event);
+		cbxPlayCopy->CbxEvent(&handles.Event);
 	}
 }
 
@@ -655,8 +700,10 @@ void Dataplot::LoadConfigFile(std::string FileName)
 
 	char* s = new char[200];
 	int RowNum = 0;
+	grdFigure->AddRow(&handles,20);
+
 	while (!DataFile.eof()) {
-		grdFigure->AddRow(&handles);
+//		grdFigure->AddRow(&handles);
 		DataFile.getline(s, 200, 2);
 		grdFigure->SetCellText(s, 0, RowNum); // Parameter
 		DataFile.getline(s, 200, 2);

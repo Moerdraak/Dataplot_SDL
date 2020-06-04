@@ -43,12 +43,10 @@ void Jbw_EditBox::operator=(const Jbw_EditBox& cp)
 	{
 		Jbw_Base::operator=(cp);
 		TxtSize = cp.TxtSize;
-		delete Tbx;
-		Tbx = new Jbw_TextBox(*cp.Tbx);
 
-		/*   OR YOU CAN   */
-		//	CreateEbx();
-		//	*Tbx = *cp.Tbx;
+		delete Tbx;
+		Tbx = new Jbw_TextBox;
+		*Tbx = *cp.Tbx;
 	}
 }
 
@@ -95,6 +93,9 @@ bool Jbw_EditBox::SetEbx(std::string* Var, const char* Val)
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::RdrEbx(void)
 {
+	if (Visible == false) {
+		return;
+	}
 	Tbx->RdrTbx();
 }
 
@@ -103,6 +104,10 @@ void Jbw_EditBox::RdrEbx(void)
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 {
+	if (Visible == false || Enabled == false) {
+		return;
+	}
+
 	bool Flag = false;
 	//If mouse event happened
 	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN || Event->type == SDL_MOUSEBUTTONUP){

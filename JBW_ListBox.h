@@ -3,6 +3,7 @@
 #include "Jbw_Frame.h"
 #include "Jbw_Text.h"
 #include "Jbw_Button.h"
+#include "Jbw_Slider.h"
 
 class Jbw_ListBox : public Jbw_Frame {
 /*-----------------------------------------------------------------------------------------
@@ -10,10 +11,7 @@ class Jbw_ListBox : public Jbw_Frame {
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_TextBox* TxtList = NULL;
-	Jbw_Frame* SliderBox = NULL;
-	Jbw_Frame* Slider = NULL;
-	Jbw_Button* SldrBtnUp = NULL;
-	Jbw_Button* SldrBtnDwn = NULL;
+	Jbw_Slider* Slider = NULL;
 
 	bool TxtRendered = false;
 	int Cnt = 0;
@@ -54,10 +52,6 @@ public:
 ------------------------------------------------------------------------------------------*/
 private:
 	J_Type ListEvent(SDL_Event* Event, int msX, int msY);
-	void SliderEvent(SDL_Event* Event, int msX, int msY);
-	void BtnUpEvent(SDL_Event* Event);
-	void BtnDwnEvent(SDL_Event* Event);
-
 public:
 	J_Type LbxEvent(SDL_Event* Event);
 

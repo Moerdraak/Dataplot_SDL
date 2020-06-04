@@ -46,24 +46,26 @@ Jbw_Grid::~Jbw_Grid()
 	delete[] Element;
 }
 
-/*-----------------------------------------------------------------------------------------
-	COPY CONSTRUCTOR
-------------------------------------------------------------------------------------------*/
-Jbw_Grid::Jbw_Grid(const Jbw_Grid& cp) : Jbw_Frame(cp)
-{
+///*-----------------------------------------------------------------------------------------
+//	COPY CONSTRUCTOR
+//------------------------------------------------------------------------------------------*/
+//Jbw_Grid::Jbw_Grid(const Jbw_Grid& cp) : Jbw_Frame(cp)
+//{
+//
+//}
+//
+///*-----------------------------------------------------------------------------------------
+//	ASIGNMENT OPERATOR OVERLOAD
+//------------------------------------------------------------------------------------------*/
+//Jbw_Grid& Jbw_Grid::operator=(const Jbw_Grid& cp) 
+//{
+//
+//}
 
-}
-
 /*-----------------------------------------------------------------------------------------
-	ASIGNMENT OPERATOR OVERLOAD
+FUNCTION: AddCol
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::operator=(const Jbw_Grid& cp) {
-
-}
-/*-----------------------------------------------------------------------------------------
-FUNCTION: 
-------------------------------------------------------------------------------------------*/
-void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName, int Width, 
+void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName, int Width,
 	J_Type Type)
 {
 	// Add Header for the Collumn
@@ -107,7 +109,7 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 		TmpElement[ColCnt] = static_cast<Jbw_EditBox*>(new Jbw_EditBox[RowCnt]);
 		Ebox = static_cast<Jbw_EditBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
-			Ebox[I].InitEbx(handles, 0, 0, Width, RowHeight);
+			Ebox[I].InitEbx(handles, -100, -100, Width, RowHeight);
 			TotalH += RowHeight - 1;
 		}
 	} 
@@ -115,7 +117,7 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 		TmpElement[ColCnt] = static_cast<Jbw_ComboBox*>(new Jbw_ComboBox[RowCnt]);
 		Cbox = static_cast<Jbw_ComboBox*>(TmpElement[ColCnt]);
 		for (int I = 0; I < RowCnt; I++) {
-			Cbox[I].InitCbx(handles, 0, 0, Width, RowHeight, 12, true);
+			Cbox[I].InitCbx(handles, -100, -100, Width, RowHeight, 12, true);
 			Cbox[I].CbxEdit->Enabled = false; // Typically user can't change just select.
 			TotalH += RowHeight - 1;
 		}
@@ -133,7 +135,7 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 	TotalW += Width - 1;
 	
 	// Setup Sliders
-	SetSlider(TotalW, TotalH, true); // Set Vertical slider
+	SetSlider(TotalW, TotalH, false); // Set Horisontal slider
 
 	ColCnt++;
 
@@ -142,7 +144,6 @@ void Jbw_Grid::AddCol(Jbw_Handles *handles, std::string Obj, std::string ColName
 	Ebox = NULL;
 	Cbox = NULL;
 }
-
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION: AddRow
@@ -162,10 +163,11 @@ void Jbw_Grid::AddRow(Jbw_Handles* handles, int Num, int Height)
 			// Make space for Old Rows + New Rows
 			TmpElement[I] = static_cast<Jbw_EditBox*>(new Jbw_EditBox[RowCnt + Num]); 
 			Jbw_EditBox* TmpEbox = static_cast<Jbw_EditBox*>(TmpElement[I]);
-			 
+			TotalH = 0;
 			// Copy all existing Rows
 			for (int J = 0; J < RowCnt; J++) {
 				TmpEbox[J] = Ebox[J];
+				TotalH += Height;
 			}
 			
 			// Initialise new Rows
@@ -183,10 +185,11 @@ void Jbw_Grid::AddRow(Jbw_Handles* handles, int Num, int Height)
 			// Make space for Old Rows + New Rows
 			TmpElement[I] = static_cast<Jbw_ComboBox*>(new Jbw_ComboBox[RowCnt + Num]);
 			Jbw_ComboBox* TmpCbox = static_cast<Jbw_ComboBox*>(TmpElement[I]);
-
+			TotalH = 0;
 			// Copy all existing Rows
 			for (int J = 0; J < RowCnt; J++) {
 				TmpCbox[J] = Cbox[J];
+				TotalH += Height;
 			}
 
 			// Initialise new Rows
@@ -201,48 +204,36 @@ void Jbw_Grid::AddRow(Jbw_Handles* handles, int Num, int Height)
 	delete[] Element;
 	Element = TmpElement;
 	RowCnt += Num;
+	SetSlider(TotalW, TotalH, true);
 }
 /*-----------------------------------------------------------------------------------------
 FUNCTION: SetSlider
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::SetSlider(int TotColW, int TotRowH, bool Vertical)
 {
+
 	// Horisontal Slider settings
-	if (TotColW > Obj.w - SliderV->Obj.w - 2) {
+	if (TotColW > Obj.w - 2) {
 		SliderHor = true;
-
-		int ColOutside = (TotColW - (Obj.w - SliderV->Obj.w - 2)) / (TotColW / ColCnt) + 1;
-	
-		SliderH->Slider->Obj.w = SliderH->Obj.w / ColOutside;
-		if (SliderH->Slider->Obj.w < 5) {
-			SliderH->Slider->Obj.w = 5;
-
-		}
-		SliderH->StepSize = (float)(SliderH->Obj.w - 2 - SliderH->Slider->Obj.w) / (ColOutside + 1);
+		int ColOutside = (TotColW - (Obj.w - 2)) / (TotColW / ColCnt) + 1;
+		SliderH->SetResolution(ColOutside);
 	}
 	else {
-		SliderHor = false;
+		SliderH->SetResolution(0);
+		SliderHor = true; // !!! MAYBE CHANGE THIS LATER !!!
 	}
 
 	// Vertical Slider settings
 	if (TotRowH > Obj.h - SliderH->Obj.h - 2) {
 		SliderVert = true;
-
-		int RowOutside = (TotRowH - (Obj.h - SliderH->Obj.h - 2)) / (TotRowH / (RowCnt + 1)) + 1;
-
-		SliderV->Slider->Obj.h = SliderV->Obj.h / RowOutside;
-		if (SliderV->Slider->Obj.h < 5) {
-			SliderV->Slider->Obj.h = 5;
-
-		}
-		SliderV->StepSize = (float)(SliderV->Obj.h - 2 - SliderV->Slider->Obj.h) / (RowOutside + 1);
+		int RowOutside = (TotRowH - (Obj.h - 2)) / (TotRowH / (RowCnt + 1)) + 1;
+		SliderV->SetResolution(RowOutside);
 	}
 	else {
-		SliderVert = false;
+		SliderV->SetResolution(0);
+		SliderVert = true; // !!! MAYBE CHANGE THIS LATER !!!
 	}
 }
-
-
 
 /*-----------------------------------------------------------------------------------------
 FUNCTION:
@@ -458,14 +449,14 @@ void Jbw_Grid::SetCellText(std::string Txt, int Col, int Row)
 		Ebox = static_cast<Jbw_EditBox*>(Element[Col]);
 		Ebox[Row].Tbx->Text.assign(Txt);
 		Ebox[Row].Tbx->CreateTexture();
-		Ebox[Row].RdrEbx();
+//		Ebox[Row].RdrEbx();
 	}
 	else { // Combo Box
 		Cbox = static_cast<Jbw_ComboBox*>(Element[Col]);
-		Cbox[Row].CbxList->Index =atoi(Txt.c_str());
-		Cbox[Row].CbxEdit->Tbx->Text.assign(Cbox[Row].CbxList->TxtList[atoi(Txt.c_str())].Text);
+		Cbox[Row].CbxLbx->Index =atoi(Txt.c_str());
+		Cbox[Row].CbxEdit->Tbx->Text.assign(Cbox[Row].CbxLbx->TxtList[atoi(Txt.c_str())].Text);
 		Cbox[Row].CbxEdit->Tbx->CreateTexture();
-		Cbox[Row].CbxEdit->RdrEbx();
+//		Cbox[Row].CbxEdit->RdrEbx();
 	}
 	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
 	Ebox = NULL;
@@ -505,7 +496,7 @@ int Jbw_Grid::GetIndex(int Col, int Row)
 	else
 	{
 		Cbox = static_cast<Jbw_ComboBox*>(Element[Col]);
-		return Cbox[Row].CbxList->Index;
+		return Cbox[Row].CbxLbx->Index;
 	}
 }
 
@@ -602,9 +593,9 @@ void Jbw_Grid::SetRowHeight(int h, int Row)
 }
 
 /*-----------------------------------------------------------------------------------------
-FUNCTION: AddCbxList
+FUNCTION: AddCbxLbx
 ------------------------------------------------------------------------------------------*/
-void Jbw_Grid::AddCbxList(std::string ColName, std::vector<std::string> List)
+void Jbw_Grid::AddCbxLbx(std::string ColName, std::vector<std::string> List)
 {
 	for (int I = 0; I < ColCnt; I++) {
 		if (Header[I].Text.compare(ColName) == 0) { // Find correct collumn
@@ -628,48 +619,87 @@ FUNCTION: RdrGrd
 ------------------------------------------------------------------------------------------*/
 void Jbw_Grid::RdrGrd(void)
 {
+	if (Visible == false ) {
+		return;
+	}
+	SDL_Rect Area = Jhandle->GuiArea;
+	Area.x = 0;
+	Area.y = 0;
+
+	SDL_RenderSetViewport(Jhandle->Rdr, &Area);
+	SDL_SetRenderDrawColor(Jhandle->Rdr, J_C_Window.r, J_C_Window.g, J_C_Window.b, J_C_Window.a);
+	SDL_RenderFillRect(Jhandle->Rdr, &Obj);
+	SDL_RenderPresent(Jhandle->Rdr);
+
+
 	int TotW = 0;
-	for (int I = StartCol; I < ColCnt; I++) {
+
+	for (int I = 0; I < ColCnt; I++) {
+		if (ColType[I] == J_EBX) {
+			Ebox = static_cast<Jbw_EditBox*>(Element[I]);
+			for (int J = 0; J < RowCnt; J++) {
+				Ebox[J].Visible = false;
+			}
+		}
+		else {
+			Cbox = static_cast<Jbw_ComboBox*>(Element[I]);
+			for (int J = 0; J < RowCnt; J++) {
+				Cbox[J].Visible = false;
+			}
+		}
+	}
+
+	for (int I = RdrStartCol; I < ColCnt; I++) {
 		int TotH = Header[0].Obj.h - 1;
 
 		if (ColType[I] == J_EBX) {
 			Ebox = static_cast<Jbw_EditBox*>(Element[I]);
 			if (TotW + Ebox[0].Tbx->Obj.w <= Obj.w - 2 - 14) {
-				for (int J = StartRow; J < RowCnt; J++) {
+				for (int J = RdrStartRow; J < RowCnt; J++) {
 					if (TotH + Ebox[J].Tbx->Obj.h <= Obj.h - 2 - 14) {
 						Ebox[J].Obj.x = Obj.x + 1 + TotW;
 						Ebox[J].Obj.y = Obj.y + 1 + TotH;
 						Ebox[J].CreateEbx();
 						TotH += Ebox[J].Tbx->Obj.h - 1;
+						Ebox[J].Visible = true;
 						Ebox[J].RdrEbx(); // Now Render this box
 					}
 					else if (TotH <= Obj.h - 2 - 14) { // Adjust height of this box to fit
-						Ebox[J].Obj.x = Obj.x + 1 + TotW;
-						Ebox[J].Obj.y = Obj.y + 1 + TotH;
-						Ebox[J].Obj.h = (Obj.h - 14) - TotH - 1;
-						Ebox[J].CreateEbx();
-						Ebox[J].RdrEbx(); // Now Render this box
+						// Make a dumb copy for display purposes
+						Jbw_EditBox TmpEbox = Ebox[J];
+						TmpEbox.Obj.x = Obj.x + 1 + TotW;
+						TmpEbox.Obj.y = Obj.y + 1 + TotH;
+						TmpEbox.Obj.h = (Obj.h - 14) - TotH - 1;
+						TmpEbox.CreateEbx();
+						TmpEbox.Visible = true;
+						TmpEbox.RdrEbx(); // Now Render this box
 						break;
 					}
 				}
 			}
-			else {
-				for (int J = StartRow; J < RowCnt; J++) {
+			else { // Adjust Width to Fit
+				for (int J = RdrStartRow; J < RowCnt; J++) {
 					if (TotH + Ebox[J].Tbx->Obj.h <= Obj.h - 2 - 14) {
-						Ebox[J].Obj.x = Obj.x + 1 + TotW;
-						Ebox[J].Obj.y = Obj.y + 1 + TotH;
-						Ebox[J].Obj.w = (Obj.w - 14) - TotW - 1;
-						Ebox[J].CreateEbx();
+						// Make a dumb copy for display purposes
+						Jbw_EditBox TmpEbox = Ebox[J];
+						TmpEbox.Obj.x = Obj.x + 1 + TotW;
+						TmpEbox.Obj.y = Obj.y + 1 + TotH;
+						TmpEbox.Obj.w = (Obj.w - 14) - TotW - 1;
+						TmpEbox.CreateEbx();
+						TmpEbox.Visible = true;
+						TmpEbox.RdrEbx(); // Now Render this box
 						TotH += Ebox[J].Tbx->Obj.h - 1;
-						Ebox[J].RdrEbx(); // Now Render this box
 					}
-					else if (TotH <= Obj.h - 2 - 14) { // Adjust height of this box to fit
-						Ebox[J].Obj.x = Obj.x + 1 + TotW;
-						Ebox[J].Obj.y = Obj.y + 1 + TotH;
-						Ebox[J].Obj.w = (Obj.w - 14) - TotW - 1;
-						Ebox[J].Obj.h = (Obj.h - 14) - TotH - 1;
-						Ebox[J].CreateEbx();
-						Ebox[J].RdrEbx(); // Now Render this box
+					else if (TotH <= Obj.h - 2 - 14) { // Adjust height & Width of this box to fit
+						// Make a dumb copy for display purposes
+						Jbw_EditBox TmpEbox = Ebox[J];
+						TmpEbox.Obj.x = Obj.x + 1 + TotW;
+						TmpEbox.Obj.y = Obj.y + 1 + TotH;
+						TmpEbox.Obj.w = (Obj.w - 14) - TotW - 1;
+						TmpEbox.Obj.h = (Obj.h - 14) - TotH - 1;
+						TmpEbox.Visible = true;
+						TmpEbox.CreateEbx();
+						TmpEbox.RdrEbx(); // Now Render this box
 						break;
 					}
 				}
@@ -679,41 +709,56 @@ void Jbw_Grid::RdrGrd(void)
 		else {
 			Cbox = static_cast<Jbw_ComboBox*>(Element[I]);
 			if (TotW + Cbox[0].Obj.w <= Obj.w - 2 - 14) {
-				for (int J = StartRow; J < RowCnt; J++) {
+				for (int J = RdrStartRow; J < RowCnt; J++) {
 					if (TotH + Cbox[J].Obj.h <= Obj.h - 2 - 14) {
 						Cbox[J].Obj.x = Obj.x + 1 + TotW;
 						Cbox[J].Obj.y = Obj.y + 1 + TotH;
 						Cbox[J].CreateCbx();
 						TotH += Cbox[J].Obj.h - 1;
+						Cbox[J].CbxBtn->Visible = true;
+						Cbox[J].Visible = true;
 						Cbox[J].RdrCbx(); // Now Render this box
 					}
 					else if (TotH <= Obj.h - 2 - 14) { // Adjust height of this box to fit
-						Cbox[J].Obj.x = Obj.x + 1 + TotW;
-						Cbox[J].Obj.y = Obj.y + 1 + TotH;
-						Cbox[J].Obj.h = (Obj.h - 14) - TotH - 1;
-						Cbox[J].CreateCbx();
-						Cbox[J].RdrCbx(); // Now Render this box
+						// Make a dumb copy for display purposes
+						Jbw_ComboBox TmpCbox = Cbox[J];
+						TmpCbox.Obj.x = Obj.x + 1 + TotW;
+						TmpCbox.Obj.y = Obj.y + 1 + TotH;
+						TmpCbox.Obj.h = (Obj.h - 14) - TotH - 1;
+						TmpCbox.CreateCbx();
+						TmpCbox.CbxBtn->Visible = false;
+						TmpCbox.Visible = true;
+						TmpCbox.RdrCbx(); // Now Render this box
 						break;
 					}
 				}
 			}
-			else {
-				for (int J = StartRow; J < RowCnt; J++) {
+			else { // Adjust Width
+				for (int J = RdrStartRow; J < RowCnt; J++) {
 					if (TotH + Cbox[J].Obj.h <= Obj.h - 2 - 14) {
-						Cbox[J].Obj.x = Obj.x + 1 + TotW;
-						Cbox[J].Obj.y = Obj.y + 1 + TotH;
-						Cbox[J].Obj.w = (Obj.w - 14) - TotW - 1;
-						Cbox[J].CreateCbx();
-						TotH += Cbox[J].Obj.h - 1;
-						Cbox[J].RdrCbx(); // Now Render this box
+						// Make a dumb copy for display purposes
+						Jbw_ComboBox TmpCbox = Cbox[J];
+						TmpCbox.Obj.x = Obj.x + 1 + TotW;
+						TmpCbox.Obj.y = Obj.y + 1 + TotH;
+						TmpCbox.Obj.w = (Obj.w - 14) - TotW - 1;
+						TmpCbox.CreateCbx();
+						TotH += TmpCbox.Obj.h - 1;
+						TmpCbox.CbxBtn->Visible = false;
+						TmpCbox.Visible = true;
+						TmpCbox.RdrCbx(); // Now Render this box
+
 					}
-					else if (TotH <= Obj.h - 2 - 14) { // Adjust height of this box to fit
-						Cbox[J].Obj.x = Obj.x + 1 + TotW;
-						Cbox[J].Obj.y = Obj.y + 1 + TotH;
-						Cbox[J].Obj.w = (Obj.w - 14) - TotW - 1;
-						Cbox[J].Obj.h = (Obj.h - 14) - TotH - 1;
-						Cbox[J].CreateCbx();
-						Cbox[J].RdrCbx(); // Now Render this box
+					else if (TotH <= Obj.h - 2 - 14) { // Adjust Width & height of this box to fit
+						// Make a dumb copy for display purposes
+						Jbw_ComboBox TmpCbox = Cbox[J];
+						TmpCbox.Obj.x = Obj.x + 1 + TotW;
+						TmpCbox.Obj.y = Obj.y + 1 + TotH;
+						TmpCbox.Obj.w = (Obj.w - 14) - TotW - 1;
+						TmpCbox.Obj.h = (Obj.h - 14) - TotH - 1;
+						TmpCbox.CreateCbx();
+						TmpCbox.CbxBtn->Visible = false;
+						TmpCbox.Visible = true;
+						TmpCbox.RdrCbx(); // Now Render this box
 						break;
 					}
 				}
@@ -725,7 +770,7 @@ void Jbw_Grid::RdrGrd(void)
 	// Render the Header
 	TotW = 0;
 	int TotH = 0;
-	for (int I = 0; I < ColCnt; I++) {
+	for (int I = RdrStartCol; I < ColCnt; I++) {
 		if (TotW + Header[I].Obj.w <= Obj.w - 2 - 14) {
 			Header[I].Obj.x = Obj.x + 1 + TotW;
 			Header[I].Obj.y = Obj.y + 1;
@@ -733,21 +778,24 @@ void Jbw_Grid::RdrGrd(void)
 			TotW += Header[I].Obj.w - 1;
 			Header[I].RdrTbx();// Now Render this box
 		}
-		else if (TotW <= Obj.w - 2 - 14) { // Adjust height of this box to fit
-			Header[I].Obj.x = Obj.x + 1 + TotW;
-			Header[I].Obj.y = Obj.y + 1 + TotH;
-			Header[I].Obj.w = (Obj.w - 14) - TotW - 1;
-			Header[I].CreateTbx();
-			Header[I].RdrTbx(); // Now Render this box
+		else if (TotW <= Obj.w - 2 - 14) { // Adjust width of this box to fit
+			Jbw_TextBox TmpTxtBox = Header[I];
+			TmpTxtBox.Obj.x = Obj.x + 1 + TotW;
+			TmpTxtBox.Obj.y = Obj.y + 1 + TotH;
+			TmpTxtBox.Obj.w = (Obj.w - 14) - TotW - 1;
+			TmpTxtBox.CreateTbx();
+			TmpTxtBox.RdrTbx(); // Now Render this box
 			break;
 		}
 		Header[I].CreateTexture();
 		Header[I].RdrTbx();
 	}
 	if (SliderVert == true) {
+		SliderV->BtnRender = true;
 		SliderV->RdrSldr();
 	}
 	if (SliderHor == true) {
+		SliderH->BtnRender = true;
 		SliderH->RdrSldr();
 	}
 	
@@ -761,23 +809,24 @@ void Jbw_Grid::RdrGrd(void)
 /*-----------------------------------------------------------------------------------------
 FUNCTION: GrdEvent
 ------------------------------------------------------------------------------------------*/
-Jbw_Grid::grdEvent Jbw_Grid::GEvent(SDL_Event * Event)
+Jbw_Grid::grdEvent Jbw_Grid::GrdEvent(SDL_Event * Event)
 {
 	grdEvent Ev;
 
-	// Test if mouse is inside Grid Window
-	if (Event->window.event == SDL_WINDOWEVENT_ENTER && 
-		Event->window.windowID == SDL_GetWindowID(grdHandles.JbwGui)){
-		msOver = true;
-		return Ev; 
+	if (Visible == false || Enabled == false) {
+		return Ev;
 	}
-	else if (Event->window.event == SDL_WINDOWEVENT_LEAVE &&
-		Event->window.windowID == SDL_GetWindowID(grdHandles.JbwGui)) {
-		msOver = false;
-		return Ev; 
-	}
-	if (Event->type == SDL_MOUSEMOTION && msOver == false) { 
-	//	return Ev; // Don't bother any further
+
+	// Test if mouse is inside Grid Area
+	if (Event->type == SDL_MOUSEMOTION) {
+		int msX, msY;
+		SDL_GetMouseState(&msX, &msY);
+		if (msX > Obj.x && msX < Obj.x + Obj.w && msY > Obj.y && msY < Obj.y + Obj.h) {
+			msOver = true;
+		}
+		else {
+			msOver = false;
+		}
 	}
 
 	for (int I = 0; I < ColCnt; I++) {
@@ -806,8 +855,17 @@ Jbw_Grid::grdEvent Jbw_Grid::GEvent(SDL_Event * Event)
 			}
 		}
 	}
-	SliderV->SldrEvent(Event);
-	SliderH->SldrEvent(Event);
+
+	if (SliderV->SldrEvent(Event) != NULL) {
+		RdrStartRow = (int)floor(SliderV->StepPos);
+		RdrGrd();
+	}
+
+	if (SliderH->SldrEvent(Event) != NULL) {
+		RdrStartCol = (int)floor(SliderH->StepPos);
+		RdrGrd();
+	}
+
 
 	/* Ebox and Cbox has done there jobs. For safety remove the references from Ebox and Cbox */
 	Ebox = NULL;

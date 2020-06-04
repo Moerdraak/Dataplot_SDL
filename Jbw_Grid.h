@@ -25,7 +25,6 @@ public:
 		J_Type Type = J_NULL;
 	} GridEvent;
 
-	Jbw_Handles grdHandles;
 	Jbw_Slider* SliderV = NULL;
 	Jbw_Slider* SliderH = NULL;
 	SDL_Rect GridArea = { 0, 0, 0, 0 }; // !!!!!  TO BE DELETED  !!!!!!!!!
@@ -33,8 +32,10 @@ public:
 	bool SliderVert = false;
 	bool SliderHor = false;
 
-	int StartRow = 0;
-	int StartCol = 0;
+	int RdrStartRow = 0;
+	int RdrEndRow = 0;
+	int RdrStartCol = 0;
+	int RdrEndCol = 0;
 
 	short int RowCnt = 0;
 	short int ColCnt = 0;
@@ -59,8 +60,8 @@ public:
 	Jbw_Grid(Jbw_Handles* handles, int x, int y, int w, int h);
 	~Jbw_Grid();
 
-	Jbw_Grid(const Jbw_Grid& cp); // Copy constructor
-	void operator=(const Jbw_Grid& cp); // Assignment constructor
+//	Jbw_Grid(const Jbw_Grid& cp); // Copy constructor
+//	Jbw_Grid& cp operator=(const Jbw_Grid& cp); // Assignment constructor
 
 	/*************************************************/
 	/*               Create Functions                */
@@ -69,8 +70,8 @@ public:
 	void AddRow(Jbw_Handles* handles, int Num = 1, int Height = -1);
 	void SetSlider(int TotColW, int TotRowH, bool Vertical);
 	void Set(int Col, int Row, double Val);
-	void AddCbxList(std::string ColName, std::vector<std::string> List);
-	//void AddCbxList(std::string ColName, std::string* List, int Num);
+	void AddCbxLbx(std::string ColName, std::vector<std::string> List);
+	//void AddCbxLbx(std::string ColName, std::string* List, int Num);
 
 //	void TxtAlign(J_Type TxtAlign, int Col = -1, int Row = -1);
 	void GrdSet(std::string  *Var, const char* Val);
@@ -97,9 +98,7 @@ public:
 	int GetIndex(int Col, int Row);
 	std::string GetTxt(int Col, int Row);
 	void RdrGrd(void);
-	
 
-
-	grdEvent GEvent(SDL_Event* Event);
+	grdEvent GrdEvent(SDL_Event* Event);
 };
 

@@ -78,8 +78,9 @@ Jbw_TextBox& Jbw_TextBox::operator=(const Jbw_TextBox& cp)
 
 		Border->Fill = cp.Border->Fill;
 		Border->FillColor = cp.Border->FillColor;
-		return *this;
+		
 	}
+	return *this;
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -275,6 +276,10 @@ bool Jbw_TextBox::SetTbx(std::string* Var, const char* Val)
 ------------------------------------------------------------------------------------------*/
 void Jbw_TextBox::RdrTbx()
 {
+	if (Visible == false ) {
+		return;
+	}
+
 	// If Tbxbox is vertical
 	if (Angle == 90 || Angle == -90) {
 		int Tmp = Border->Obj.w;
@@ -303,6 +308,6 @@ void Jbw_TextBox::RdrTbx()
 	SDL_RenderCopyEx(Jhandle->Rdr, txtImage, &txtClip, &txtBox, Angle, &RotPoint, Flip);
 
 	// Render to screen
-	SDL_RenderPresent(Jhandle->Rdr);
+	SDL_RenderPresent(Jhandle->Rdr); // Don't Remove otherwise the lstBox doesn't work nice
 }
 

@@ -1,5 +1,3 @@
-
-
 #include "Jbw_Text.h"
 
 /*---------------------------------------------------------------
@@ -57,8 +55,6 @@ Jbw_Text::Jbw_Text(const Jbw_Text& cp) : Jbw_Base(cp)
 
 	txtBox = cp.txtBox;
 	txtClip = cp.txtClip;
-
-	CreateTexture();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -84,8 +80,6 @@ void Jbw_Text::operator=(const Jbw_Text& cp)
 
 	txtBox = cp.txtBox;
 	txtClip = cp.txtClip;
-
-	CreateTexture();
 }
 
 /*---------------------------------------------------------------

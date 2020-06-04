@@ -18,10 +18,9 @@ Jbw_Frame::Jbw_Frame(Jbw_Handles* handles, int x, int y, int w, int h, bool DoFi
 /*-----------------------------------------------------------------------------------------
 	DESTRUCTORS:
 ------------------------------------------------------------------------------------------*/
-Jbw_Frame::~Jbw_Frame() {
-	if (PolyLine != NULL) {
-		delete[] PolyLine;
-	}
+Jbw_Frame::~Jbw_Frame() 
+{
+	// PolyLine is deleted by base class ~Jbw_Polygon
 }
 
 /*-----------------------------------------------------------------------------------------

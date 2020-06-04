@@ -23,7 +23,8 @@ enum J_Type : const short int {
 	J_LEFT, J_CENTRE, J_RIGHT, // TxtBox
 	J_OK, J_YES, J_NO, J_YESNO, // MsgBox
 	J_CLICK, 
-	J_BTN_CLICK, J_UP, J_DOWN// Callback events
+	J_BTN_CLICK, J_UP, J_DOWN, // Callback events
+	J_ITEM, J_MENU // Menu 
 };
 
 const SDL_Color J_WHITE = { 255, 255, 255, 255 };
@@ -74,7 +75,6 @@ struct Jbw_Handles {
 	SDL_Event Event;
 	void** Jbw_Obj;
 };
-
 
 /******************************************************************************************
 								 CLASS: Jbw_Base
