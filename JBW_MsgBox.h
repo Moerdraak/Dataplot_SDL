@@ -17,6 +17,9 @@ private:
 	int Window_h;
 	int TxtSize = 10;
 public:
+
+
+
 	Jbw_MsgBox() {};
 	Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 		int x, int y, int w = 150, int h = 100);

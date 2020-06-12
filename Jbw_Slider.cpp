@@ -364,7 +364,7 @@ J_Type Jbw_Slider::SliderEvent(SDL_Event* Event)
 J_Type Jbw_Slider::BtnUpEvent(SDL_Event* Event)
 {
 	J_Type Answer = J_NULL;
-	if (SldrBtnUp->BtnEvent(Event) == J_BTN_CLICK) {
+	if (SldrBtnUp->BtnEvent(Event) == J_MS_LCLICK) {
 		if (Vert == true ) {
 			if (SldrPos > Slider->Obj.h) {
 				SldrPos -= (int)ceil(StepSize);
@@ -393,7 +393,7 @@ J_Type Jbw_Slider::BtnUpEvent(SDL_Event* Event)
 J_Type Jbw_Slider::BtnDwnEvent(SDL_Event* Event)
 {
 	J_Type Answer = J_NULL;
-	if (SldrBtnDwn->BtnEvent(Event) == J_BTN_CLICK) {
+	if (SldrBtnDwn->BtnEvent(Event) == J_MS_LCLICK) {
 		if (Vert == true) {
 			if (SldrPos <= Obj.h - 2 * Slider->Obj.h - 1) {
 				SldrPos += (int)ceil(StepSize);

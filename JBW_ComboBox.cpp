@@ -165,7 +165,7 @@ void Jbw_ComboBox::AddRow(std::string NewText)
 ------------------------------------------------------------------------------------------*/
 void Jbw_ComboBox::CloseList(void)
 {
-	SDL_DestroyWindow(lstHandles->JbwGui);
+	SDL_DestroyWindow(lstHandles->Gui);
 	SDL_DestroyRenderer(lstHandles->Rdr);
 }
 
@@ -182,7 +182,7 @@ void Jbw_ComboBox::RdrCbx()
 	if (CbxLbxVis == true) {
 		// Get Main window current position
 		int GuiX = 0, GuiY = 0;
-		SDL_GetWindowPosition(Jhandle->JbwGui, &GuiX, &GuiY);
+		SDL_GetWindowPosition(Jhandle->Gui, &GuiX, &GuiY);
 
 		// Listbox Height 
 		int Lheight = 0;
@@ -196,12 +196,12 @@ void Jbw_ComboBox::RdrCbx()
 
 		// Create Listbox Window
 
-		lstHandles->JbwGui = SDL_CreateWindow("CbxLbx", GuiX + Obj.x, GuiY + Obj.y + Obj.h - 1,
+		lstHandles->Gui = SDL_CreateWindow("CbxLbx", GuiX + Obj.x, GuiY + Obj.y + Obj.h - 1,
 			Obj.w, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
 			SDL_WINDOW_ALWAYS_ON_TOP);
 
 		// Create Listbox Renderer
-		lstHandles->Rdr = SDL_CreateRenderer(lstHandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
+		lstHandles->Rdr = SDL_CreateRenderer(lstHandles->Gui, -1, SDL_RENDERER_ACCELERATED);
 
 		//	CbxLbx->RdrLbx(lstHandles->Rdr);
 		CbxLbx->RdrLbx();
@@ -214,21 +214,22 @@ void Jbw_ComboBox::RdrCbx()
 	}
 	else if (lstHandles != NULL){
 		SDL_DestroyRenderer(lstHandles->Rdr);
-		SDL_DestroyWindow(lstHandles->JbwGui);
+		SDL_DestroyWindow(lstHandles->Gui);
 	}
 	if (CbxBtn->Visible == true) {
 		CbxBtn->RdrBtn(); // Render the Button
 	}
 	CbxEdit->RdrEbx(); // Render the Editbox 
 	SDL_RenderPresent(Jhandle->Rdr); // Render to screen
+	
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: CbxEvent
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
+J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 {
-	J_Type Answer = J_NULL;
+	J_Event Answer = J_E_NULL;
 
 	if (Visible == false || Enabled == false) {
 		return Answer;
@@ -250,12 +251,12 @@ J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 	CbxEdit->EbxEvent(Event);
 
 	if (GridBtn == true) {
-		if (CbxBtn->BtnEvent(Event) == J_BTN_CLICK && CbxLbxVis == false) {
+		if (CbxBtn->BtnEvent(Event) == J_MS_LCLICK && CbxLbxVis == false) {
 			CbxLbxVis = true;
 			RdrCbx();
 			Event->user.type = 1; // OnChange Event
 			SDL_PushEvent(Event);
-			Answer = J_BTN_CLICK;
+			Answer = J_MS_LCLICK;
 		}
 
 		if (CbxBtn->msOver == true || CbxEdit->msOver == true) {
@@ -272,7 +273,7 @@ J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 		//}
 	}
 	else {		
-		if (CbxBtn->BtnEvent(Event) == J_BTN_CLICK && CbxLbxVis == false) {
+		if (CbxBtn->BtnEvent(Event) == J_MS_LCLICK && CbxLbxVis == false) {
 			CbxLbxVis = true;
 			RdrCbx();
 		}
@@ -280,7 +281,7 @@ J_Type Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 
 	// Listbox Events
 	if (CbxLbxVis == true && lstHandles != NULL) {
-		if (CbxLbx->LbxEvent(Event) == J_BTN_CLICK) {
+		if (CbxLbx->LbxEvent(Event) == J_MS_LCLICK) {
 			CbxEdit->Tbx->Text.assign(CbxLbx->TxtList[CbxLbx->Index].Text);
 			CbxEdit->Tbx->CreateTexture();
 			CbxEdit->DoRender = true;

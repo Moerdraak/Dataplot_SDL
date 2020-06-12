@@ -27,6 +27,7 @@
     <ClCompile Include="Jbw_Button.cpp" />
     <ClCompile Include="Jbw_Circle.cpp" />
     <ClCompile Include="Jbw_ComboBox.cpp" />
+    <ClCompile Include="Jbw_Debug.cpp" />
     <ClCompile Include="Jbw_EditBox.cpp" />
     <ClCompile Include="Jbw_Frame.cpp" />
     <ClCompile Include="Jbw_FrameWork.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="Jbw_Button.h" />
     <ClInclude Include="Jbw_Circle.h" />
     <ClInclude Include="Jbw_ComboBox.h" />
+    <ClInclude Include="Jbw_Debug.h" />
     <ClInclude Include="Jbw_EditBox.h" />
     <ClInclude Include="Jbw_Frame.h" />
     <ClInclude Include="Jbw_FrameWork.h" />

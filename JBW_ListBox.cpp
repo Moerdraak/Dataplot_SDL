@@ -90,6 +90,11 @@ void Jbw_ListBox::ResizeListBox(int x, int y, int w, int h)
 
 	Slider = new Jbw_Slider(Jhandle, Obj.x + Obj.w - 15, Obj.y, 15, Obj.h, 5/* random start value */, true);
 	FitLines(true);
+
+	// Move The Txt
+	for (int I = 0; I < Cnt; I++) {
+		TxtList[I].Border->Obj.x = Obj.x; // Copy all current TxtPtrs		
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -182,8 +187,8 @@ void Jbw_ListBox::RdrLbx()
 			TxtList[I].Border->CreateFrame();
 			TxtList[I].FrameOn = true;
 			TxtList[I].FillOn = true;
-			TxtList[I].Border->LineColor = J_WHITE;
-			TxtList[I].Border->FillColor = J_WHITE;
+			TxtList[I].Border->LineColor = TxtBorderColor;
+			TxtList[I].Border->FillColor = TxtFillColor;
 			TxtList[I].CreateTexture();
 			TxtList[I].RdrTbx();			
 		}
@@ -194,9 +199,9 @@ void Jbw_ListBox::RdrLbx()
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER MAIN
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ListBox::LbxEvent(SDL_Event* Event)
+J_Event Jbw_ListBox::LbxEvent(SDL_Event* Event)
 {
-	J_Type Answer = J_NULL;
+	J_Event Answer = J_E_NULL;
 
 	if (Visible == false || Enabled == false) {
 		return Answer;
@@ -224,15 +229,16 @@ J_Type Jbw_ListBox::LbxEvent(SDL_Event* Event)
 			}
 		}
 	}
+	
 	return Answer;
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER LIST
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_ListBox::ListEvent(SDL_Event* Event, int msX, int msY)
+J_Event Jbw_ListBox::ListEvent(SDL_Event* Event, int msX, int msY)
 {
-	J_Type Answer = J_NULL;
+	J_Event Answer = J_E_NULL;
 
 		// Mouse pointer inside List Box box
 		if (msX > Obj.x && msX < Obj.x + Obj.w && msY > Obj.y && msY < Obj.y + Obj.h) {
@@ -255,7 +261,7 @@ J_Type Jbw_ListBox::ListEvent(SDL_Event* Event, int msX, int msY)
 						// Mouse button Click
 						if (Event->type == SDL_MOUSEBUTTONDOWN) {
 							Index = I;
-							Answer = J_BTN_CLICK;
+							Answer = J_MS_LCLICK;
 						}
 					}
 					else

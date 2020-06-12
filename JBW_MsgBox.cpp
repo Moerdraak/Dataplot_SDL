@@ -39,8 +39,8 @@ void Jbw_MsgBox::Free(void)
 	}
 
 	if (Jhandle != NULL) {
-		SDL_DestroyWindow(Jhandle->JbwGui);
-		Jhandle->JbwGui = NULL;
+		SDL_DestroyWindow(Jhandle->Gui);
+		Jhandle->Gui = NULL;
 
 		SDL_DestroyRenderer(Jhandle->Rdr);
 		Jhandle->Rdr = NULL;
@@ -157,11 +157,11 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	Parser(Msg, false);
 
 	// Create User Window
-	Jhandle->JbwGui = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
+	Jhandle->Gui = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
 		| SDL_WINDOW_BORDERLESS);
 
 	// Create renderer for User window
-	Jhandle->Rdr = SDL_CreateRenderer(Jhandle->JbwGui, -1, SDL_RENDERER_ACCELERATED);
+	Jhandle->Rdr = SDL_CreateRenderer(Jhandle->Gui, -1, SDL_RENDERER_ACCELERATED);
 
 	// Create Border
 	MsgFrame = new Jbw_Frame(Jhandle, 0, 0, Window_w, Window_h, true);
@@ -184,12 +184,12 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	while (SDL_WaitEvent(&Jhandle->Event) != 0) {
 
 		// Check When Buttons are Clicked
-		if (btnAck->BtnEvent(&Jhandle->Event) == J_BTN_CLICK) {
+		if (btnAck->BtnEvent(&Jhandle->Event) == J_MS_LCLICK) {
 			Answer = J_YES;
 			break;
 		}
 		if (btnNo != NULL) {
-			if (btnNo->BtnEvent(&Jhandle->Event) == J_BTN_CLICK) {
+			if (btnNo->BtnEvent(&Jhandle->Event) == J_MS_LCLICK) {
 				Answer = J_NO;
 				break;
 			}

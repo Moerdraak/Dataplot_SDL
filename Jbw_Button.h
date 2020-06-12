@@ -1,6 +1,8 @@
 #pragma once
-#include "Jbw_Base.h"
 #include "JBW_EditBox.h"
+//#include "Jbw_Debug.h"
+//#include "Jbw_ListBox.h"
+
 class Jbw_Button : public Jbw_Base{
 public:
 	SDL_Color BtnColor = J_C_BtnGrey;
@@ -35,7 +37,7 @@ public:
 		int Fsize = 12);
 	void CreateButton(void);
 	void RdrBtn();
-	J_Type BtnEvent(SDL_Event* Event);
+	J_Event BtnEvent(SDL_Event* Event);
 	
 };
 

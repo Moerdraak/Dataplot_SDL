@@ -9,6 +9,8 @@
 #include "Jbw_Circle.h"
 #include "Jbw_Menu.h"
 #include "Jbw_Slider.h"
+#include "Jbw_Debug.h"
+#include "Jbw_Base.h"
 #include <array>
 
 /****************************************************************************************/

@@ -1,6 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include "Jbw_Base.h"
+#include "Jbw_Debug.h"
 
 class Jbw_Circle : public Jbw_Base {
 public:

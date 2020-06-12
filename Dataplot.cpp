@@ -22,6 +22,10 @@ int main(int argc, char* argv[])
 {
 	Dataplot Dp; 
 	Jbw_Handles *h = Dp.JbwCreateLayout(); 
+	h->Debug = new Jbw_Debug(1300, 50, 500, 900);
+	h->Debug->NewLine ("MAIN: Handles created");
+
+
 
 	/******************************/
 	/*   SDL TIMER STUFFS   */
@@ -52,7 +56,9 @@ int main(int argc, char* argv[])
 //	SDL_TimerID my_timer_id = SDL_AddTimer(5000, &koos, &Dp);
 
 	Dp.LoadConfigFile("Rooivalk.cfg");
+	h->Debug->NewLine("MAIN: Loaded Config, Start UserRender()");
 	Dp.UserRender();
+	h->Debug->NewLine("MAIN: Done UserRender() ");
 
 	
 
@@ -85,7 +91,7 @@ int main(int argc, char* argv[])
 	Dp.edDataSet->RdrEbx();
 	/*   END Twak  */
 
-
+	h->Debug->NewLine("MAIN: Start TheLoop()");
 	Dp.TheLoop();
 
 	return 0;
@@ -116,9 +122,9 @@ Dataplot::~Dataplot() {
 
 	//Destroy Window and Renderer
 	SDL_DestroyRenderer(handles.Rdr);
-	SDL_DestroyWindow(handles.JbwGui);
+	SDL_DestroyWindow(handles.Gui);
 
-	handles.JbwGui = NULL;
+	handles.Gui = NULL;
 	handles.Rdr = NULL;
 
 	//Quit SDL subsystems
@@ -135,12 +141,12 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 {
 	handles.GuiArea.x = 100; handles.GuiArea.y = 200; 
 	handles.GuiArea.w = 1070; handles.GuiArea.h = 600;
-	handles.JbwGui = SDL_CreateWindow("Data Plot", handles.GuiArea.x, handles.GuiArea.y, 
+	handles.Gui = SDL_CreateWindow("Data Plot", handles.GuiArea.x, handles.GuiArea.y, 
 		handles.GuiArea.w, handles.GuiArea.h,
 		SDL_WINDOW_OPENGL);
 	
 	// Create renderer for User window https://wiki.libsdl.org/SDL_CreateRenderer
-	handles.Rdr = SDL_CreateRenderer(handles.JbwGui, -1, SDL_RENDERER_ACCELERATED);
+	handles.Rdr = SDL_CreateRenderer(handles.Gui, -1, SDL_RENDERER_ACCELERATED);
 
 	// Load the logo
 	int imgFlags = IMG_INIT_JPG; // Initialize JPG loading
@@ -166,31 +172,37 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*  Dataplot Menu  */
 	Menu = new Jbw_Menu(&handles);
 	Menu->MenuAdd("File", 40);
-	//Menu->ItemAdd("File", "New Project");
-	//Menu->ItemAdd("File", "Load Project");
-	//Menu->ItemAdd("File", "Save Project");
-	//Menu->ItemAdd("File", "Save Project As");
-	//Menu->ItemAdd("File", "Save Figure Config");
-	//Menu->ItemAdd("File", "Load Figure Config");
-	//Menu->ItemAdd("File", "FileSub", "Something");
+	Menu->ItemAdd("File", "New Project");
+	Menu->ItemAdd("File", "Load Project");
+	Menu->ItemAdd("File", "Save Project");
+	Menu->ItemAdd("File", "Save Project As");
+	Menu->ItemAdd("File", "Save Figure Config");
+	Menu->ItemAdd("File", "Load Figure Config");
+	Menu->ItemAdd("File", "FileSub", "Something");
 
 	Menu->MenuAdd("Tools", 50);
-	//Menu->ItemAdd("Tools", "Graph Properties");
-	//Menu->ItemAdd("Tools", "Convert Old Project Files");
-	//Menu->MenuAdd("Tools", "Convert Data for Dataplot");
-	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "Pass3200 data");
-	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "CSV data");
-	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "ACRA data");
-	//Menu->ItemAdd("Tools", "Convert Data for Dataplot", "Seeker 400 data");
+	Menu->ItemAdd("Tools", "Graph Properties");
+	Menu->MenuAdd("Tools", "Convert Old Project Files");
+	Menu->MenuAdd("Tools", "Convert Data for Dataplot");
+	Menu->ItemAdd("Convert Data for Dataplot", "Pass3200 data");
+	Menu->ItemAdd("Convert Data for Dataplot", "CSV data");
+	Menu->ItemAdd("Convert Data for Dataplot", "ACRA data");
+	Menu->ItemAdd("Convert Data for Dataplot", "Seeker 400 data");
 
 	Menu->MenuAdd("Help", 40);
-	//Menu->ItemAdd("Help", "Help");
-	//Menu->ItemAdd("Help", "About");
+	Menu->ItemAdd("Help", "Help");
+	Menu->ItemAdd("Help", "About");
 	
-	
+	Menu->MenuAdd("Tools", "Tools Sub 1");
+	Menu->MenuAdd("Tools", "Tools Sub 2");
 
-
-
+	Menu->MenuAdd("Help", "Help Sub 1");
+	Menu->MenuAdd("File", "File Sub 1");
+	Menu->MenuAdd("Tools Sub 2", "Tools Sub 2 Sub 1");
+	Menu->ItemAdd("Tools Sub 2 Sub 1", "Tools Sub 2 Sub 1 Item 1");
+	Menu->ItemAdd("Tools Sub 2", "Tools Sub 2 Item 1");
+	Menu->ItemAdd("Tools Sub 2 Sub 1", "Tools Sub 2 Sub 1 Item 2");
+	Menu->ItemAdd("Tools", "Tools Item 2 Hoe dan nou");
 	/*  DataPlot Heading */
 	txtDataPlotName = new Jbw_Text(&handles, "DataPlot", 128, 30, 24);
 	txtVersion = new Jbw_Text(&handles, "Version: c1.0", 132, 55, 11);
@@ -318,7 +330,7 @@ void Dataplot::UserRender(void)
 	SDL_RenderClear(handles.Rdr);
 
 	// Rnder the Menu
-	Menu->MnuRdr(&handles);
+	Menu->MnuRdr();
 
 	/*  DataPlot Heading */
 	txtDataPlotName->RdrTxt();
@@ -427,7 +439,39 @@ void Dataplot::UserRender(void)
 	NoggeLyn.RdrPoly();
 	Lyn->RdrPoly();
 	delete Lyn;
-//	SDL_RenderPresent(handles.Rdr);
+
+	
+
+/*
+	SDL_Surface* GetSurf = SDL_GetWindowSurface(handles.Gui);
+	unsigned char* pixels = new (std::nothrow) unsigned char[GetSurf->w * GetSurf->h * GetSurf->format->BytesPerPixel];
+	SDL_Rect CopyArea = { 500, 100, 500, 300 };
+	SDL_RenderReadPixels(handles.Rdr, &CopyArea, GetSurf->format->format, pixels, GetSurf->w* GetSurf->format->BytesPerPixel);
+	SDL_Surface* saveSurface = SDL_CreateRGBSurfaceFrom(pixels, CopyArea.w, CopyArea.h,
+		GetSurf->format->BitsPerPixel, GetSurf->w * GetSurf->format->BytesPerPixel,
+		GetSurf->format->Rmask, GetSurf->format->Gmask, GetSurf->format->Bmask, GetSurf->format->Amask);
+	
+	// Create an SDL_Texture from the SDL_Surface -> Moving from RAM to Graphics card RAM
+	SDL_Texture* AreaImage = SDL_CreateTextureFromSurface(handles.Rdr, saveSurface);
+	
+	// Set the Vieport for pasting AreaImage and Render the AreaImage
+	CopyArea.x += 10;
+	SDL_RenderSetViewport(handles.Rdr, &CopyArea);
+	SDL_RenderCopy(handles.Rdr, AreaImage, NULL, NULL);
+	SDL_RenderPresent(handles.Rdr);
+	
+	// Clean up memory
+	SDL_FreeSurface(saveSurface); saveSurface = NULL;
+	delete[] pixels; pixels = NULL;
+	SDL_DestroyTexture(AreaImage); AreaImage = NULL;
+	*/
+
+	////Create texture from surface pixels
+		//Uint32 colorkey = SDL_MapRGB(loadedSurface->format, 255, 255, 255);
+		//SDL_SetColorKey(loadedSurface, SDL_TRUE, colorkey);
+		//LogoImage = SDL_CreateTextureFromSurface(handles.Rdr, loadedSurface);
+
+
 
 	/**********   END PLAY AREA   ********/
 
@@ -436,8 +480,8 @@ void Dataplot::UserRender(void)
 
 	/****    SET VIEWPORT TO LOGO AREA     ****/
 	SDL_RenderSetViewport(handles.Rdr, &LogoArea);
-	SDL_SetRenderDrawColor(handles.Rdr, 255, 255, 255, 255);
-	SDL_RenderCopy(handles.Rdr, LogoImage, NULL, NULL); // Clear Logo 
+//	SDL_SetRenderDrawColor(handles.Rdr, 255, 0, 255, 255);
+	SDL_RenderCopy(handles.Rdr, LogoImage, NULL, NULL); 
 
 	/*      RENDER  USER SCREEN     */
 	SDL_RenderPresent(handles.Rdr);
@@ -449,29 +493,46 @@ void Dataplot::UserRender(void)
 void Dataplot::TheLoop(void)
 {
 	while (SDL_WaitEvent(&handles.Event) != 0) {
-		
+		/* BEGIN: MUST HAVE FOR JBW GUI */
 		// Quit program
 		if (handles.Event.type == SDL_QUIT)
 		{
 			break;
 		}
 
-		// Menu Events
-		switch (Menu->MnuEvent(&handles)) {
-		case 0:
-
-			break;
-		case 1:
-			
-			break;
-		case 2:
-			
-			break;
+		// Check if Window is active
+		if ((SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) 
+			&& handles.Event.window.event == SDL_WINDOWEVENT_ENTER) {
+			handles.WindowActive = true;
+			handles.Debug->NewLine("DataPlot WIndow: ACTIVE");
+			continue;
 		}
+		else if ((SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) 
+			&& handles.Event.window.event == SDL_WINDOWEVENT_LEAVE) {
+			handles.WindowActive = false;
+			handles.Debug->NewLine("DataPlot WIndow: IN-ACTIVE");
+			continue;
+		}
+		/* END: MUST HAVE FOR JBW GUI */
+
+
+		// Menu Events
+		Menu->MnuEvent(&handles);
+		//switch (Menu->MnuEvent(&handles)) {
+		//case 0:
+
+		//	break;
+		//case 1:
+		//	
+		//	break;
+		//case 2:
+		//	
+		//	break;
+		//}
 
 		/*  Data Directory */
 		edDataDir->EbxEvent(&handles.Event);
-		if (btnDataDir->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnDataDir->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnDataDir_Click(&handles);
 		}
 
@@ -497,11 +558,11 @@ void Dataplot::TheLoop(void)
 		
 
 		/*   Messages   */
-		if(lbxMessage->LbxEvent(&handles.Event) == J_BTN_CLICK) {
+		if(lbxMessage->LbxEvent(&handles.Event) == J_MS_LCLICK) {
 			grdFigure->Set(2, 3, lbxMessage->Index);
 		}
 
-		if (btnClear->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnClear->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnClear_Click();
 		}
 
@@ -517,22 +578,24 @@ void Dataplot::TheLoop(void)
 			int sdfg = 0;
 		}
 
-		if (btnPlot->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnPlot->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnPlot_Click(&handles);
 		}
-		if (btnPlotAll->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnPlotAll->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnPlotAll_Click(&handles);
 		}
-		if (btnUp->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnUp->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnUp_Click(&handles);
 		}
-		if (btnDown->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnDown->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnDown_Click(&handles);
 		}
-		if (btnAdd->BtnEvent(&handles.Event) == J_BTN_CLICK) {
+		if (btnAdd->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnAdd_Click(&handles);
 		}
 
+
+		handles.Debug->dbgEvent(&handles.Event);
 
 		/********** PLAY AREA ********/
 		Slider->SldrEvent(&handles.Event);

@@ -4,6 +4,7 @@
 #include "JBW_EditBox.h"
 #include "JBW_ListBox.h"
 #include "Jbw_Frame.h"
+#include "Jbw_Debug.h"
 
 class Jbw_ComboBox : public Jbw_Base {
 public:
@@ -34,7 +35,7 @@ public:
 	void CreateCbx(void);
 	void AddRow(std::string NewText);
 	void RdrCbx(void);
-	J_Type CbxEvent(SDL_Event* Event);
+	J_Event CbxEvent(SDL_Event* Event);
 	void CloseList(void);
 };
 

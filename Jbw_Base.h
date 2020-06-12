@@ -5,6 +5,7 @@
 #include "SDL_ttf.h"
 #include <string>
 
+
 /******************************************************************************************
 								ENUM / CONSTANTS
 ******************************************************************************************/
@@ -23,9 +24,15 @@ enum J_Type : const short int {
 	J_LEFT, J_CENTRE, J_RIGHT, // TxtBox
 	J_OK, J_YES, J_NO, J_YESNO, // MsgBox
 	J_CLICK, 
-	J_BTN_CLICK, J_UP, J_DOWN, // Callback events
+	J_UP, J_DOWN, // Callback events
 	J_ITEM, J_MENU // Menu 
 };
+
+enum J_Event : const short int {
+	J_E_NULL, 
+	J_MS_LCLICK, J_MS_RCLICK, J_MS_OVER
+};
+
 
 const SDL_Color J_WHITE = { 255, 255, 255, 255 };
 const SDL_Color J_BLACK = { 0, 0, 0, 255 };
@@ -67,13 +74,21 @@ class Jbw_ComboBox;
 class Jbw_Button;
 class Jbw_Grid;
 class Jbw_Slider;
+class Jbw_Debug;
 
 struct Jbw_Handles {
+	bool WindowActive = true;
 	SDL_Rect GuiArea = { 0, 0, 0, 0 };
-	SDL_Window* JbwGui = NULL;
+	SDL_Window* Gui = NULL;
 	SDL_Renderer* Rdr = NULL;
 	SDL_Event Event;
 	void** Jbw_Obj;
+	Jbw_Debug* Debug;
+};
+
+struct Jbw_Return {
+	bool ReturnType = false;
+	std::string ErrMessage = "";
 };
 
 /******************************************************************************************
@@ -101,13 +116,19 @@ public:
 	CONSTRUCTORS / DESTRUCTORS
 ------------------------------------------------------------------------------------------*/
 public:
-	Jbw_Base() {};
-	~Jbw_Base() {};
-
-	/* I don't "new" jhandle - therefore I do not create memory for it
+//	Jbw_Base() {};
+//	~Jbw_Base();
+/* I don't "new" jhandle - therefore I do not create memory for it
 	and therefore do not need to have a copy or assignment constructor*/
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTIONS
+------------------------------------------------------------------------------------------*/
+	SDL_Texture* CopyArea(Jbw_Handles* handles, int x, int y, int w, int h);
+	void PasteArea(Jbw_Handles* handles, SDL_Texture* Image, int x = -1, int y = -1, int w = -1, int h = -1);
+	void FreeArea(SDL_Texture* Image);
 
 //	Jbw_Base(Jbw_Base& cp);
 //	void operator=(Jbw_Base& cp);
 };
+

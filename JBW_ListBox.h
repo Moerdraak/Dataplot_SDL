@@ -1,9 +1,13 @@
 #pragma once
-#include "Jbw_Base.h"
-#include "Jbw_Frame.h"
-#include "Jbw_Text.h"
-#include "Jbw_Button.h"
-#include "Jbw_Slider.h"
+//#include "Jbw_Base.h"
+//#include "Jbw_Frame.h"
+//#include "Jbw_Text.h"
+//#include "Jbw_Button.h"
+
+#include "Jbw_Slider.h" // Pulls in Jbw_Button.h
+
+// class Jbw_Debug;
+
 
 class Jbw_ListBox : public Jbw_Frame {
 /*-----------------------------------------------------------------------------------------
@@ -21,7 +25,8 @@ public:
 	int FromLine = 0;
 	int ToLine = 0;
 	int Index = -1;
-	
+	SDL_Color TxtBorderColor = J_WHITE;
+	SDL_Color TxtFillColor = J_WHITE;
 	int msPrevPosY = 0;
 	bool SliderActive = false;
 	int PointsPerline = 0;
@@ -51,8 +56,8 @@ public:
 		EVENT FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 private:
-	J_Type ListEvent(SDL_Event* Event, int msX, int msY);
+	J_Event ListEvent(SDL_Event* Event, int msX, int msY);
 public:
-	J_Type LbxEvent(SDL_Event* Event);
+	J_Event LbxEvent(SDL_Event* Event);
 
 };

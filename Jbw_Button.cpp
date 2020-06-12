@@ -98,7 +98,13 @@ void Jbw_Button::CreateButton(void)
 		Tbx->Border->LineColor = BtnBorderColor;
 	}
 	else {
+		Tbx->Text.assign(Caption);
 		Tbx->Obj = Obj;
+		Tbx->Align = TxtAlign;
+		Tbx->FrameOn = true;
+		Tbx->FillOn = true;
+		Tbx->Border->FillColor = BtnColor;
+		Tbx->Border->LineColor = BtnBorderColor;
 		Tbx->CreateTbx();
 	}
 	Tbx->CreateTexture();
@@ -119,12 +125,18 @@ void Jbw_Button::RdrBtn(void)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: BtnEvent
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_Button::BtnEvent(SDL_Event* Event)
+J_Event Jbw_Button::BtnEvent(SDL_Event* Event)
 {
-	J_Type EventType = J_NULL;
+	J_Event Return = J_E_NULL;
 
 	if (Visible == false || Enabled == false) {
-		return EventType;
+		return Return;
+	}
+
+	if (Jhandle->WindowActive == false) {
+		if (Event->type = SDL_MOUSEMOTION) {
+			return Return;
+		}
 	}
 
 	//If mouse event happened
@@ -140,14 +152,15 @@ J_Type Jbw_Button::BtnEvent(SDL_Event* Event)
 			if (msOver == false) {
 				msOver = true;
 				DoRender = true;
+				Return = J_MS_OVER;
 			}
-			
+	//		Jhandle->Debug->NewLine("Jbw_Button: Mouse event type: ", (double)Event->type);
 			switch (Event->type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
 				Tbx->Border->FillColor = ClickColor;
 				DoRender = true;
-				EventType = J_BTN_CLICK;
+				Return = J_MS_LCLICK;
 				break;
 
 			case SDL_MOUSEBUTTONUP:
@@ -162,6 +175,7 @@ J_Type Jbw_Button::BtnEvent(SDL_Event* Event)
 			if (msOver == true) {
 				msOver = false;
 				DoRender = true;
+				Return = J_MS_OVER;
 			}
 			Tbx->Border->LineColor = BtnBorderColor;
 			Tbx->Border->FillColor = BtnColor;
@@ -172,5 +186,5 @@ J_Type Jbw_Button::BtnEvent(SDL_Event* Event)
 			RdrBtn();
 		}
 	}
-	return EventType;
+	return Return;
 }

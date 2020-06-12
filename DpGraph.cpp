@@ -30,10 +30,10 @@ DpGraph::DpGraph(Jbw_Handles* h) {
 	ghandles = new Jbw_Handles;
 
 	// Create Graph window
-	ghandles->JbwGui = SDL_CreateWindow("Data Plot", 500, 300, G_SCREEN_W, G_SCREEN_H, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	ghandles->Gui = SDL_CreateWindow("Data Plot", 500, 300, G_SCREEN_W, G_SCREEN_H, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
 	// Create renderer for Graph window
-	ghandles->Rdr = SDL_CreateRenderer(ghandles->JbwGui, -1, SDL_RENDERER_ACCELERATED);
+	ghandles->Rdr = SDL_CreateRenderer(ghandles->Gui, -1, SDL_RENDERER_ACCELERATED);
 	// Initialize True Type Fonts
 	TTF_Init();
 
