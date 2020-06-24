@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	Jbw_Handles *h = Dp.JbwCreateLayout(); 
 	h->Debug = new Jbw_Debug(1300, 50, 500, 900);
 	h->Debug->NewLine ("MAIN: Handles created");
-
+//	h->Debug->Active = false;
 
 
 	/******************************/
@@ -255,7 +255,6 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*   Messages   */
 	txtMessages = new Jbw_Text(&handles, "Messages", 12, 480, 12);
 	lbxMessage = new Jbw_ListBox(&handles, 12, 495, 1048, 95, 11);
-//	lbxMessage = new Jbw_ListBox(&handles, 400, 400, 400, 153, 11);
 	btnClear = new Jbw_Button(&handles, 1020, 475, 40, 18, "Clear", 12);
 
 	/* Plot Buttons  */
@@ -494,25 +493,57 @@ void Dataplot::TheLoop(void)
 {
 	while (SDL_WaitEvent(&handles.Event) != 0) {
 		/* BEGIN: MUST HAVE FOR JBW GUI */
+
 		// Quit program
-		if (handles.Event.type == SDL_QUIT)
+	//	handles.Debug->NewLine("EVENT LOOP:  ", (int)handles.Event.type);
+		if (handles.Event.type == SDL_QUIT /*256*/ || handles.Event.window.event == SDL_WINDOWEVENT_CLOSE /* 14 */)
 		{
-			break;
+			if (SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) {
+				break;
+			}
 		}
+
+
+		/* TEMP */
+		//if (handles.Event.type == SDL_WINDOWEVENT) {
+		//	handles.Debug->NewLine("DataPlot Window Event: ", (int)handles.Event.window.event);
+		//
+		//}
+
+		//if (handles.Event.type == SDL_MOUSEBUTTONDOWN || handles.Event.type == SDL_MOUSEBUTTONUP) {
+		//	handles.Debug->NewLine("DataPlot Mouse Button Event: ", (int)handles.Event.button.clicks);
+
+		//}
 
 		// Check if Window is active
 		if ((SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) 
-			&& handles.Event.window.event == SDL_WINDOWEVENT_ENTER) {
+			&& handles.Event.window.event == SDL_WINDOWEVENT_ENTER/* 10 */) {
 			handles.WindowActive = true;
 			handles.Debug->NewLine("DataPlot WIndow: ACTIVE");
+
 			continue;
 		}
 		else if ((SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) 
-			&& handles.Event.window.event == SDL_WINDOWEVENT_LEAVE) {
+			&& handles.Event.window.event == SDL_WINDOWEVENT_LEAVE/* 11 */) {
 			handles.WindowActive = false;
 			handles.Debug->NewLine("DataPlot WIndow: IN-ACTIVE");
 			continue;
 		}
+
+
+		/* !!! REFINE THIS !! Dumb try at resolving first mouse click on Window when Window was Inactive
+		      Lot of guessing going on here need to understand properly  !!!*/
+		if (handles.Event.window.event == SDL_WINDOWEVENT_EXPOSED || handles.Event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+			//handles.Event.window.event = 0;
+			//handles.Event.type = SDL_MOUSEBUTTONDOWN;
+			//SDL_PushEvent(&handles.Event);
+			//handles.Debug->NewLine("PUSH EVENT", (double)SDL_GetWindowID(handles.Gui));
+		}
+		/* !!! REFINE THIS !! Dumb try at resolving first mouse click on Window when Window was Inactive
+			  Lot of guessing going on here need to understand properly  !!!*/
+
+
+
 		/* END: MUST HAVE FOR JBW GUI */
 
 
@@ -559,7 +590,7 @@ void Dataplot::TheLoop(void)
 
 		/*   Messages   */
 		if(lbxMessage->LbxEvent(&handles.Event) == J_MS_LCLICK) {
-			grdFigure->Set(2, 3, lbxMessage->Index);
+			lbxMessage_CallBack();
 		}
 
 		if (btnClear->BtnEvent(&handles.Event) == J_MS_LCLICK) {
@@ -567,16 +598,12 @@ void Dataplot::TheLoop(void)
 		}
 
 		/*   Grid   */
-		grdFigure->GrdEvent(&handles.Event);
+		//grdFigure->GrdEvent(&handles.Event);
 	
-		if (grdFigure->OnChange == true) {
-			grdFigure->OnChange = false;
-			grdFigure_OnChange(grdFigure->GridEvent);
-		}
-		
-		if (handles.Event.user.type == 1) {
-			int sdfg = 0;
-		}
+		//if (grdFigure->OnChange == true) {
+		//	grdFigure->OnChange = false;
+		//	grdFigure_OnChange(grdFigure->GridEvent);
+		//}
 
 		if (btnPlot->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnPlot_Click(&handles);
@@ -595,13 +622,24 @@ void Dataplot::TheLoop(void)
 		}
 
 
-		handles.Debug->dbgEvent(&handles.Event);
+	//	handles.Debug->dbgEvent(&handles.Event);
 
 		/********** PLAY AREA ********/
 		Slider->SldrEvent(&handles.Event);
-		cbxPlayCopy->CbxEvent(&handles.Event);
+		//cbxPlayCopy->CbxEvent(&handles.Event);
 	}
 }
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: grdFigure_CallBack
+------------------------------------------------------------------------------------------*/
+void Dataplot::lbxMessage_CallBack(void)
+{
+	edTitle->Tbx->New(lbxMessage->TxtList[lbxMessage->Index].Text);
+	edTitle->RdrEbx();
+}
+
+
 
 /*------------------------------------------------------------------------------------------
   FUNCTION: BtnClear_Click

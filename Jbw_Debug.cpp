@@ -80,6 +80,25 @@ void Jbw_Debug::NewLine(std::string NewTxt, bool Thing)
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: NewLine
 ------------------------------------------------------------------------------------------*/
+void Jbw_Debug::NewLine(std::string NewTxt, int Thing)
+{
+	if (Active) {
+		AddText(NewTxt);
+
+		TxtList[Cnt - 1].Text.append(std::to_string(Thing));
+		TxtList[Cnt - 1].CreateTexture();
+
+		if (Cnt > Lines) {
+			FromLine = Cnt - Lines;
+			ToLine = Cnt;
+		}
+		RdrLbx();
+	}
+}
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: NewLine
+------------------------------------------------------------------------------------------*/
 void Jbw_Debug::NewLine(std::string NewTxt, double Thing)
 {
 	if (Active) {
@@ -141,6 +160,17 @@ void Jbw_Debug::Clear(void)
 ------------------------------------------------------------------------------------------*/
 void Jbw_Debug::dbgEvent(SDL_Event* Event)
 {
+
+	if (Event->type == SDL_QUIT /*256*/ || Event->window.event == SDL_WINDOWEVENT_CLOSE /* 14 */)
+	{
+		
+		if (SDL_GetWindowID(Jhandle->Gui) == Event->window.windowID) {
+			Active = false;
+			SDL_DestroyRenderer(Jhandle->Rdr);
+			SDL_DestroyWindow(Jhandle->Gui);
+		}
+	}
+
 	// Check if Window is active
 	if ((SDL_GetWindowID(Jhandle->Gui) == Event->window.windowID) && Event->window.event == SDL_WINDOWEVENT_ENTER) {
 		msOver = true;

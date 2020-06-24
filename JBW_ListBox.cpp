@@ -250,7 +250,7 @@ J_Event Jbw_ListBox::ListEvent(SDL_Event* Event, int msX, int msY)
 					if (msX > TxtList[I].Border->Obj.x
 						&& msX < TxtList[I].Border->Obj.x + TxtList[I].Border->Obj.w
 						&& msY > TxtList[I].Border->Obj.y
-						&& msY < TxtList[I].Border->Obj.y + 3 + TxtList[I].Border->Obj.h)
+						&& msY < TxtList[I].Border->Obj.y + 1 + TxtList[I].Border->Obj.h)
 					{
 						TxtList[I].msOver = true;
 						if (TxtList[I].DoRender == false) {

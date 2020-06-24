@@ -65,7 +65,7 @@ Jbw_ComboBox& Jbw_ComboBox::operator=(const Jbw_ComboBox& cp)
 	CbxLbxVis = cp.CbxLbxVis;
 	CbxTxtSize = cp.CbxTxtSize;
 
-	delete CbxEdit; // Actually also don't need to delete these .... Hmmm but safer I guess
+	delete CbxEdit; // Actually these should always be NULL at this point
 	delete CbxBtn;
 	delete CbxLbx;
 	delete lstHandles; 
@@ -195,10 +195,8 @@ void Jbw_ComboBox::RdrCbx()
 		CbxLbx->ResizeListBox(0, 0 , Obj.w, Lheight);
 
 		// Create Listbox Window
-
 		lstHandles->Gui = SDL_CreateWindow("CbxLbx", GuiX + Obj.x, GuiY + Obj.y + Obj.h - 1,
-			Obj.w, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |
-			SDL_WINDOW_ALWAYS_ON_TOP);
+			Obj.w, Lheight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS ); /* SDL_WINDOW_ALWAYS_ON_TOP*/
 
 		// Create Listbox Renderer
 		lstHandles->Rdr = SDL_CreateRenderer(lstHandles->Gui, -1, SDL_RENDERER_ACCELERATED);
@@ -232,16 +230,18 @@ J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 	J_Event Answer = J_E_NULL;
 
 	if (Visible == false || Enabled == false) {
+		Jhandle->Debug->NewLine("CbxEvent = false");
 		return Answer;
 	}
 
 	bool Inside = false;
 	bool Flag = false;
-
+	
 	if (Event->type == SDL_WINDOWEVENT && CbxLbxVis == true) {
 		if (Event->window.event == SDL_WINDOWEVENT_FOCUS_LOST &&
 			strcmp(SDL_GetWindowTitle(SDL_GetWindowFromID(Event->window.windowID)),
 				"CbxLbx") == 0) {
+			Jhandle->Debug->NewLine("CbxEvent: CbxLbxVis = false");
 			CbxLbxVis = false;
 			RdrCbx();
 		}
@@ -281,6 +281,7 @@ J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 
 	// Listbox Events
 	if (CbxLbxVis == true && lstHandles != NULL) {
+		Jhandle->Debug->NewLine("Jbw_Combobox: CbxEvent, Lbx");
 		if (CbxLbx->LbxEvent(Event) == J_MS_LCLICK) {
 			CbxEdit->Tbx->Text.assign(CbxLbx->TxtList[CbxLbx->Index].Text);
 			CbxEdit->Tbx->CreateTexture();

@@ -6,7 +6,7 @@
 
 #include "Jbw_Slider.h" // Pulls in Jbw_Button.h
 
-// class Jbw_Debug;
+ //class Jbw_Debug;
 
 
 class Jbw_ListBox : public Jbw_Frame {

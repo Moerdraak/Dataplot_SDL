@@ -18,6 +18,7 @@ public:
 
 	void NewLine(std::string NewTxt);
 	void NewLine(std::string NewTxt, bool Thing);
+	void NewLine(std::string NewTxt, int Thing);
 	void NewLine(std::string NewTxt, double Thing);
 	void NewLine(std::string NewTxt, std::string Thing);
 	void AddWord(std::string NewTxt);

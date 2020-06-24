@@ -812,7 +812,7 @@ FUNCTION: GrdEvent
 Jbw_Grid::grdEvent Jbw_Grid::GrdEvent(SDL_Event * Event)
 {
 	grdEvent Ev;
-
+	Jhandle->Debug->NewLine("GrdEvent");
 	if (Visible == false || Enabled == false) {
 		return Ev;
 	}

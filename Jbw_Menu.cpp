@@ -212,7 +212,7 @@ const Jbw_Menu* Jbw_Menu::MnuEvent(Jbw_Handles* h)
 
 		/* Mouse Click anywhere else than the Submenu or button (Menu name) must close all Submenu's */
 		if (h->Event.type == SDL_MOUSEBUTTONDOWN){
-			h->Debug->NewLine("Jbw_Menu: Mouse button down EVENT");
+		//	h->Debug->NewLine("Jbw_Menu: Mouse button down EVENT");
 			if (Cur->btnMenuName->msOver == false || Cur->lbxMenuName->msOver == false) {
 				if (Cur->ShowSub == true) {
 					Cur->ShowSub = false;

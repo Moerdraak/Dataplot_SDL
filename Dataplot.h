@@ -136,5 +136,5 @@ public:
 	void grdFigure_OnChange(Jbw_Grid::grdEvent GridEvent);
 	void GridCellColorChange(int Col, int Row, int Index);
 
-
+	void lbxMessage_CallBack(void);
 };
