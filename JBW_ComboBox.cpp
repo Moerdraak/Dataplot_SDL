@@ -227,6 +227,14 @@ void Jbw_ComboBox::RdrCbx()
 ------------------------------------------------------------------------------------------*/
 J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 {
+
+	/* TMP TMP*/
+	if (Event->type == SDL_MOUSEBUTTONDOWN) {
+		Jhandle->Debug->NewLine("Jbw_Combobox: 1. Mouse button down");
+	}
+	/* TMP TMP*/
+
+
 	J_Event Answer = J_E_NULL;
 
 	if (Visible == false || Enabled == false) {
@@ -278,6 +286,13 @@ J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 			RdrCbx();
 		}
 	}
+
+	/* TMP TMP*/
+	if (Event->type == SDL_MOUSEBUTTONDOWN) {
+		Jhandle->Debug->NewLine("Jbw_Combobox: Mouse button down");
+	}
+	/* TMP TMP*/
+
 
 	// Listbox Events
 	if (CbxLbxVis == true && lstHandles != NULL) {

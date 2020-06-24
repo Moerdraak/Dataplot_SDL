@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	Jbw_Handles *h = Dp.JbwCreateLayout(); 
 	h->Debug = new Jbw_Debug(1300, 50, 500, 900);
 	h->Debug->NewLine ("MAIN: Handles created");
-//	h->Debug->Active = false;
+	h->Debug->Active = false;
 
 
 	/******************************/
@@ -547,19 +547,22 @@ void Dataplot::TheLoop(void)
 		/* END: MUST HAVE FOR JBW GUI */
 
 
-		// Menu Events
-		Menu->MnuEvent(&handles);
-		//switch (Menu->MnuEvent(&handles)) {
-		//case 0:
+			/* TMP TMP*/
+		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
+			handles.Debug->NewLine("DataPlot Start: Mouse button down");
+		}
+		/* TMP TMP*/
 
-		//	break;
-		//case 1:
-		//	
-		//	break;
-		//case 2:
-		//	
-		//	break;
-		//}
+
+
+		// Menu Events
+		Menu->MnuEvent(&handles.Event);
+
+		/* TMP TMP*/
+		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
+			handles.Debug->NewLine("DataPlot 111111: Mouse button down");
+		}
+		/* TMP TMP*/
 
 		/*  Data Directory */
 		edDataDir->EbxEvent(&handles.Event);
@@ -598,12 +601,12 @@ void Dataplot::TheLoop(void)
 		}
 
 		/*   Grid   */
-		//grdFigure->GrdEvent(&handles.Event);
+		grdFigure->GrdEvent(&handles.Event);
 	
-		//if (grdFigure->OnChange == true) {
-		//	grdFigure->OnChange = false;
-		//	grdFigure_OnChange(grdFigure->GridEvent);
-		//}
+		if (grdFigure->OnChange == true) {
+			grdFigure->OnChange = false;
+			grdFigure_OnChange(grdFigure->GridEvent);
+		}
 
 		if (btnPlot->BtnEvent(&handles.Event) == J_MS_LCLICK) {
 			btnPlot_Click(&handles);
@@ -626,7 +629,12 @@ void Dataplot::TheLoop(void)
 
 		/********** PLAY AREA ********/
 		Slider->SldrEvent(&handles.Event);
-		//cbxPlayCopy->CbxEvent(&handles.Event);
+		cbxPlayCopy->CbxEvent(&handles.Event);
+		/* TMP TMP*/
+		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
+			handles.Debug->NewLine("DataPlot End: Mouse button down");
+		}
+		/* TMP TMP*/
 	}
 }
 

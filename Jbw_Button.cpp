@@ -134,7 +134,7 @@ J_Event Jbw_Button::BtnEvent(SDL_Event* Event)
 	}
 
 	if (Jhandle->WindowActive == false) {
-		if (Event->type = SDL_MOUSEMOTION) {
+		if (Event->type == SDL_MOUSEMOTION) {
 			return Return;
 		}
 	}

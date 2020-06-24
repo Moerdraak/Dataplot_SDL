@@ -176,14 +176,14 @@ void Jbw_Menu::lbxMenuNameRdr()
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: MnuEvent
 ------------------------------------------------------------------------------------------*/
-const Jbw_Menu* Jbw_Menu::MnuEvent(Jbw_Handles* h)
+const Jbw_Menu* Jbw_Menu::MnuEvent(SDL_Event* Event)
 {
 
 	Jbw_Menu* Cur = Next;
 	while (Cur != NULL) {
 
 		/* Mouse Over event on the buttons must close all other submenus and open the relevant one */
-		if (Cur->btnMenuName->BtnEvent(&h->Event) == J_MS_OVER) {
+		if (Cur->btnMenuName->BtnEvent(Event) == J_MS_OVER) {
 			// Check if it's Top level
 			if (Cur->btnMenuName->msOver == true && Cur->ShowSub == false) {
 				//  Set all ShowSubs  to false
@@ -200,7 +200,7 @@ const Jbw_Menu* Jbw_Menu::MnuEvent(Jbw_Handles* h)
 
 				// Set Current SubMenu ShowSub to true
 				Cur->ShowSub = true;
-				h->Debug->NewLine("Jbw_Menu: Set Cur->ShowSub = true");
+				Jhandle->Debug->NewLine("Jbw_Menu: Set Cur->ShowSub = true");
 
 				// If it's a Top Level menu, Render it's SubMenu
 				if (Cur->Parent->Parent == NULL) { 
@@ -211,7 +211,7 @@ const Jbw_Menu* Jbw_Menu::MnuEvent(Jbw_Handles* h)
 		}
 
 		/* Mouse Click anywhere else than the Submenu or button (Menu name) must close all Submenu's */
-		if (h->Event.type == SDL_MOUSEBUTTONDOWN){
+		if (Event->type == SDL_MOUSEBUTTONDOWN){
 		//	h->Debug->NewLine("Jbw_Menu: Mouse button down EVENT");
 			if (Cur->btnMenuName->msOver == false || Cur->lbxMenuName->msOver == false) {
 				if (Cur->ShowSub == true) {

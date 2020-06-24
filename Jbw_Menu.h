@@ -65,6 +65,6 @@ public:
 	void ItemAdd(std::string NewText, std::string SubbtnMenuName, std::string MenuItem);
 	void MnuRdr();
 	void lbxMenuNameRdr();
-	const Jbw_Menu* MnuEvent(Jbw_Handles* handles);
+	const Jbw_Menu* MnuEvent(SDL_Event* Event);
 };
 
