@@ -228,17 +228,10 @@ void Jbw_ComboBox::RdrCbx()
 J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 {
 
-	/* TMP TMP*/
-	if (Event->type == SDL_MOUSEBUTTONDOWN) {
-		Jhandle->Debug->NewLine("Jbw_Combobox: 1. Mouse button down");
-	}
-	/* TMP TMP*/
-
-
 	J_Event Answer = J_E_NULL;
 
 	if (Visible == false || Enabled == false) {
-		Jhandle->Debug->NewLine("CbxEvent = false");
+//		Jhandle->Debug->NewLine("CbxEvent = false");
 		return Answer;
 	}
 
@@ -249,7 +242,7 @@ J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 		if (Event->window.event == SDL_WINDOWEVENT_FOCUS_LOST &&
 			strcmp(SDL_GetWindowTitle(SDL_GetWindowFromID(Event->window.windowID)),
 				"CbxLbx") == 0) {
-			Jhandle->Debug->NewLine("CbxEvent: CbxLbxVis = false");
+	//		Jhandle->Debug->NewLine("CbxEvent: CbxLbxVis = false");
 			CbxLbxVis = false;
 			RdrCbx();
 		}
@@ -287,16 +280,10 @@ J_Event Jbw_ComboBox::CbxEvent(SDL_Event* Event)
 		}
 	}
 
-	/* TMP TMP*/
-	if (Event->type == SDL_MOUSEBUTTONDOWN) {
-		Jhandle->Debug->NewLine("Jbw_Combobox: Mouse button down");
-	}
-	/* TMP TMP*/
-
 
 	// Listbox Events
 	if (CbxLbxVis == true && lstHandles != NULL) {
-		Jhandle->Debug->NewLine("Jbw_Combobox: CbxEvent, Lbx");
+//		Jhandle->Debug->NewLine("Jbw_Combobox: CbxEvent, Lbx");
 		if (CbxLbx->LbxEvent(Event) == J_MS_LCLICK) {
 			CbxEdit->Tbx->Text.assign(CbxLbx->TxtList[CbxLbx->Index].Text);
 			CbxEdit->Tbx->CreateTexture();

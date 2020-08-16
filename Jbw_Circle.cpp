@@ -8,6 +8,10 @@ Jbw_Circle::Jbw_Circle(Jbw_Handles* handles, int x, int y, int Radius)
     CirRad = Radius;
 
 }
+
+/*-----------------------------------------------------------------------------------------
+    FUNCTION: CircleOpen
+------------------------------------------------------------------------------------------*/
 void Jbw_Circle::CircleOpen()
 {
     SDL_SetRenderDrawColor(Jhandle->Rdr, Border.r, Border.g, Border.b, Border.a);
@@ -34,6 +38,10 @@ void Jbw_Circle::CircleOpen()
     }
 }
 
+
+/*-----------------------------------------------------------------------------------------
+    FUNCTION: CircleFill
+------------------------------------------------------------------------------------------*/
 void Jbw_Circle::CircleFill()
 {
     SDL_SetRenderDrawColor(Jhandle->Rdr, Fill.r, Fill.g, Fill.b, Fill.a);

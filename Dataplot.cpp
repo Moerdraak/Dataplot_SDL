@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	Jbw_Handles *h = Dp.JbwCreateLayout(); 
 	h->Debug = new Jbw_Debug(1300, 50, 500, 900);
 	h->Debug->NewLine ("MAIN: Handles created");
-	h->Debug->Active = false;
+//	h->Debug->Active = false;
 
 
 	/******************************/
@@ -166,8 +166,6 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	}
 	
 	IMG_Quit();
-
-
 
 	/*  Dataplot Menu  */
 	Menu = new Jbw_Menu(&handles);
@@ -433,12 +431,14 @@ void Dataplot::UserRender(void)
 	Lyn->LineColor = J_RED;
 	Lyn->RdrPoly();
 
-	Jbw_Polygon NoggeLyn(*Lyn);
-	NoggeLyn.LineColor = J_GREEN;
-	NoggeLyn.RdrPoly();
-	Lyn->RdrPoly();
-	delete Lyn;
+	Jbw_Circle Circle1(&handles, 550, 450, 20);
+	Circle1.Border = J_LIME;
+	Circle1.CircleOpen();
 
+	Jbw_Circle Circle2(&handles, 600, 450, 20);
+	Circle2.Border = J_BLUE; // Ignored
+	Circle2.Fill = J_YELLOW;
+	Circle2.CircleFill();
 	
 
 /*
@@ -494,6 +494,15 @@ void Dataplot::TheLoop(void)
 	while (SDL_WaitEvent(&handles.Event) != 0) {
 		/* BEGIN: MUST HAVE FOR JBW GUI */
 
+
+
+
+
+		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
+			handles.Debug->NewLine("Mouse Click");
+		}
+
+
 		// Quit program
 	//	handles.Debug->NewLine("EVENT LOOP:  ", (int)handles.Event.type);
 		if (handles.Event.type == SDL_QUIT /*256*/ || handles.Event.window.event == SDL_WINDOWEVENT_CLOSE /* 14 */)
@@ -519,14 +528,16 @@ void Dataplot::TheLoop(void)
 		if ((SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) 
 			&& handles.Event.window.event == SDL_WINDOWEVENT_ENTER/* 10 */) {
 			handles.WindowActive = true;
-			handles.Debug->NewLine("DataPlot WIndow: ACTIVE");
+			handles.Debug->NewLine("DataPlot Window: MOUSE OVER WINDOW");
+			SDL_RaiseWindow(handles.Gui);
+
 
 			continue;
 		}
 		else if ((SDL_GetWindowID(handles.Gui) == handles.Event.window.windowID) 
 			&& handles.Event.window.event == SDL_WINDOWEVENT_LEAVE/* 11 */) {
 			handles.WindowActive = false;
-			handles.Debug->NewLine("DataPlot WIndow: IN-ACTIVE");
+			handles.Debug->NewLine("DataPlot Window: MOUSE OUTSIDE WINDOW");
 			continue;
 		}
 
@@ -543,26 +554,15 @@ void Dataplot::TheLoop(void)
 			  Lot of guessing going on here need to understand properly  !!!*/
 
 
-
 		/* END: MUST HAVE FOR JBW GUI */
 
-
-			/* TMP TMP*/
-		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
-			handles.Debug->NewLine("DataPlot Start: Mouse button down");
-		}
-		/* TMP TMP*/
 
 
 
 		// Menu Events
 		Menu->MnuEvent(&handles.Event);
 
-		/* TMP TMP*/
-		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
-			handles.Debug->NewLine("DataPlot 111111: Mouse button down");
-		}
-		/* TMP TMP*/
+
 
 		/*  Data Directory */
 		edDataDir->EbxEvent(&handles.Event);
@@ -630,11 +630,7 @@ void Dataplot::TheLoop(void)
 		/********** PLAY AREA ********/
 		Slider->SldrEvent(&handles.Event);
 		cbxPlayCopy->CbxEvent(&handles.Event);
-		/* TMP TMP*/
-		if (handles.Event.type == SDL_MOUSEBUTTONDOWN) {
-			handles.Debug->NewLine("DataPlot End: Mouse button down");
-		}
-		/* TMP TMP*/
+
 	}
 }
 

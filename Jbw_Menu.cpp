@@ -213,7 +213,7 @@ const Jbw_Menu* Jbw_Menu::MnuEvent(SDL_Event* Event)
 		/* Mouse Click anywhere else than the Submenu or button (Menu name) must close all Submenu's */
 		if (Event->type == SDL_MOUSEBUTTONDOWN){
 		//	h->Debug->NewLine("Jbw_Menu: Mouse button down EVENT");
-			if (Cur->btnMenuName->msOver == false || Cur->lbxMenuName->msOver == false) {
+			if (Cur->btnMenuName->msOver == false || (Cur->lbxMenuName != NULL && Cur->lbxMenuName->msOver == false)) {
 				if (Cur->ShowSub == true) {
 					Cur->ShowSub = false;
 					SDL_DestroyRenderer(Cur->lstHandles.Rdr);
@@ -266,7 +266,7 @@ void Jbw_Menu::CreateTopLbx(Jbw_Menu* Menu)
 	Area.h = TotH + 20;
 
 	Menu->lstHandles.Gui = SDL_CreateWindow("", Area.x, Area.y, Area.w, Area.h,
-		SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS |	SDL_WINDOW_ALWAYS_ON_TOP);
+		SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS /*|	SDL_WINDOW_ALWAYS_ON_TOP */);
 
 	// Create Listbox Renderer
 	Menu->lstHandles.Rdr = SDL_CreateRenderer(Menu->lstHandles.Gui, -1, SDL_RENDERER_ACCELERATED);
