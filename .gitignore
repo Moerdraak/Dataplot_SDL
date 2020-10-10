@@ -1,6 +1,6 @@
 
 .vs*
-Debug/*
-fonts/*
-x64/*
+Debug*
+fonts*
+x64*
 *.filters

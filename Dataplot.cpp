@@ -1,7 +1,7 @@
 #include "Dataplot.h"
 #include "Jbw_Text.h" // Temporary here
 
-
+// ttt
 SDL_Point* TmpPoints;
 
 Uint32 koos(Uint32 interval, void* param) {
