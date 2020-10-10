@@ -139,12 +139,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\COBUS\Github\SDL2\SDL2_mixer\include;D:\COBUS\Github\SDL2\SDL2_ttf\include;D:\COBUS\Github\SDL2\SDL2_image\include;D:\COBUS\Github\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\cobus\Documents\GitHub\SDL2\SDL2_mixer\include;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_ttf\include;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_image\include;C:\Users\cobus\Documents\GitHub\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\COBUS\GitHub\SDL2\SDL2_mixer\lib\x64;D:\COBUS\Github\SDL2\SDL2_ttf\lib\x64;D:\COBUS\Github\SDL2\SDL2_image\lib\x64;D:\COBUS\Github\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\cobus\Documents\GitHub\SDL2\SDL2_mixer\lib\x64;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_ttf\lib\x64;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_image\lib\x64;C:\Users\cobus\Documents\GitHub\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
