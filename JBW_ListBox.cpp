@@ -80,7 +80,7 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 	}
 
 	NList[Cnt].InitTbx(Jrdr, NewTxt, FrameX + 3, FrameY + 3, FrameW - 5, 15);
-	NList[Cnt].Add(NewTxt);
+//	NList[Cnt].Add(NewTxt);
 
 	if (Cnt > 0) {
 		delete[] TxtList;
@@ -88,6 +88,7 @@ void Jbw_ListBox::AddText(std::string NewTxt)
 	TxtList = NList;
 	Cnt++;
 	TxtRendered = false;
+
 }
 
 /*-----------------------------------------------------------------------------------------

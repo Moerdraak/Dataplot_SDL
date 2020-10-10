@@ -20,9 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="data.cpp" />
-    <ClCompile Include="Dataplot.cpp" />
-    <ClCompile Include="DpGraph.cpp" />
-    <ClCompile Include="fft.cpp" />
+    <ClCompile Include="Breather.cpp" />
     <ClCompile Include="Jbw_Base.cpp" />
     <ClCompile Include="Jbw_Button.cpp" />
     <ClCompile Include="Jbw_Circle.cpp" />
@@ -31,7 +29,7 @@
     <ClCompile Include="Jbw_Frame.cpp" />
     <ClCompile Include="Jbw_FrameWork.cpp" />
     <ClCompile Include="Jbw_Grid.cpp" />
-    <ClCompile Include="JBW_ListBox.cpp" />
+    <ClCompile Include="Jbw_ListBox.cpp" />
     <ClCompile Include="Jbw_Menu.cpp" />
     <ClCompile Include="JBW_MsgBox.cpp" />
     <ClCompile Include="Jbw_Polygon.cpp" />
@@ -39,9 +37,7 @@
     <ClCompile Include="Jbw_TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="data.h" />
-    <ClInclude Include="Dataplot.h" />
-    <ClInclude Include="DpGraph.h" />
+    <ClInclude Include="Breather.h" />
     <ClInclude Include="Jbw_Base.h" />
     <ClInclude Include="Jbw_Button.h" />
     <ClInclude Include="Jbw_Circle.h" />
@@ -50,7 +46,7 @@
     <ClInclude Include="Jbw_Frame.h" />
     <ClInclude Include="Jbw_FrameWork.h" />
     <ClInclude Include="Jbw_Grid.h" />
-    <ClInclude Include="JBW_ListBox.h" />
+    <ClInclude Include="Jbw_ListBox.h" />
     <ClInclude Include="Jbw_Menu.h" />
     <ClInclude Include="JBW_MsgBox.h" />
     <ClInclude Include="Jbw_Polygon.h" />
@@ -62,7 +58,7 @@
     <ProjectGuid>{DF781F4F-1743-43DB-BD78-C6AC44057475}</ProjectGuid>
     <RootNamespace>Dataplot64</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Dataplot</ProjectName>
+    <ProjectName>Breather</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -139,12 +135,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\cobus\Documents\GitHub\SDL2\SDL2_mixer\include;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_ttf\include;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_image\include;C:\Users\cobus\Documents\GitHub\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\COBUS\Github\SDL2\SDL2_mixer\include;D:\COBUS\Github\SDL2\SDL2_ttf\include;D:\COBUS\Github\SDL2\SDL2_image\include;D:\COBUS\Github\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\cobus\Documents\GitHub\SDL2\SDL2_mixer\lib\x64;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_ttf\lib\x64;C:\Users\cobus\Documents\GitHub\SDL2\SDL2_image\lib\x64;C:\Users\cobus\Documents\GitHub\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\COBUS\GitHub\SDL2\SDL2_mixer\lib\x64;D:\COBUS\Github\SDL2\SDL2_ttf\lib\x64;D:\COBUS\Github\SDL2\SDL2_image\lib\x64;D:\COBUS\Github\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

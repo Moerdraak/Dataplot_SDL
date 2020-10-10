@@ -1,16 +1,11 @@
-#include "Dataplot.h"
+#include "Breather.h"
 #include "Jbw_Text.h" // Temporary here
 
 
-SDL_Point* TmpPoints;
 
-Uint32 koos(Uint32 interval, void* param) {
-	
-	Dataplot* Dp = static_cast<Dataplot*>(param);
-	Dp->UserRender();
-	delete Dp;
-	return SDL_AddTimer(5000, &koos, param);
-}
+
+
+HANDLE hCom;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +17,8 @@ int main(int argc, char* argv[])
 
 	Dataplot Dp; 
 	Jbw_Handles *h = Dp.JbwCreateLayout(); // SORT OUT Dp or handles DAMMIT
+
+//	SetupSerialPort("COM4");
 
 	/*   INITIAL RENDER   */
 	//	ScreenArea;
@@ -84,7 +81,7 @@ Dataplot::~Dataplot() {
 	//Destroy Window and Renderer
 	SDL_DestroyRenderer(handles.JbwRdr);
 	SDL_DestroyWindow(handles.JbwGui);
-
+	CloseHandle(hCom);
 	handles.JbwGui = NULL;
 	handles.JbwRdr = NULL;
 
@@ -127,36 +124,11 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	}
 	IMG_Quit();
 	
-
-	/***   START Framework Change Xperiment   ***/
-	//void** TmpH = new void*[10];
-	//handles.Jbw_Obj = TmpH;
-
-	//Ding = new Jbw_EditBox(handles.JbwRdr, 400, 235, 328, 18, 12);
-
-	//TmpH[0] = static_cast<Jbw_EditBox*>(Ding);	
-	//Jbw_EditBox* New = static_cast<Jbw_EditBox*>(TmpH[0]);
-
-	//MsgMsg = new Jbw_ListBox(handles.JbwRdr, 350, 350, 700, 95, 11);
-	//handles.Jbw_Obj[1] = MsgMsg;
-
-	//Tst = new Jbw_Grid(handles.JbwRdr, "Kabouter", 360, 300, 18, 5);
-	//Tst->AddCol(&handles, "r", "Parameter", 180, J_EBX);
-	//Tst->AddCol(&handles, "r", "Size", 30, J_EBX);
-	//Tst->AddCol(&handles, "r", "Bit", 55, J_EBX);
-	/***   END Framework Change Xperiment   ***/
-
-	///////// TEXT BOX   ////////////////////
-	txtNew = new Jbw_TextBox(handles.JbwRdr, "Some Basic Text", 500, 400, 300, 15, 12);
-	txtNew->ShowFrame = true;
-	txtNew->Border.LineColor = J_C_LGrey;
-	txtNew->Border.FillColor = J_C_LGrey;
-	txtNew->Align = J_CENTRE;
-	txtNew->TxtColor = J_C_Black;
-	txtNew->CreateTexture();
-
-	cbxNew = new Jbw_ComboBox(handles.JbwRdr,  500, 355, 300, 18, 11, true);
-
+	// Logo Area
+	LogoArea.x = 3;
+	LogoArea.y = 20;
+	LogoArea.w = 100;
+	LogoArea.h = 100;
 
 	/*  Dataplot Menu  */
 	Menu = new Jbw_Menu(&handles);
@@ -166,25 +138,17 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 
 
 	/*  DataPlot Heading */
-	Create(&handles, J_TXT, "txtDataPlotName", 128, 30, 0, 0, 24, "DataPlot");
-	Create(&handles, J_TXT, "txtVersion", 132, 55, 0, 0, 11, "Version: c1.0");
+	Create(&handles, J_TXT, "txtDataPlotName", 128, 30, 0, 0, 24, "BREATHER");
+	Create(&handles, J_TXT, "txtVersion", 132, 55, 0, 0, 11, "Version: 1.0");
 
-	/*  Project Detail */
-	Create(&handles, J_TXT, "txt1", 112, 120, 0, 0, 12, "Loaded Config:");
-	Create(&handles, J_TXT, "txtProject", 202, 120, 0, 0, 12, "Rooivalk");
-	Set("txtProject", "F_Bold", "1"); // make it Bold
 
-	/*  Bitplot/Wordplot Heading */
-	Create(&handles, J_TXT, "txtBpWp", 360, 30, 0, 0, 18, "Bit plot");
 
 	/*  Data Directory */
 	Create(&handles, J_TXT, "txtDataDir", 12, 140, 0, 0, 12, "Data Directory:");
-//	Create(&handles, J_EBX, "edDataDir", 12, 155, 328, 18, 11);
 	edDataDir = new Jbw_EditBox(handles.JbwRdr, 12, 155, 328, 18, 11);
 	edDataDir->Tag.assign("edDataDir");
 
 	Set("edDataDir",  "Align", "J_LEFT");
-//	Create(&handles, J_BTN, "btnDataDir", 339, 135, 14, 18, 12, ":");
 	btnDataDir = new Jbw_Button(handles.JbwRdr, 339, 155, 14, 18, ":", 12);
 
 	/*  File ID: */
@@ -195,17 +159,13 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	/*  DataSet Description */
 	Create(&handles, J_TXT, "txtDataSet", 12, 210, 0, 0, 12, "Dataset Description:");
 	Create(&handles, J_EBX, "edDataSet", 12, 225, 300, 18, 11);
-	Set("edDataSet", "Text", "Rooivalk Rocket Flight test at OTB (2019-02-03)",
-		 "Align", "J_LEFT");
+	Set("edDataSet", "Text", "TEST", "Align", "J_LEFT");
 
 	/*  Figure Combobox  */
 	Create(&handles, J_TXT, "txtFigure", 12, 340, 0, 0, 12, "Select Figure");
 	Create(&handles, J_CBX, "cbxFigure", 12, 355, 300, 18, 11);
-	
 	Set("cbxFigure", "Align", "J_LEFT");
 
-	/*   Figure Type Button */
-	Create(&handles, J_TXT, "txtFigBtn", 170, 340, 0, 0, 12, "Bitplot           Wordplot");
 
 	/*  Title  */
 	Create(&handles, J_TXT, "txtTitle", 12, 375, 0, 0, 12, "Graph Title");
@@ -222,44 +182,64 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	Create(&handles, J_EBX, "edXaxLabel", 12, 460, 300, 18, 11);
 	Set("edXaxLabel", "Align", "J_LEFT");
 
-	/*   Time On/Off Button */
-	Create(&handles, J_TXT, "txtOnOffBtn", 260, 445, 0, 0, 12, "Time");
-
 	/*   Messages   */
-	Create(&handles, J_TXT, "txtMessages", 12, 480, 0, 0, 12, "Messages");
-	Create(&handles, J_LBX, "lbxMessage", 12, 495, 1048, 95, 11);
-	Create(&handles, J_BTN, "btnClear", 1020, 475, 40, 18, 12, "Clear");
+	Create(&handles, J_TXT, "txtMessages", 12, 510, 0, 0, 12, "Messages");
+	Create(&handles, J_LBX, "lbxMessage", 12, 530, 380, 60, 11);
+	Create(&handles, J_BTN, "btnClear", 350, 510, 40, 18, 12, "Clear");
 
 	/* Plot Buttons  */
-	//	Create(&handles, J_BTN, "btnPlot", 300, 230, 40, 18, 12, "Plot");
-	btnPlot = new Jbw_Button(handles.JbwRdr, 350, 250, 40, 18, "Plot", 12);
-	Create(&handles, J_BTN, "btnPlotAll", 350, 270, 90, 18, 12, "Plot All Figures");
-	Create(&handles, J_BTN, "btnUp", 350, 290, 40, 18, 12, "Up");
-	Create(&handles, J_BTN, "btnDown", 350, 310, 40, 18, 12, "Down");
-	Create(&handles, J_BTN, "btnAdd", 350, 330, 70, 18, 12, "Add Bits");
 
-	/*  SETUP GRAPHICS TABLE AREA   */	
-//	grdFigure = new Jbw_Grid(360, 35, 0, 10, 18);
+	btnPlot = new Jbw_Button(handles.JbwRdr, 20, 260, 40, 18, "Plot", 12);
+	btnUp = new Jbw_Button(handles.JbwRdr, 70, 260, 40, 18, "One", 12);
+	btnDown = new Jbw_Button(handles.JbwRdr, 120, 260, 40, 18, "Two", 12);
 
-	Create(&handles, J_GRD, "grdFigure", 360, 55, 0, 10, 18);
-	GrdPtr->AddCol(&handles, "grdFigure", "Parameter", 180, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Size", 30, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Bit", 55, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Description", 120, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Offset", 40, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Factor", 40, J_EBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Colour", 70, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Symb.", 40, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Line", 40, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Step", 40, J_CBX);
-	GrdPtr->AddCol(&handles, "grdFigure", "Filter", 40, J_EBX);
 
-	// Logo Area
-	LogoArea.x = 3;
-	LogoArea.y = 20;
-	LogoArea.w = 100;
-	LogoArea.h = 100;
-	
+	/***********************  SETUP GRAPH AREA   ***************************************/
+	/* TEXT: Test Title */
+	txtTestTitle = new Jbw_TextBox(handles.JbwRdr, "Test Title", 440, 25, GRAPH_W, 15, 12);
+	txtTestTitle->Align = J_CENTRE;
+
+	///* TEXT: Legend */
+	txtLegend = new Jbw_TextBox(handles.JbwRdr, "LEGEND", 280, 60, 100, 15, 12);
+	txtLegend->Align = J_CENTRE;
+
+
+	///* TEXT: X Label */
+	ObjXlabel = new Jbw_TextBox(handles.JbwRdr, "Air Flow (slm)", 440, 570, GRAPH_W, 16, 12);
+	ObjXlabel->Align = J_CENTRE;
+
+	///* TEXT: Y Label */
+	ObjYlabel = new Jbw_TextBox(handles.JbwRdr, "Pressure Difference (hPa)", 380, 40, GRAPH_H, 16, 12);
+	ObjYlabel->Align = J_CENTRE;
+	ObjYlabel->Angle = -90;;
+
+
+	/*      Graphics Area      */
+
+	//	SDL_Rect vp_Graph;
+	vp_Graph.x = 440;
+	vp_Graph.y = 45;
+	vp_Graph.w = GRAPH_W;
+	vp_Graph.h = GRAPH_H;
+
+
+	// Graphics Inside Area
+	GraphArea.x = 0;
+	GraphArea.y = 0;
+	GraphArea.w = GRAPH_W;
+	GraphArea.h = GRAPH_H;
+
+	txtRandom = new Jbw_EditBox(handles.JbwRdr, J_TXT, 0, 0, 10);
+
+	//Legend Area
+	LegendArea.x = 100;
+	LegendArea.y = 40;
+	LegendArea.w = 100;
+	LegendArea.h = 100;
+
+	// General Txt box
+	Create(&handles, J_TXT, "txtRandom", 0, 0, 0, 0);
+
 	// Update handles with all created Objects
 	handles.TxtPtr = TxtPtr;
 	handles.EbxPtr = EbxPtr;
@@ -282,6 +262,8 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 	handles.Ebox = new Jbw_EditBox * [10];
 	handles.Ebox[0] = edDataDir;
 
+	hCom = SetupSerialPort("COM4");
+
 	return &handles;
 }
 
@@ -290,24 +272,18 @@ Jbw_Handles* Dataplot::JbwCreateLayout(void)
 ------------------------------------------------------------------------------------------*/
 void Dataplot::TheLoop(void)
 {
-	while (SDL_WaitEvent(&handles.Event) != 0) {
-	//	Ding->RdrEbx();
-	//	Ding->EbxEvent(&handles);
-	//	MsgMsg->RdrLbx();
+	char   ReadByte[64] = { 0 };
 
-	//	Tst->Event(&handles);
-	//	Tst->RdrGrd(&handles);
-		// User requests quit
-
+	//while (SDL_WaitEvent(&handles.Event) != 0) {
+		while(1){
 		edDataDir->EbxEvent(&handles);
-		cbxNew->CbxEvent(&handles);
+
 		Menu->MnuEvent(&handles);
 
 		if (handles.Event.type == SDL_QUIT)
 		{
 			break;
 		}
-
 
 		for (int I = 0; I < EbxCnt; I++) {
 			EbxPtr[I].EbxEvent(&handles);
@@ -333,10 +309,6 @@ void Dataplot::TheLoop(void)
 			CbxPtr[I].CbxEvent(&handles);
 		}
 
-		for (int I = 0; I < GrdCnt; I++) {
-			GrdPtr[I].Event(&handles);
-		}
-
 		for (int I = 0; I < LbxCnt; I++) {
 			LbxPtr[I].LbxEvent(&handles);
 		}
@@ -345,7 +317,7 @@ void Dataplot::TheLoop(void)
 			btnPlot_Click(&handles);
 		}
 
-
+		GraphRender();
 	}
 }
 
@@ -364,10 +336,8 @@ void Dataplot::UserRender(void)
 	edDataDir->RdrEbx();
 
 
-	LbxPtr[0].AddText("Eeen");
-	LbxPtr[0].AddText("Tweee");
-	LbxPtr[0].AddText("Drieen");
-	LbxPtr[0].AddText("Vieeeeeeeeeer");
+	
+
 
 	edDataDir->Text.assign("data.txt");
 	edDataDir->CreateTexture();
@@ -375,13 +345,11 @@ void Dataplot::UserRender(void)
 
 
 
-
-	//Ding->RdrEbx();
-	//Tst->RdrGrd(&handles);
-
-	txtNew->RdrTbx();
-	cbxNew->RdrCbx(&handles);
+	//txtNew->RdrTbx();
+	//cbxNew->RdrCbx(&handles);
 	btnPlot->RdrBtn();
+	btnUp->RdrBtn();
+	btnDown->RdrBtn();
 
 	// Render Txt Objects	
 	for (int I = 0; I < TxtCnt; I++) {
@@ -411,10 +379,7 @@ void Dataplot::UserRender(void)
 			SDL_RenderPresent(handles.JbwRdr);
 	}
 
-	// Render Grid Objects
-	for (int I = 0; I < GrdCnt; I++) {
-		GrdPtr[I].RdrGrd(&handles); // ???!!!!! Write a Render call in ObjWork !!!!
-	}
+
 
 	SDL_RenderPresent(handles.JbwRdr);
 
@@ -422,6 +387,94 @@ void Dataplot::UserRender(void)
 	SDL_RenderSetViewport(handles.JbwRdr, &LogoArea);
 	SDL_SetRenderDrawColor(handles.JbwRdr, 255, 255, 255, 255);
 	SDL_RenderCopy(handles.JbwRdr, LogoImage, NULL, NULL); // Clear Logo 
+
+
+
+		// Render Legend 
+	SDL_SetRenderDrawColor(handles.JbwRdr, 255, 255, 255, 255);
+	SDL_RenderFillRect(handles.JbwRdr, &LegendArea);
+
+	txtTestTitle->RdrTbx();
+	txtLegend->RdrTbx();
+	ObjXlabel->RdrTbx();
+	ObjYlabel->RdrTbx();
+
+	char TmpTxt[50];
+	// X Values
+	double xxx = 130.0;
+	std::string MaxNum;
+	MaxNum.assign(std::to_string(int(xxx)));
+
+	int N;
+	if (xxx < 10000) {
+		for (int I = 0; I <= 10; I++) {
+			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
+			txtRandom->InitTbx(handles.JbwRdr, TmpTxt, 420 + I * (GRAPH_W / 10), 550, 50, 15, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
+		}
+	}
+	else {
+		N = (int)MaxNum.length() - 4;
+		for (int I = 0; I <= 10; I++) {
+			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
+			txtRandom->InitTbx(handles.JbwRdr, TmpTxt, 420 + I * (GRAPH_W / 10), 550, 50, 15, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
+		}
+
+		txtRandom->InitTbx(handles.JbwRdr, "x 10", 1020, 567, 30, 14, 12);
+		txtRandom->Align = J_RIGHT;
+		txtRandom->RdrTbx();
+
+		sprintf_s(TmpTxt, "%d", N);
+		txtRandom->InitTbx(handles.JbwRdr, TmpTxt, 1051, 560, 30, 15, 10);
+		txtRandom->Align = J_LEFT;
+		txtRandom->RdrTbx();
+	}
+
+	// Y Values
+	xxx = 10.0;
+	MaxNum.assign(std::to_string(int(xxx)));
+
+	if (xxx < 10000) {
+		for (int I = 10; I >= 0; I--) {
+			sprintf_s(TmpTxt, "%0.2f", I * (xxx / 10));
+
+			txtRandom->InitTbx(handles.JbwRdr, TmpTxt, 390, 538 - I * (GRAPH_H / 10), 50, 15, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
+		}
+	}
+	else {
+		N = (int)MaxNum.length() - 4;
+		for (int I = 10; I >= 0; I--) {
+			sprintf_s(TmpTxt, "%0.2f", I * ((xxx / pow(10, N)) / 10));
+			txtRandom->InitTbx(handles.JbwRdr, TmpTxt, 390, 538 - I * (GRAPH_H / 10), 50, 15, 10);
+			txtRandom->Align = J_CENTRE;
+			txtRandom->RdrTbx();
+		}
+
+		sprintf_s(TmpTxt, "%d", N);
+	}
+	/****    SET VIEWPORT TO GRAPH AREA     ****/
+	SDL_RenderSetViewport(handles.JbwRdr, &vp_Graph);
+	SDL_SetRenderDrawColor(handles.JbwRdr, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderFillRect(handles.JbwRdr, &GraphArea); // Clear Graph
+
+	// Draw X & Y Ticks
+	SDL_SetRenderDrawColor(handles.JbwRdr, 0, 0, 0, 255);
+
+	SDL_RenderDrawLine(handles.JbwRdr, 0, 0, 0, GRAPH_H);
+	for (int I = 0; I < 10; I++) {
+		SDL_RenderDrawLine(handles.JbwRdr, 0, I * (int)round(GRAPH_H / 10), 5, I * (int)round(GRAPH_H / 10));
+	}
+
+	SDL_RenderDrawLine(handles.JbwRdr, 0, GRAPH_H - 1, GRAPH_W, GRAPH_H - 1);
+	for (int I = 0; I < 10; I++) {
+		SDL_RenderDrawLine(handles.JbwRdr, I * (int)round(GRAPH_W / 10), GRAPH_H - 1, I * (int)round(GRAPH_W / 10), GRAPH_H - 6);
+	}
+	SDL_RenderDrawLine(handles.JbwRdr, 10 * (int)round(GRAPH_W / 10) - 1, GRAPH_H - 1, 10 * (int)round(GRAPH_W / 10) - 1, GRAPH_H - 6);
 
 	/*      RENDER  USER SCREEN     */
 	SDL_RenderPresent(handles.JbwRdr);
@@ -455,22 +508,7 @@ void Dataplot::btnDataDir_Click(Jbw_Handles* h)
 ------------------------------------------------------------------------------------------*/
 void Dataplot::btnPlot_Click(Jbw_Handles* h)
 {
-	DpGraph* TmpGraph;
-	DpGraph* Figure = new DpGraph(h);
-	Figure->Prev = NULL;
 
-	//Figure->Next = new DpGraph(h); // Create a new instance adressed by this Figure's Next pointer
-	//Figure->Next->Prev = Figure; // Set the new Figure's Prev pointer to show to the current Figure.
-	//Figure->Next->Next = NULL; // Set the new Figure's Next pointer to NULL
-	//Figure = Figure->Next; // Move the Figure pointer to the new Figure.
-
-	//Figure->Next = new DpGraph(h);
-	//Figure->Next->Prev = Figure; 
-	//Figure->Next->Next = NULL; 
-	//Figure = Figure->Next; 
-	//
-
-	Figure->GraphRender(1);
 }
 
 /*------------------------------------------------------------------------------------------
@@ -494,5 +532,96 @@ void btnAdd_Click(Jbw_Handles* h)
 ------------------------------------------------------------------------------------------*/
 void btnUp_Click(Jbw_Handles* h)
 {
+
+}
+
+/*------------------------------------------------------------------------------------------
+  FUNCTION: SetupSerialPort
+------------------------------------------------------------------------------------------*/
+HANDLE SetupSerialPort(std::string ComPort)
+{
+	std::wstring cPort = std::wstring(ComPort.begin(), ComPort.end());
+	hCom = CreateFileW(cPort.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+
+	if (hCom == (HANDLE)-1) {
+		return hCom;
+	}
+	// Do some basic settings
+	DCB serialParams = { 0 };
+	serialParams.DCBlength = sizeof(serialParams);
+
+	GetCommState(hCom, &serialParams);
+	serialParams.BaudRate = 9600;
+	serialParams.ByteSize = 8;
+	serialParams.StopBits = 2;
+	serialParams.Parity = 0;
+	SetCommState(hCom, &serialParams);
+
+	// Set timeouts
+	COMMTIMEOUTS timeout = { 0 };
+	timeout.ReadIntervalTimeout = 50;
+	timeout.ReadTotalTimeoutConstant = 50;
+	timeout.ReadTotalTimeoutMultiplier = 50;
+	timeout.WriteTotalTimeoutConstant = 50;
+	timeout.WriteTotalTimeoutMultiplier = 10;
+	SetCommTimeouts(hCom, &timeout);
+
+
+	return hCom;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//   GRAPH Plotting
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Dataplot::GraphRender(void)
+{
+
+	char ReadBytes[64] = { 0 };
+
+	float Flow = 0;
+	float Pressure = 0;
+	char findPar[] = "Flow:";
+	int cntCntPar;
+	int PosStart = -1;
+	int PosEnd = -1;
+	std::string TmpStr;
+	std::string MsgStr = "Flow: ";
+
+	static SDL_Point* Pts = new SDL_Point[2];
+	static bool Initial = true;
+
+
+	float FactorX = (float)GRAPH_W / 130.0; // Max Flow rate = 120
+	float FactorY = (float)GRAPH_H / 10.0;
+
+	memset(&(ReadBytes[0]), 0, 64);
+	ReadFile(hCom, ReadBytes, 64, 0, 0);
+	TmpStr.append(ReadBytes, 64);
+	PosStart = TmpStr.find("Flow: ");
+	PosEnd = TmpStr.find(" slm", PosStart);
+	if (PosEnd - PosStart > 5 && PosEnd - PosStart < 20) { // Seems like a hit
+		if (Initial == true) {
+			Pts[0].x = 0;
+			Pts[0].y = GRAPH_H;
+			Initial = false;
+		}
+		Pts[1].x = (int)round(stof(TmpStr.substr(PosStart + 5, PosEnd - PosStart - 5)) * FactorX);
+		MsgStr.append(TmpStr.substr(PosStart + 5, PosEnd - PosStart - 5)); MsgStr.append(" slm  ["); MsgStr.append(std::to_string(Pts[1].x)); MsgStr.append("]      ");
+		TmpStr.erase(0, PosEnd);
+	}
+	PosStart = TmpStr.find("sure: ");
+	PosEnd = TmpStr.find(" hPa", PosStart);
+	if (PosEnd - PosStart > 5 && PosEnd - PosStart < 20) { // Seems like a hit
+		Pts[1].y = GRAPH_H -(int)round(stof(TmpStr.substr(PosStart + 5, PosEnd - PosStart - 5)) * FactorY);		
+		MsgStr.append(TmpStr.substr(PosStart + 5, PosEnd - PosStart - 5)); MsgStr.append(" hPa  ["); MsgStr.append(std::to_string(Pts[1].y)); MsgStr.append("]");
+		LbxPtr[0].AddText(MsgStr);
+		LbxPtr[0].RdrLbx(&handles);
+		TmpStr.erase(0, PosEnd);
+	}
+
+	SDL_RenderSetViewport(handles.JbwRdr, &vp_Graph);
+	SDL_SetRenderDrawColor(handles.JbwRdr, 255, 0, 0, 255);
+	SDL_RenderDrawLines(handles.JbwRdr, Pts, 2);
+	SDL_RenderPresent(handles.JbwRdr);
+	Pts[0] = Pts[1];
 
 }

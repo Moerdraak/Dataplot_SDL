@@ -1,21 +1,15 @@
 #pragma once
-#include "Jbw_Base.h"
+
 #include <stdio.h>
 #include <sstream>
-#include "DpGraph.h"
-
-#include "Jbw_Polygon.h"
+#include <Windows.h>
+#include "Jbw_Base.h"
 #include "Jbw_FrameWork.h"
+#include "Jbw_EditBox.h"
+#include "Jbw_Polygon.h"
 #include "Jbw_Circle.h"
 #include "Jbw_Menu.h"
 
-/****************************************************************************************/
-/*******************************  DO NOT EDIT  ******************************************/
-/****************************************************************************************/
-
-class Dp_Handles {
-
-};
 
 /**************************************************************************************
 	CLASS: DataPlot    (Jbw_GUI = JaBberWock Graphical User Interface)
@@ -48,13 +42,14 @@ public:
 
 	Jbw_EditBox* edDataDir;
 	Jbw_ListBox* MsgMsg;
-	Jbw_Grid* Tst;
 
-	Jbw_Grid* grdFigure;
-	Jbw_ComboBox* cbxNew;
-	Jbw_TextBox* txtNew;
+//	Jbw_ComboBox* cbxNew;
+//	Jbw_TextBox* txtNew;
 	Jbw_Button* btnDataDir;
 	Jbw_Button* btnPlot;
+	Jbw_Button* btnUp;
+	Jbw_Button* btnDown;
+
 	
 	/*******************************************************
 			   Gui Objects Callbacks
@@ -67,4 +62,32 @@ public:
 	void btnUp_Click(Jbw_Handles* h);
 	void btnDown_Click(Jbw_Handles* h);
 
+
+	// RECTANGLE OBJECTS
+	SDL_Rect vp_Graph;
+	SDL_Rect vp_Main; // For clearing the Thing  // TMP !!!!!!
+	SDL_Rect GraphArea;
+	SDL_Rect LegendArea;
+
+
+	// TEXT OBJECTS
+
+	Jbw_TextBox* txtTestTitle;
+	Jbw_TextBox* txtLegend;
+	Jbw_TextBox* ObjXlabel;
+	Jbw_TextBox* ObjYlabel;
+	Jbw_TextBox* txtRandom;
+
+
+
+	const int GRAPH_W = 600;
+	const int GRAPH_H = 500;
+
+	void GraphRender(void);
+
+	
+
 };
+HANDLE SetupSerialPort(std::string ComPort);
+
+
