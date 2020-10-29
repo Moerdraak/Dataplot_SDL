@@ -6,43 +6,7 @@
 
 Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x, int y, int w, int h)
 {
-	
-	Window_w = w;
-	Window_h = h;
-	MbxType = OkYesNo;
 
-	Font = TTF_OpenFont("fonts/arial.ttf", 12);
-	TTF_SetFontHinting(Font, TTF_HINTING_LIGHT); // TTF_HINTING_NORMAL TTF_HINTING_MONO TTF_HINTING_LIGHT
-
-	// Get Window Size
-	Parser(Title, false);
-	Parser(Msg, false);
-
-	// Create User Window
-	MsgWindow = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
-		| SDL_WINDOW_BORDERLESS);
-
-	// Create renderer for User window
-	Jrdr = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
-
-	// Create Border
-	FrameW = Window_w;
-	FrameH = Window_h;
-
-	// Create Header
-	J_Properties Prop;
-	Prop.handles.JbwRdr = Jrdr;
-	Prop.w = Window_w;
-	Prop.h = 18;
-	Header = new Jbw_EditBox(&Prop);
-	Header->Text.assign(Title);
-
-	RenderBox();
-
-	// Set Viewport for Message	
-	SDL_Rect Window = { 0, 0, Window_w, Window_h };
-	SDL_RenderSetViewport(Jrdr, &Window);
-	Parser(Msg, true);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -51,24 +15,44 @@ Jbw_MsgBox::Jbw_MsgBox(std::string Title, std::string Msg, J_Type OkYesNo, int x
 
 Jbw_MsgBox::~Jbw_MsgBox()
 {
-	Close();
+	Free();
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: Close
+	FUNCTION: Free
 ------------------------------------------------------------------------------------------*/
-void Jbw_MsgBox::Close(void)
+void Jbw_MsgBox::Free(void)
 {
 	if (btnNo != NULL) {
-		delete btnNo; btnNo = NULL;
+		delete btnNo; 
+		btnNo = NULL;
 	}
-	delete btnAck; btnAck = NULL;
-	delete Header; Header = NULL;
 
-	SDL_DestroyWindow(MsgWindow); MsgWindow = NULL;
-	SDL_DestroyRenderer(Jrdr); Jrdr = NULL;
-	SDL_DestroyTexture(txtImage); txtImage = NULL;
-	TTF_CloseFont(Font); Font = NULL;
+	if (btnAck != NULL) {
+		delete btnAck;
+		btnAck = NULL;
+	}
+
+	if (Header != NULL) {
+		delete Header;
+		Header = NULL;
+	}
+
+	if (Jhandle != NULL) {
+		SDL_DestroyWindow(Jhandle->Gui);
+		Jhandle->Gui = NULL;
+
+		SDL_DestroyRenderer(Jhandle->Rdr);
+		Jhandle->Rdr = NULL;
+
+		SDL_DestroyTexture(txtImage);
+		txtImage = NULL;
+
+		TTF_CloseFont(Font);
+		Font = NULL;
+
+		Jhandle = NULL;
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -86,7 +70,7 @@ void Jbw_MsgBox::Parser(std::string Txt, bool DoRender) {
 	if (Window_h < 110 + (Cnt - 4) * 12) {
 		Window_h = 110 + (Cnt - 4) * 12;
 	}
-	SDL_RenderPresent(Jrdr);
+	SDL_RenderPresent(Jhandle->Rdr);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -101,8 +85,8 @@ void Jbw_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
 	txtBox.w = txtSurf->w;
 	txtBox.h = txtSurf->h;
 	if (DoRender == true) {
-		txtImage = SDL_CreateTextureFromSurface(Jrdr, txtSurf);
-		SDL_RenderCopyEx(Jrdr, txtImage, 0, &txtBox, 0, 0, SDL_FLIP_NONE);
+		txtImage = SDL_CreateTextureFromSurface(Jhandle->Rdr, txtSurf);
+		SDL_RenderCopyEx(Jhandle->Rdr, txtImage, 0, &txtBox, 0, 0, SDL_FLIP_NONE);
 		SDL_DestroyTexture(txtImage);
 	}
 	else { // DON'T RENDER just Set MsgBox to correct size for all text
@@ -119,19 +103,17 @@ void Jbw_MsgBox::RenderMsg(std::string Msg, int Line, bool DoRender) {
 ------------------------------------------------------------------------------------------*/
 void Jbw_MsgBox::RenderBox(void) {
 	
-	SDL_SetRenderDrawColor(Jrdr, 230, 230, 230, 255);
-	SDL_RenderClear(Jrdr);
+	SDL_SetRenderDrawColor(Jhandle->Rdr, 230, 230, 230, 255);
+	SDL_RenderClear(Jhandle->Rdr);
 
 	// Render Frame
-	LineColor = { 180, 180, 180, 255 };
-	CreatePts();
-	RdrFrame();
+	MsgFrame->RdrFrame();
 
 	// Render Header
-	Header->Border.LineColor = J_C_Frame;
-	Header->Border.FillColor = J_C_Frame;
-	Header->Align = J_CENTRE;
-	Header->CreateTexture();
+	Header->Tbx->Border->LineColor = J_C_Frame;
+	Header->Tbx->Border->FillColor = J_C_Frame;
+	Header->Tbx->Align = J_CENTRE;
+	Header->Tbx->CreateTexture();
 	Header->RdrEbx();
 
 	// Create Buttons
@@ -139,17 +121,17 @@ void Jbw_MsgBox::RenderBox(void) {
 
 	if (MbxType == J_YESNO) {
 		// YES Button
-		btnAck = new Jbw_Button(Jrdr, Window_w - 100, Btn_y, Btn_w, Btn_h, "Yes", 12);
+		btnAck = new Jbw_Button(Jhandle, Window_w - 100, Btn_y, Btn_w, Btn_h, "Yes", 12);
 		// NO Button
-		btnNo = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "No", 12);
+		btnNo = new Jbw_Button(Jhandle, Window_w - 50, Btn_y, Btn_w, Btn_h, "No", 12);
 		btnNo->RdrBtn();
 	}
 	else {
 		if (MbxType == J_OK) {
-			btnAck = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "Okay", 12);
+			btnAck = new Jbw_Button(Jhandle, Window_w - 50, Btn_y, Btn_w, Btn_h, "Okay", 12);
 		}
 		else{
-			btnAck = new Jbw_Button(Jrdr, Window_w - 50, Btn_y, Btn_w, Btn_h, "Yes", 12);
+			btnAck = new Jbw_Button(Jhandle, Window_w - 50, Btn_y, Btn_w, Btn_h, "Yes", 12);
 		}
 	}
 	btnAck->RdrBtn();
@@ -162,6 +144,7 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	int x, int y, int w , int h )
 {
 	J_Type Answer = J_NULL;
+	Jhandle = new Jbw_Handles;
 	Window_w = w;
 	Window_h = h;
 	MbxType = OkYesNo;
@@ -174,49 +157,44 @@ J_Type Jbw_MsgBox::MsgBox(std::string Title, std::string Msg, J_Type OkYesNo,
 	Parser(Msg, false);
 
 	// Create User Window
-	MsgWindow = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
+	Jhandle->Gui = SDL_CreateWindow("MsgBox", x, y, Window_w, Window_h, SDL_WINDOW_OPENGL
 		| SDL_WINDOW_BORDERLESS);
 
 	// Create renderer for User window
-	Jrdr = SDL_CreateRenderer(MsgWindow, -1, SDL_RENDERER_ACCELERATED);
+	Jhandle->Rdr = SDL_CreateRenderer(Jhandle->Gui, -1, SDL_RENDERER_ACCELERATED);
 
 	// Create Border
-	FrameW = Window_w;
-	FrameH = Window_h;
+	MsgFrame = new Jbw_Frame(Jhandle, 0, 0, Window_w, Window_h, true);
+	MsgFrame->LineColor = { 180, 180, 180, 255 };
+	MsgFrame->FillColor = J_C_Window;
+	MsgFrame->CreateFrame();
 
-	// Create Header
-	J_Properties Prop;
-	Prop.handles.JbwRdr = Jrdr;
-	Prop.w = Window_w;
-	Prop.h = 18;
-	Header = new Jbw_EditBox(&Prop);
-	Header->Text.assign(Title);
+	Header = new Jbw_EditBox(Jhandle, 0, 0, Window_w, 18);
+	Header->Tbx->Text.assign(Title);
 
 	RenderBox();
 
 	// Set Viewport for Message	
 	SDL_Rect Window = { 0, 0, Window_w, Window_h };
-	SDL_RenderSetViewport(Jrdr, &Window);
+	SDL_RenderSetViewport(Jhandle->Rdr, &Window);
 	Parser(Msg, true);
 	
 	int Flag = false;
 
-	Jbw_Handles H;
-
-	while (SDL_WaitEvent(&H.Event) != 0) {
+	while (SDL_WaitEvent(&Jhandle->Event) != 0) {
 
 		// Check When Buttons are Clicked
-		if (btnAck->BtnEvent(&H) == J_BTN_CLICK) {
+		if (btnAck->BtnEvent(&Jhandle->Event) == J_MS_LCLICK) {
 			Answer = J_YES;
 			break;
 		}
 		if (btnNo != NULL) {
-			if (btnNo->BtnEvent(&H) == J_BTN_CLICK) {
+			if (btnNo->BtnEvent(&Jhandle->Event) == J_MS_LCLICK) {
 				Answer = J_NO;
 				break;
 			}
 		}
 	}
-	Close();
+	Free();
 	return Answer;
 }

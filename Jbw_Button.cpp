@@ -3,27 +3,19 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_Button::Jbw_Button(SDL_Renderer* Rdr, int x, int y, int w, int h,
-	std::string Caption, int Fsize)
+Jbw_Button::Jbw_Button(Jbw_Handles* handles, int x, int y, int w, int h,
+	std::string Text, int Fsize)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr;
-	P.x = x;
-	P.y = y;
-	P.w = w;
-	P.h = h;
-	P.Caption.assign(Caption);
-	P.Fsize = Fsize;
-	InitBtn(&P);
+	Jhandle = handles;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+	Caption.assign(Text);
+	TxtSize = Fsize;
+	
+	CreateButton();
 }
-
-/*-----------------------------------------------------------------------------------------
-	CONSTRUCTOR
-------------------------------------------------------------------------------------------*/
-//Jbw_Button::Jbw_Button(J_Properties* Prop)
-//{
-//	InitEbx(Prop);
-//}
 
 /*-----------------------------------------------------------------------------------------
 	DESTRUCTOR
@@ -34,85 +26,165 @@ Jbw_Button::~Jbw_Button()
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: InitEbx
+	COPY CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-void Jbw_Button::InitBtn(J_Properties* Prop)
+Jbw_Button::Jbw_Button(const Jbw_Button& cp, std::string NewCaption) : Jbw_Base(cp)
 {
-	Id = Prop->Id;
-	Tag.assign(Prop->Tag);
-	Jrdr = Prop->handles.JbwRdr;
-	Text.assign(Prop->Caption);
-	Align = J_CENTRE;
-	TbxX = Prop->x + 1; TbxY = Prop->y + 1; TbxW = Prop->w - 2; TbxH = Prop->h - 2;
-	Border.InitFrame(Prop);
-	Border.Fill = true;
-	Border.LineColor = J_C_Frame;
-	Border.FillColor = J_C_BtnGrey;
-	TxtSize = Prop->Fsize;
-	CreateTexture();
+	BtnColor = cp.BtnColor;
+	BtnBorderColor = cp.BtnBorderColor;
+	HoverColor = cp.HoverColor;
+	HoverBorderColor = cp.HoverBorderColor;
+	ClickColor = cp.ClickColor;
+	TxtSize = cp.TxtSize;
+	TxtAlign = cp.TxtAlign;
+	Caption = NewCaption;
+	
+	Tbx = new Jbw_TextBox(*cp.Tbx);
+	Tbx->Text.assign(Caption);
+	Tbx->CreateTexture();
 }
 
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+Jbw_Button& Jbw_Button::operator=(const Jbw_Button& cp)
+{
+	if (this != &cp)// Self assign check
+	{
+		Jbw_Base::operator=(cp); // Calling Baseclass copy
+		BtnColor = cp.BtnColor;
+		BtnBorderColor = cp.BtnBorderColor;
+		HoverColor = cp.HoverColor;
+		HoverBorderColor = cp.HoverBorderColor;
+		ClickColor = cp.ClickColor;
+		TxtSize = cp.TxtSize;
+		TxtAlign = cp.TxtAlign;
+		Caption = cp.Caption;
+		
+		delete Tbx;
+		Tbx = new Jbw_TextBox(*cp.Tbx);
+	}
+	return *this;
+}
 
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: InitBtn
+------------------------------------------------------------------------------------------*/
+void Jbw_Button::InitBtn(Jbw_Handles* handles, int x, int y, int w, int h,
+	std::string Text, int Fsize)
+{
+	Jhandle = handles;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+	Caption.assign(Text);
+	TxtSize = Fsize;
+
+	CreateButton();
+}
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: CreateButton
+------------------------------------------------------------------------------------------*/
+void Jbw_Button::CreateButton(void)
+{	
+	if (Tbx == NULL) {
+		Tbx = new Jbw_TextBox(Jhandle, Caption, Obj.x, Obj.y, Obj.w, Obj.h, TxtSize);
+		Tbx->Align = TxtAlign;
+		Tbx->FrameOn = true;
+		Tbx->FillOn = true;
+		Tbx->Border->FillColor = BtnColor;
+		Tbx->Border->LineColor = BtnBorderColor;
+	}
+	else {
+		Tbx->Text.assign(Caption);
+		Tbx->Obj = Obj;
+		Tbx->Align = TxtAlign;
+		Tbx->FrameOn = true;
+		Tbx->FillOn = true;
+		Tbx->Border->FillColor = BtnColor;
+		Tbx->Border->LineColor = BtnBorderColor;
+		Tbx->CreateTbx();
+	}
+	Tbx->CreateTexture();
+}
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: RdrBtn
 ------------------------------------------------------------------------------------------*/
 void Jbw_Button::RdrBtn(void)
 {
-	CreateTexture();
-	RdrEbx();
+	if (Visible == false) {
+		return;
+	}
+	Tbx->CreateTexture();
+	Tbx->RdrTbx();
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: BtnEvent
 ------------------------------------------------------------------------------------------*/
-J_Type Jbw_Button::BtnEvent(Jbw_Handles* h)
+J_Event Jbw_Button::BtnEvent(SDL_Event* Event)
 {
-	J_Type EventType = J_NULL;
-	//If mouse event happened
-	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || 
-		h->Event.type == SDL_MOUSEBUTTONUP) {
-		// Get mouse position
-		int x, y;
-		SDL_GetMouseState(&x, &y);
+	J_Event Return = J_E_NULL;
 
-		// Mouse pointer inside Edit box
-		if (x > TbxX && x < TbxX + TbxW && y > TbxY && y < TbxY + TbxH)
+	if (Visible == false || Enabled == false) {
+		return Return;
+	}
+
+	if (Jhandle->WindowActive == false) {
+		if (Event->type == SDL_MOUSEMOTION) {
+			return Return;
+		}
+	}
+
+	//If mouse event happened
+	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN ||
+		Event->type == SDL_MOUSEBUTTONUP) {
+		// Get mouse position
+		int msX, msY;
+		SDL_GetMouseState(&msX, &msY);
+
+		// Mouse pointer over button
+		if (msX > Obj.x && msX < Obj.x + Obj.w && msY > Obj.y && msY < Obj.y + Obj.h)
 		{
-			msOver = true;
-			switch (h->Event.type)
+			if (msOver == false) {
+				msOver = true;
+				DoRender = true;
+				Return = J_MS_OVER;
+			}
+	//		Jhandle->Debug->NewLine("Jbw_Button: Mouse event type: ", (double)Event->type);
+			switch (Event->type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
-				Border.FillColor = ClickColor;
-				RdrBtn();
-				EventType = J_BTN_CLICK;
-				//		SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
+				Tbx->Border->FillColor = ClickColor;
+				DoRender = true;
+				Return = J_MS_LCLICK;
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				Border.FillColor = HoverColor;
-				RdrBtn();
+				Tbx->Border->FillColor = HoverColor;
+				DoRender = true;
 				break;
 			}		
-
-			Border.FillColor = HoverColor;
-			Border.LineColor = HoverBorderColor;
-			;
-			if (DoRender == false) {
-				DoRender = true;
-				RdrBtn();
-			}
+			Tbx->Border->FillColor = HoverColor;
+			Tbx->Border->LineColor = HoverBorderColor;
 		}
 		else {
-			msOver = false;
-			Border.LineColor = BtnBorderColor;
-			Border.FillColor = BtnColor;
-			
-			if (DoRender == true ) {
-				DoRender = false;
-				RdrBtn();
+			if (msOver == true) {
+				msOver = false;
+				DoRender = true;
+				Return = J_MS_OVER;
 			}
+			Tbx->Border->LineColor = BtnBorderColor;
+			Tbx->Border->FillColor = BtnColor;
+		}
+
+		if (DoRender == true) {
+			DoRender = false;
+			RdrBtn();
 		}
 	}
-	return EventType;
+	return Return;
 }

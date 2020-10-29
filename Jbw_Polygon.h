@@ -9,11 +9,17 @@ public:
 	int NumPoints = 0;
 	SDL_Color LineColor = { 0, 0, 0, 255 };
 
-	Jbw_Polygon() {};
-	Jbw_Polygon(SDL_Renderer* Rdr);
-	~Jbw_Polygon() {};
+	Jbw_Polygon();
+	Jbw_Polygon(Jbw_Handles* handles, int x, int y);
+	~Jbw_Polygon();
+
+	Jbw_Polygon(const Jbw_Polygon& cp);
+	Jbw_Polygon& operator=(const Jbw_Polygon& cp);
 
 	void AddPoint(int x, int y);
-	void PolyRdr(void);
+	void RdrPoly(void);
+
+
+
 };
 

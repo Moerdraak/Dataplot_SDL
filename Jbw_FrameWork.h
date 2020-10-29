@@ -19,12 +19,12 @@ public:
 
 	// These Pointers to keep track of all the Objects 
 	// by the Base Object
-	Jbw_Text* TxtPtr = NULL;
-	Jbw_EditBox* EbxPtr = NULL;
-	Jbw_ListBox* LbxPtr = NULL;
-	Jbw_ComboBox* CbxPtr = NULL;
-	Jbw_Button* BtnPtr = NULL;
-	Jbw_Grid* GrdPtr = NULL;
+//	Jbw_Text* TxtPtr = NULL;
+//	Jbw_EditBox* EbxPtr = NULL;
+//	Jbw_ListBox* LbxPtr = NULL;
+//	Jbw_ComboBox* CbxPtr = NULL;
+//	Jbw_Button* BtnPtr = NULL;
+//	Jbw_Grid* GrdPtr = NULL;
 	
 	SDL_Point FlashingI[2] = { {500, 500},{ 500, 550} };
 
@@ -55,20 +55,6 @@ public:
 	void lbxClear(std::string Tag);
 
 /*-----------------------------------------------------------------------------------------
-	CREATE FUNCTIONS
-------------------------------------------------------------------------------------------*/
-public:
-	bool Create(Jbw_Handles* handles, int ObjType, std::string Tag,
-		int Xpos, int Ypos, int WidthOrNumCol, int HeightOrNumRowCnt,
-		int FontSize = 12, std::string Caption = "");
-	bool CreateTxt(J_Properties* Prop);
-	bool CreateEbx(J_Properties* Prop);
-	bool CreateLbx(J_Properties* Prop);
-	bool CreateCbx(J_Properties* Prop);
-	bool CreateBtn(J_Properties* Prop);
-	bool CreateGrd(J_Properties* Prop);
-
-/*-----------------------------------------------------------------------------------------
 	GET / SET FUNCTIONS          
 ------------------------------------------------------------------------------------------*/
 	std::string GetS(Jbw_Handles* h, std::string Obj, std::string Property);
@@ -88,7 +74,6 @@ public:
 
 	bool GrdAdd(std::string Obj, int RowCol, int Number = 1, std::string ColName = "", int Objtype = J_TXT);
 
-
 /*-----------------------------------------------------------------------------------------
 		FREE FUNCTIONS
 ------------------------------------------------------------------------------------------*/
@@ -97,6 +82,6 @@ public:
 	template<class TmplObj>
 	TmplObj FreeSub(TmplObj Obj, TmplObj TmpObj, short int *Size, std::string Tag);
 
-	bool isTag(int Type, int Id, std::string Tag); 
+//	bool isTag(int Type, int Id, std::string Tag); 
 };
 

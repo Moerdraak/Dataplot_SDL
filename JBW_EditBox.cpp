@@ -3,24 +3,15 @@
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-Jbw_EditBox::Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+Jbw_EditBox::Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr; 
-	P.x = x; 
-	P.y = y; 
-	P.w = w;
-	P.h = h;
-	P.Fsize = Fsize;
-	InitEbx(&P);
-}
-
-/*-----------------------------------------------------------------------------------------
-	CONSTRUCTOR
-------------------------------------------------------------------------------------------*/
-Jbw_EditBox::Jbw_EditBox(J_Properties *Prop)
-{
-	InitEbx(Prop);
+	Jhandle = handles;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+	TxtSize = Fsize;
+	CreateEbx();
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -31,33 +22,62 @@ Jbw_EditBox::~Jbw_EditBox() {
 }
 
 /*-----------------------------------------------------------------------------------------
-	FUNCTION: InitEbx
+	COPY CONSTRUCTOR
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize)
+Jbw_EditBox::Jbw_EditBox(const Jbw_EditBox& cp) : Jbw_Base(cp)
 {
-	J_Properties P;
-	P.handles.JbwRdr = Rdr;
-	P.x = x;
-	P.y = y;
-	P.w = w;
-	P.h = h;
-	P.Fsize = Fsize;
-	InitEbx(&P);
+	TxtSize = cp.TxtSize;
+	Tbx = new Jbw_TextBox(*cp.Tbx);
+	
+	/*   OR YOU CAN   */
+	//	CreateEbx();
+	//	*Tbx = *cp.Tbx;
 }
+
+/*-----------------------------------------------------------------------------------------
+	ASIGNMENT OPERATOR OVERLOAD
+------------------------------------------------------------------------------------------*/
+void Jbw_EditBox::operator=(const Jbw_EditBox& cp) 
+{
+	if (this != &cp)// Self assign check
+	{
+		Jbw_Base::operator=(cp);
+		TxtSize = cp.TxtSize;
+
+		delete Tbx;
+		Tbx = new Jbw_TextBox;
+		*Tbx = *cp.Tbx;
+	}
+}
+
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: InitEbx
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::InitEbx(J_Properties *Prop)
+void Jbw_EditBox::InitEbx(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize)
 {
-	Id = Prop->Id;
-	Tag.assign(Prop->Tag);
-	Jrdr = Prop->handles.JbwRdr;
-	TbxX = Prop->x + 1; TbxY = Prop->y + 1; TbxW = Prop->w - 2; TbxH = Prop->h - 2;
-	Border.InitFrame(Prop);
-	Border.Fill = true;
-	Border.LineColor = J_C_Frame;
-	
-	TxtSize = Prop->Fsize;
+	Jhandle = handles;
+	Obj.x = x;
+	Obj.y = y;
+	Obj.w = w;
+	Obj.h = h;
+	TxtSize = Fsize;
+	CreateEbx();
+}
+
+/*-----------------------------------------------------------------------------------------
+	FUNCTION: ReSizeEbx
+------------------------------------------------------------------------------------------*/
+void Jbw_EditBox::CreateEbx(void)
+{
+	if (Tbx == NULL) {
+		Tbx = new Jbw_TextBox(Jhandle, "", Obj.x, Obj.y, Obj.w, Obj.h, TxtSize);
+		Tbx->FrameOn = true;
+		Tbx->FillOn = true;
+	}
+	else {
+		Tbx->Obj = Obj;
+		Tbx->CreateTbx();
+	}
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -65,7 +85,7 @@ FUNCTION: Set
 ------------------------------------------------------------------------------------------*/
 bool Jbw_EditBox::SetEbx(std::string* Var, const char* Val)
 {
-	return SetTbx(Var, Val);
+	return Tbx->SetTbx(Var, Val);
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -73,107 +93,92 @@ bool Jbw_EditBox::SetEbx(std::string* Var, const char* Val)
 ------------------------------------------------------------------------------------------*/
 void Jbw_EditBox::RdrEbx(void)
 {
-	ShowFrame = true;
-	RdrTbx();
+	if (Visible == false) {
+		return;
+	}
+	Tbx->RdrTbx();
 }
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTION: EVENT HANDLER
 ------------------------------------------------------------------------------------------*/
-void Jbw_EditBox::EbxEvent(Jbw_Handles* h)
+void Jbw_EditBox::EbxEvent(SDL_Event* Event)
 {
+	if (Visible == false || Enabled == false) {
+		return;
+	}
+
 	bool Flag = false;
 	//If mouse event happened
-	if (h->Event.type == SDL_MOUSEMOTION || h->Event.type == SDL_MOUSEBUTTONDOWN || h->Event.type == SDL_MOUSEBUTTONUP){
+	if (Event->type == SDL_MOUSEMOTION || Event->type == SDL_MOUSEBUTTONDOWN || Event->type == SDL_MOUSEBUTTONUP){
 		// Get mouse position
-		int x, y;
-		SDL_GetMouseState(&x, &y);
+		int msX, msY;
+		SDL_GetMouseState(&msX, &msY);
 
 		// Mouse pointer inside Edit box
-		if (x > TbxX && x < TbxX + TbxW && y > TbxY && y < TbxY + TbxH)
+		if (msX > Obj.x && msX < Obj.x + Obj.w && msY > Obj.y && msY < Obj.y + Obj.h)
 		{
-			msOver = true;
+			if (msOver == false) {
+				msOver = true;
+				Tbx->Border->LineColor = J_BLACK;
+				DoRender = true;
+			}
 
-			switch (h->Event.type)
+			switch (Event->type)
 			{
 			case SDL_MOUSEBUTTONDOWN:
-				if (h->Event.button.button == 1) {
+				if (Event->button.button == 1) {
 					Focus = true;
 				}
-				else if (h->Event.button.button == 3) {
-				Add(SDL_GetClipboardText());
-				RdrEbx();
+				else if (Event->button.button == 3) {
+					Tbx->Add(SDL_GetClipboardText());
 				}
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-			//	BackColor = { 255, 255, 255, 255 };
 				break;
-			}
-			
-
-			
-
-
-			Border.LineColor = J_C_Black;
-			if (DoRender == false) {
-				DoRender = true;
-				RdrEbx();
 			}
 		}
 		else {
-			msOver = false;
-			if (h->Event.type == SDL_MOUSEBUTTONDOWN) {
-				Focus = false;
-				Border.LineColor = J_C_Frame;
-				RdrEbx();
+			if (msOver == true) {
+				msOver = false;
+				Tbx->Border->LineColor = J_C_Frame;
+				DoRender = true;
 			}
 
-			Border.LineColor = J_C_Frame;
-			if (DoRender == true) {
-				DoRender = false;
-				RdrEbx();
+			if (Event->type == SDL_MOUSEBUTTONDOWN) {
+				Focus = false;
+				Tbx->Border->LineColor = J_C_Frame;
 			}
 		}
 	}
 
 	if (Focus == true && Enabled == true) {
-		if (h->Event.type == SDL_TEXTINPUT){
-			Add(h->Event.text.text);
+		if (Event->type == SDL_TEXTINPUT){
+			Tbx->Add(Event->text.text);
+			OnChange = true;
+			DoRender = true;
 		}
-		else if (h->Event.type == SDL_KEYDOWN){
-			if (h->Event.key.keysym.sym == SDLK_BACKSPACE) {
-				BackSpace();
+		else if (Event->type == SDL_KEYDOWN){
+			if (Event->key.keysym.sym == SDLK_BACKSPACE) {
+				Tbx->BackSpace();
+				OnChange = true;
+				DoRender = true;
 			}
-			else if (h->Event.key.keysym.sym == SDLK_DELETE) {
-
+			else if (Event->key.keysym.sym == SDLK_DELETE) {
+				OnChange = true;
+				DoRender = true;
 			}
 		}
-		Border.LineColor = J_C_Black;
-		RdrEbx();
+		Tbx->Border->LineColor = J_BLACK;
 	}
 
+	if (DoRender == true) {
+		DoRender = false;
+		RdrEbx();
+	}
 	
 	return;
-
-	//if (0) {
-	//	if (h->Event.type == SDL_USEREVENT) {
-	//		h->Event.user.data1;
-	//		my_function();
-	//		//	Uint32* AAA{ static_cast<Uint32*>(e->user.data1) };
-	//		//	void (*A) (void*) = e->type.user.data2;
-	//		//	*A();
-
-
-	//	}
-	//}
-
-	//Uint32 delay = (330 / 10) * 10; // To round it down to the nearest 10 ms 
-//SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, &Dp);
-//	Uint32 delay = (3300 / 10) * 10; // To round it down to the nearest 10 ms 
-
-//	SDL_TimerID my_timer_id = SDL_AddTimer(delay, Flashy, Trdr);
-
 }
 
 /*-----------------------------------------------------------------------------------------
@@ -201,8 +206,9 @@ Uint32 Jbw_EditBox::Flashy(Uint32 interval, void* param)
 ------------------------------------------------------------------------------------------*/
 std::string Jbw_EditBox::EboxGetS(std::string Property)
 {
+	std::string Answer = "";
 	if (Property == "Text") {
-		return Text;
+		Answer.assign(Tbx->Text);
 	}
 	else if (Property == "Something1") {
 
@@ -213,7 +219,5 @@ std::string Jbw_EditBox::EboxGetS(std::string Property)
 	else if (Property == "Something3") {
 
 	}
-	else { // No match
-		return "";
-	}
+	return Answer;
 }

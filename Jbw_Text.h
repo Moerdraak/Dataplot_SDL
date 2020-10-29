@@ -6,12 +6,12 @@
 ******************************************************************************************/
 class Jbw_Text : public Jbw_Base{
 public:
+
+	SDL_Texture* txtImage = NULL;
+	
 	int TxtX = 0;
 	int TxtY = 0;
 
-	TTF_Font* Font = NULL;
-	SDL_Texture* txtImage = NULL;
-	
 	int TxtSize = 0;
 	int Angle = 0;
 	SDL_RendererFlip Flip = SDL_FLIP_NONE;
@@ -34,15 +34,16 @@ public:
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_Text() {};
-	Jbw_Text(SDL_Renderer* Rdr, std::string NewText, int x, int y, int Fsize = 12);
+	Jbw_Text(Jbw_Handles* handles, std::string NewText, int x, int y, int Fsize = 12, int TxtAngle = 0);
 	~Jbw_Text();
+	Jbw_Text(const Jbw_Text& cp);
+	void operator=(const Jbw_Text& cp);
 
 /*-----------------------------------------------------------------------------------------
 		FUNCTIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitTxt(J_Properties* Prop);
-	void InitTxt(SDL_Renderer* TRdr, std::string NewText, int x, int y, int Fsize = 12);
+	//void InitTxt(SDL_Renderer* TRdr, std::string NewText, int x, int y, int Fsize = 12);
 	bool SetTxt(std::string  *Var, const char* Val);
 	void Add(std::string XtraText);
 	void New(std::string NewText);

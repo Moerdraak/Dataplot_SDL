@@ -4,42 +4,38 @@
 #include "JBW_EditBox.h"
 #include "JBW_ListBox.h"
 #include "Jbw_Frame.h"
+#include "Jbw_Debug.h"
 
 class Jbw_ComboBox : public Jbw_Base {
 public:
-
-	int ComboX = 0;
-	int ComboY = 0;
-	int ComboW = 0;
-	int ComboH = 0;
-
-
-	Jbw_Button CbxEdit;
-	Jbw_Button CbxBtn; // dropdown button
-	Jbw_ListBox CbxList;
-	bool GridBtn = false;
-	bool CbxListVis = false;
-	SDL_Window* ListWindow = NULL;
-	SDL_Renderer* ListRdr = NULL;
-	int LbxCnt = 0;
-	std::string* LbxTxt = NULL;
+	Jbw_EditBox *CbxEdit = NULL;
+	Jbw_Button* CbxBtn = NULL; // dropdown button
+	Jbw_ListBox* CbxLbx = NULL;
+	Jbw_Handles* lstHandles = NULL;
+	bool GridBtn = false; // When true it will hide the Combobox dropdown button until msOver.
+	bool CbxLbxVis = false;
+	int CbxTxtSize = 12;
 /*-----------------------------------------------------------------------------------------
 		CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_ComboBox() {};
-	Jbw_ComboBox( SDL_Renderer* Rdr, int x, int y, int w, int h, int Fsize, 
+	Jbw_ComboBox(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize,
 		bool IsGridBtn = false);
 	~Jbw_ComboBox();
+
+	Jbw_ComboBox(const Jbw_ComboBox& cp);
+	Jbw_ComboBox& operator=(const Jbw_ComboBox& copy);
 
 /*-----------------------------------------------------------------------------------------
 		FUNCTION DECLARATIONS
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitCbx(J_Properties* Prop);
-	void AddRow(Jbw_Handles* h, std::string NewText);
-	void RdrCbx(Jbw_Handles* h);
-	void CbxEvent(Jbw_Handles* h);
-
+	void InitCbx(Jbw_Handles* handles, int x, int y, int w, int h, int Fsize, bool IsGridBtn = false);
+	void CreateCbx(void);
+	void AddRow(std::string NewText);
+	void RdrCbx(void);
+	J_Event CbxEvent(SDL_Event* Event);
+	void CloseList(void);
 };
 

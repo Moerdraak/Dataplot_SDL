@@ -2,7 +2,7 @@
 #include "Jbw_Base.h"
 //#include "SDL.h"
 //#include "SDL_image.h"
-#include "Jbw_FrameWork.h"
+#include "Jbw_Framework.h"
 #include "Jbw_EditBox.h"
 #include "data.h"
 #include "fft.h"
@@ -22,12 +22,12 @@ public:
 	TData* BaseData = NULL;
 	TData *FreqData = NULL;
 
-	Jbw_Handles *handles;
+	Jbw_Handles *ghandles;
 
 	// BASE OBJECTS
 	SDL_Window* GraphWindow = NULL; // The window we'll be rendering to DOESN'T BELONG HERE MUST BE CREATED ON THE FLY
 	SDL_Surface* wSurf = NULL; // The surface contained by the window
-	SDL_Renderer* GRender = NULL; // The User window renderer
+	SDL_Renderer* GRender = NULL; // 
 
 	// RECTANGLE OBJECTS
 	SDL_Rect vp_Graph;

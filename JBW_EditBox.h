@@ -4,29 +4,35 @@
 #include "Jbw_TextBox.h"
 #include "Jbw_Frame.h"
 
-class Jbw_EditBox : public Jbw_TextBox { 
+class Jbw_EditBox : public Jbw_Base { 
 private: 
 	
 public: 
+
+	Jbw_TextBox* Tbx = NULL;
+	int TxtSize = 12;
+
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS
 ------------------------------------------------------------------------------------------*/
 public:
 	Jbw_EditBox() {}; // 
-	Jbw_EditBox(SDL_Renderer* Rdr, int x, int y, int w, int h=14, int Fsize = 12);
-	Jbw_EditBox(J_Properties *Prop);
+	Jbw_EditBox(Jbw_Handles* handles, int x, int y, int w, int h=14, int Fsize = 12);
 	~Jbw_EditBox();
+
+	Jbw_EditBox(const Jbw_EditBox& cp);
+	void operator=(const Jbw_EditBox& cp);
 
 /*-----------------------------------------------------------------------------------------
 	FUNCTIONS 
 ------------------------------------------------------------------------------------------*/
 public:
-	void InitEbx(J_Properties *Prop);
-	void InitEbx(SDL_Renderer* Rdr, int x, int y, int w, int h = 14, int Fsize = 12);
+	void InitEbx(Jbw_Handles* handles, int x, int y, int w, int h = 14, int Fsize = 12);
+	void CreateEbx(void);
 	bool SetEbx(std::string  *Var, const char* Val);
-	void RdrEbx(void);
-	void EbxEvent(Jbw_Handles* h);
+	void RdrEbx();
+	void EbxEvent(SDL_Event* Event);
 	std::string EboxGetS(std::string Property);
 
 	Uint32 static Flashy(Uint32 interval, void* param);

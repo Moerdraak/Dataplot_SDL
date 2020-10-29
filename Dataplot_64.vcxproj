@@ -26,15 +26,17 @@
     <ClCompile Include="Jbw_Base.cpp" />
     <ClCompile Include="Jbw_Button.cpp" />
     <ClCompile Include="Jbw_Circle.cpp" />
-    <ClCompile Include="JBW_ComboBox.cpp" />
-    <ClCompile Include="JBW_EditBox.cpp" />
+    <ClCompile Include="Jbw_ComboBox.cpp" />
+    <ClCompile Include="Jbw_Debug.cpp" />
+    <ClCompile Include="Jbw_EditBox.cpp" />
     <ClCompile Include="Jbw_Frame.cpp" />
     <ClCompile Include="Jbw_FrameWork.cpp" />
     <ClCompile Include="Jbw_Grid.cpp" />
-    <ClCompile Include="JBW_ListBox.cpp" />
+    <ClCompile Include="Jbw_ListBox.cpp" />
     <ClCompile Include="Jbw_Menu.cpp" />
-    <ClCompile Include="JBW_MsgBox.cpp" />
+    <ClCompile Include="Jbw_MsgBox.cpp" />
     <ClCompile Include="Jbw_Polygon.cpp" />
+    <ClCompile Include="Jbw_Slider.cpp" />
     <ClCompile Include="Jbw_Text.cpp" />
     <ClCompile Include="Jbw_TextBox.cpp" />
   </ItemGroup>
@@ -45,15 +47,17 @@
     <ClInclude Include="Jbw_Base.h" />
     <ClInclude Include="Jbw_Button.h" />
     <ClInclude Include="Jbw_Circle.h" />
-    <ClInclude Include="JBW_ComboBox.h" />
-    <ClInclude Include="JBW_EditBox.h" />
+    <ClInclude Include="Jbw_ComboBox.h" />
+    <ClInclude Include="Jbw_Debug.h" />
+    <ClInclude Include="Jbw_EditBox.h" />
     <ClInclude Include="Jbw_Frame.h" />
     <ClInclude Include="Jbw_FrameWork.h" />
     <ClInclude Include="Jbw_Grid.h" />
-    <ClInclude Include="JBW_ListBox.h" />
+    <ClInclude Include="Jbw_ListBox.h" />
     <ClInclude Include="Jbw_Menu.h" />
-    <ClInclude Include="JBW_MsgBox.h" />
+    <ClInclude Include="Jbw_MsgBox.h" />
     <ClInclude Include="Jbw_Polygon.h" />
+    <ClInclude Include="Jbw_Slider.h" />
     <ClInclude Include="Jbw_Text.h" />
     <ClInclude Include="Jbw_TextBox.h" />
   </ItemGroup>
@@ -139,12 +143,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\COBUS\GitHub\SDL2\SDL2_mixer\include;D:\COBUS\GitHub\SDL2\SDL2_ttf\include;D:\COBUS\GitHub\SDL2\SDL2_image\include;D:\COBUS\GitHub\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\cobus\GitHub\SDL2\SDL2_mixer\include;D:\cobus\GitHub\SDL2\SDL2_ttf\include;D:\cobus\GitHub\SDL2\SDL2_image\include;D:\cobus\GitHub\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\COBUS\GitHub\SDL2\SDL2_mixer\lib\x64;D:\COBUS\GitHub\SDL2\SDL2_ttf\lib\x64;D:\COBUS\GitHub\SDL2\SDL2_image\lib\x64;D:\COBUS\GitHub\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\cobus\GitHub\SDL2\SDL2_mixer\lib\x64;D:\cobus\GitHub\SDL2\SDL2_ttf\lib\x64;D:\cobus\GitHub\SDL2\SDL2_image\lib\x64;D:\cobus\GitHub\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
