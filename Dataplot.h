@@ -11,6 +11,7 @@
 #include "Jbw_Slider.h"
 #include "Jbw_Debug.h"
 #include "Jbw_Base.h"
+#include "Jbw_FileBrowser.h"
 #include <array>
 
 /****************************************************************************************/

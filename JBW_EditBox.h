@@ -5,13 +5,10 @@
 #include "Jbw_Frame.h"
 
 class Jbw_EditBox : public Jbw_Base { 
-private: 
-	
+private: 	
 public: 
-
 	Jbw_TextBox* Tbx = NULL;
 	int TxtSize = 12;
-
 
 /*-----------------------------------------------------------------------------------------
 	CONSTRUCTORS
@@ -30,6 +27,8 @@ public:
 public:
 	void InitEbx(Jbw_Handles* handles, int x, int y, int w, int h = 14, int Fsize = 12);
 	void CreateEbx(void);
+	void Assign(std::string NewText);
+	void Append(std::string NewText);
 	bool SetEbx(std::string  *Var, const char* Val);
 	void RdrEbx();
 	void EbxEvent(SDL_Event* Event);

@@ -659,12 +659,19 @@ void Dataplot::btnClear_Click(void)
 ------------------------------------------------------------------------------------------*/
 void Dataplot::btnDataDir_Click(Jbw_Handles* h)
 {
-	J_Type Answer = MsgBox("REALLY", "This will take some time.\n"
-		"For now just type in the full path and name.\nLike non-lazy people.", J_YESNO, 300, 300);
-	if (Answer == J_NO) {
-		Answer = MsgBox("YOU REALLY DON'T GET THIS ??", "This will take some time. "
-			"For now just type in the full path and name. Like non-lazy people.", J_OK, 400, 300);
-	}
+	Jbw_FileBrowser Dir(h);
+	edDataDir->Tbx->Text.assign(Dir.GetDir());
+	edDataDir->Tbx->CreateTexture();
+	edDataDir->RdrEbx();
+	Dir.CloseBrowser();
+
+
+//	J_Type Answer = MsgBox("REALLY", "This will take some time.\n"
+//		"For now just type in the full path and name.\nLike non-lazy people.", J_YESNO, 300, 300);
+//	if (Answer == J_NO) {
+//		Answer = MsgBox("YOU REALLY DON'T GET THIS ??", "This will take some time. "
+//			"For now just type in the full path and name. Like non-lazy people.", J_OK, 400, 300);
+//	}
 }
 
 /*------------------------------------------------------------------------------------------

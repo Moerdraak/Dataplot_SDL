@@ -55,13 +55,14 @@ const SDL_Color J_TEAL = { 0, 128, 128, 255 };
 const SDL_Color J_OLIVE = { 128, 128, 0, 255 };
 const SDL_Color J_PURPLE = { 128, 0, 128, 255 };
 
-const SDL_Color J_C_Window = { 230, 230, 230, 255 };
 const SDL_Color J_C_Frame = { 150, 150, 150, 255 };
+const SDL_Color J_C_BtnDwn = { 150, 150, 150, 255 };
+const SDL_Color J_C_Header = { 200, 200, 200, 255 };
+const SDL_Color J_C_msOver = { 210, 210, 210, 255 };
 const SDL_Color J_C_BtnGrey = { 220, 220, 220, 255 };
+const SDL_Color J_C_Window = { 230, 230, 230, 255 };
 const SDL_Color J_C_Grey = { 240, 240, 240, 255 };
 const SDL_Color J_C_LGrey = { 245, 245, 245, 255 };
-const SDL_Color J_C_msOver = { 210, 210, 210, 255 };
-const SDL_Color J_C_BtnDwn = { 150, 150, 150, 255 };
 
 /******************************************************************************************
 						 STRUCT holding Jbw Handles
